@@ -3,136 +3,308 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="SmartDeal India — discover useful products and deals in one place.">
-<title>SmartDeal India | Find your deal</title>
+
+<title>SmartDeal India - Best Shopping Deals</title>
+
 <style>
-:root{--ink:#172033;--muted:#667085;--brand:#5b45d6;--brand2:#8b5cf6;--bg:#f6f7fb;--card:#fff;--line:#e8eaf2}
-*{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--ink)}
-header{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5}
-.nav{max-width:1120px;margin:auto;padding:16px 20px;display:flex;align-items:center;gap:18px;justify-content:space-between;flex-wrap:wrap}
-.logo{font-weight:800;font-size:22px;color:var(--brand);letter-spacing:-.5px}.logo span{color:#f59e0b}
-.controls{display:flex;gap:10px;align-items:center;flex:1;max-width:600px}
-input,select{border:1px solid var(--line);border-radius:10px;padding:12px;background:#fff;font-size:14px}
-input{width:100%}select{cursor:pointer}
-main{max-width:1120px;margin:auto;padding:28px 20px 60px}
-.hero{background:linear-gradient(120deg,#302078,#7656e8);color:#fff;border-radius:22px;padding:38px 30px;margin-bottom:26px}
-.hero h1{font-size:clamp(28px,5vw,42px);margin:0 0 10px}.hero p{font-size:16px;line-height:1.5;max-width:650px;margin:0 0 18px;color:#eeeaff}
-.badge{display:inline-block;background:#ffffff20;border:1px solid #ffffff55;padding:7px 11px;border-radius:20px;font-size:12px}
-.section-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:26px 0 14px}
-.section-head h2{font-size:22px;margin:0}.filters{display:flex;gap:8px;flex-wrap:wrap}
-.chip{border:1px solid var(--line);background:#fff;border-radius:20px;padding:8px 13px;cursor:pointer;color:var(--ink)}
-.chip.active{background:var(--brand);color:#fff;border-color:var(--brand)}
-.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden;display:flex;flex-direction:column}
-.product-art{height:150px;display:grid;place-items:center;font-size:54px;background:linear-gradient(135deg,#f0edff,#f9f7ff)}
-.card-body{padding:16px;display:flex;flex-direction:column;gap:9px;flex:1}
-.store{font-size:12px;color:var(--brand);font-weight:700;text-transform:uppercase;letter-spacing:.5px}
-.card h3{font-size:16px;margin:0;line-height:1.35}.desc{font-size:13px;color:var(--muted);margin:0;line-height:1.4}
-.price{font-size:19px;font-weight:800;margin-top:2px}
-.btn{display:block;text-align:center;text-decoration:none;background:var(--brand);color:#fff;padding:11px;border-radius:10px;font-weight:700;margin-top:auto}
-.btn:hover{background:#4733bd}.note{font-size:12px;color:var(--muted);line-height:1.5;margin-top:24px;background:#fff;border:1px solid var(--line);padding:14px;border-radius:12px}
-.empty{display:none;color:var(--muted);padding:30px;text-align:center;grid-column:1/-1}
-footer{text-align:center;color:var(--muted);font-size:13px;padding:22px}
-@media(max-width:800px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.controls{order:3;max-width:none;flex-basis:100%}}
-@media(max-width:520px){.grid{grid-template-columns:1fr}.hero{padding:28px 22px}.nav{gap:12px}}
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background: #f5f6fa;
+  color: #222;
+}
+
+header {
+  background: #101828;
+  color: white;
+  padding: 20px 15px;
+  text-align: center;
+}
+
+header h1 {
+  font-size: 28px;
+  color: #ffb800;
+}
+
+header p {
+  margin-top: 8px;
+  font-size: 14px;
+}
+
+nav {
+  background: #ff6b00;
+  padding: 13px;
+  text-align: center;
+}
+
+nav a {
+  color: white;
+  text-decoration: none;
+  margin: 0 12px;
+  font-weight: bold;
+}
+
+.hero {
+  background: linear-gradient(120deg,#101828,#344767);
+  color: white;
+  text-align: center;
+  padding: 55px 15px;
+}
+
+.hero h2 {
+  font-size: 30px;
+  margin-bottom: 15px;
+}
+
+.hero p {
+  margin-bottom: 20px;
+}
+
+.hero button {
+  background: #ffb800;
+  border: none;
+  padding: 13px 25px;
+  border-radius: 6px;
+  font-weight: bold;
+}
+
+.search {
+  text-align: center;
+  padding: 20px 10px;
+}
+
+.search input {
+  width: 95%;
+  max-width: 500px;
+  padding: 14px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 16px;
+}
+
+h2.section-title {
+  text-align: center;
+  margin: 25px 0;
+}
+
+.categories {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 10px;
+}
+
+.categories button {
+  padding: 10px 18px;
+  border: none;
+  background: #101828;
+  color: white;
+  border-radius: 20px;
+  cursor: pointer;
+}
+
+.products {
+  display: grid;
+  grid-template-columns: repeat(2,1fr);
+  gap: 15px;
+  padding: 15px;
+  max-width: 1000px;
+  margin: auto;
+}
+
+.card {
+  background: white;
+  padding: 12px;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 2px 10px #ddd;
+}
+
+.card img {
+  width: 100%;
+  height: 140px;
+  object-fit: contain;
+}
+
+.card h3 {
+  margin: 12px 0;
+}
+
+.price {
+  color: #159447;
+  font-weight: bold;
+  margin: 12px;
+}
+
+.card a {
+  display: block;
+  background: #ff6b00;
+  color: white;
+  text-decoration: none;
+  padding: 11px;
+  border-radius: 6px;
+  font-weight: bold;
+}
+
+.card a:hover {
+  background: #e65c00;
+}
+
+.card.hide {
+  display: none;
+}
+
+footer {
+  background: #101828;
+  color: white;
+  text-align: center;
+  padding: 25px;
+  margin-top: 30px;
+}
+
+footer p {
+  margin: 8px;
+}
+
+@media(min-width:700px) {
+  .products {
+    grid-template-columns: repeat(4,1fr);
+  }
+}
 </style>
 </head>
+
 <body>
+
 <header>
-  <div class="nav">
-    <div class="logo">SmartDeal <span>India</span></div>
-    <div class="controls">
-      <input id="search" type="search" placeholder="Search products..." aria-label="Search products">
-      <select id="language" aria-label="Choose language">
-        <option value="en">English</option><option value="gu">ગુજરાતી</option><option value="hi">हिन्दी</option>
-      </select>
-    </div>
-  </div>
+  <h1>🛒 SmartDeal India</h1>
+  <p>India's Smart Shopping Destination</p>
 </header>
-<main>
-  <section class="hero">
-    <span class="badge" id="badge">SMART SHOPPING STARTS HERE</span>
-    <h1 id="headline">Find your next great deal.</h1>
-    <p id="subhead">Explore product ideas from popular shopping platforms, all in one simple place.</p>
-  </section>
 
-  <div class="section-head">
-    <h2 id="products-title">Popular picks</h2>
-    <div class="filters" aria-label="Filter by store">
-      <button class="chip active" data-store="all" id="all">All</button>
-      <button class="chip" data-store="Amazon">Amazon</button>
-      <button class="chip" data-store="Flipkart">Flipkart</button>
-      <button class="chip" data-store="Meesho">Meesho</button>
-    </div>
-  </div>
+<nav>
+  <a href="#">Home</a>
+  <a href="#deals">Deals</a>
+  <a href="#categories">Categories</a>
+</nav>
 
-  <section class="grid" id="grid">
-    <article class="card" data-store="Amazon" data-search="wireless headphones audio">
-      <div class="product-art">🎧</div><div class="card-body">
-        <div class="store">Amazon · Sample listing</div><h3 data-en="Wireless headphones" data-gu="વાયરલેસ હેડફોન્સ" data-hi="वायरलेस हेडफ़ोन">Wireless headphones</h3>
-        <p class="desc" data-en="A sample product card. Add an approved affiliate link before publishing." data-gu="આ નમૂનાનું પ્રોડક્ટ કાર્ડ છે. પ્રકાશિત કરતાં પહેલાં મંજૂર affiliate link ઉમેરો." data-hi="यह नमूना प्रोडक्ट कार्ड है। प्रकाशित करने से पहले स्वीकृत affiliate link जोड़ें।">A sample product card. Add an approved affiliate link before publishing.</p>
-        <div class="price">₹999 <small style="font-size:11px;color:#667085;font-weight:400">sample price</small></div>
-        <a class="btn" href="#" data-buy>View deal</a>
-      </div>
-    </article>
-    <article class="card" data-store="Flipkart" data-search="water bottle flask kitchen">
-      <div class="product-art">🧴</div><div class="card-body">
-        <div class="store">Flipkart · Sample listing</div><h3 data-en="Insulated water bottle" data-gu="ઇન્સ્યુલેટેડ પાણીની બોટલ" data-hi="इंसुलेटेड पानी की बोतल">Insulated water bottle</h3>
-        <p class="desc" data-en="A sample product card. Replace this with a real product and approved link." data-gu="આ નમૂનાનું કાર્ડ છે. વાસ્તવિક પ્રોડક્ટ અને મંજૂર લિંક ઉમેરો." data-hi="यह नमूना कार्ड है। असली प्रोडक्ट और स्वीकृत लिंक जोड़ें।">A sample product card. Replace this with a real product and approved link.</p>
-        <div class="price">₹349 <small style="font-size:11px;color:#667085;font-weight:400">sample price</small></div>
-        <a class="btn" href="#" data-buy>View deal</a>
-      </div>
-    </article>
-    <article class="card" data-store="Meesho" data-search="backpack bag travel">
-      <div class="product-art">🎒</div><div class="card-body">
-        <div class="store">Meesho · Sample listing</div><h3 data-en="Everyday backpack" data-gu="રોજિંદો બેકપેક" data-hi="रोज़मर्रा का बैकपैक">Everyday backpack</h3>
-        <p class="desc" data-en="A sample product card. Confirm platform terms before adding links." data-gu="આ નમૂનાનું કાર્ડ છે. લિંક ઉમેરતાં પહેલાં પ્લેટફોર્મના નિયમો તપાસો." data-hi="यह नमूना कार्ड है। लिंक जोड़ने से पहले प्लेटफ़ॉर्म के नियम जाँचें।">A sample product card. Confirm platform terms before adding links.</p>
-        <div class="price">₹499 <small style="font-size:11px;color:#667085;font-weight:400">sample price</small></div>
-        <a class="btn" href="#" data-buy>View deal</a>
-      </div>
-    </article>
-  </section>
-  <div class="empty" id="empty">No matching products found.</div>
-  <div class="note" id="disclosure">Disclosure: SmartDeal India may earn a commission from qualifying purchases made through approved affiliate links. Prices and availability can change. The products and prices shown above are examples only, not live offers.</div>
-</main>
-<footer>© 2026 SmartDeal India · Demo homepage</footer>
+<section class="hero">
+  <h2>🔥 Best Deals, Best Prices!</h2>
+  <p>Discover Amazing Shopping Deals in India</p>
+  <button onclick="document.getElementById('deals').scrollIntoView()">
+    Explore Deals
+  </button>
+</section>
+
+<div class="search">
+  <input
+    type="text"
+    id="search"
+    placeholder="🔍 Search products..."
+    oninput="filterProducts()">
+</div>
+
+<h2 class="section-title" id="categories">
+  Shop By Category
+</h2>
+
+<div class="categories">
+  <button onclick="filterCategory('all')">All</button>
+  <button onclick="filterCategory('electronics')">Electronics</button>
+  <button onclick="filterCategory('fashion')">Fashion</button>
+  <button onclick="filterCategory('accessories')">Accessories</button>
+</div>
+
+<h2 class="section-title" id="deals">
+  🔥 Today's Best Deals
+</h2>
+
+<div class="products" id="productList">
+
+<div class="card" data-category="electronics">
+  <img src="https://placehold.co/250x180?text=Smartphone" alt="Smartphone">
+  <h3>Smartphone</h3>
+  <p class="price">Explore Latest Deals</p>
+  <a href="#" target="_blank">View Deal →</a>
+</div>
+
+<div class="card" data-category="electronics">
+  <img src="https://placehold.co/250x180?text=Headphones" alt="Headphones">
+  <h3>Headphones</h3>
+  <p class="price">Explore Latest Deals</p>
+  <a href="#" target="_blank">View Deal →</a>
+</div>
+
+<div class="card" data-category="accessories">
+  <img src="https://placehold.co/250x180?text=Smart+Watch" alt="Smart Watch">
+  <h3>Smart Watch</h3>
+  <p class="price">Explore Latest Deals</p>
+  <a href="#" target="_blank">View Deal →</a>
+</div>
+
+<div class="card" data-category="fashion">
+  <img src="https://placehold.co/250x180?text=Shoes" alt="Shoes">
+  <h3>Fashion Shoes</h3>
+  <p class="price">Explore Latest Deals</p>
+  <a href="#" target="_blank">View Deal →</a>
+</div>
+
+<div class="card" data-category="electronics">
+  <img src="https://placehold.co/250x180?text=Laptop" alt="Laptop">
+  <h3>Laptop</h3>
+  <p class="price">Explore Latest Deals</p>
+  <a href="#" target="_blank">View Deal →</a>
+</div>
+
+<div class="card" data-category="accessories">
+  <img src="https://placehold.co/250x180?text=Bag" alt="Bag">
+  <h3>Travel Bag</h3>
+  <p class="price">Explore Latest Deals</p>
+  <a href="#" target="_blank">View Deal →</a>
+</div>
+
+</div>
+
+<footer>
+  <h2>SmartDeal India 🇮🇳</h2>
+  <p>Find Best Deals & Save Money</p>
+  <p>© 2026 SmartDeal India</p>
+  <p>All Rights Reserved.</p>
+</footer>
+
 <script>
-const copy={
- en:{badge:"SMART SHOPPING STARTS HERE",headline:"Find your next great deal.",subhead:"Explore product ideas from popular shopping platforms, all in one simple place.",title:"Popular picks",all:"All",buy:"View deal",empty:"No matching products found.",disclosure:"Disclosure: SmartDeal India may earn a commission from qualifying purchases made through approved affiliate links. Prices and availability can change. The products and prices shown above are examples only, not live offers.",placeholder:"Search products..."},
- gu:{badge:"સ્માર્ટ શોપિંગ અહીંથી શરૂ થાય છે",headline:"તમારા માટે શ્રેષ્ઠ ડીલ શોધો.",subhead:"લોકપ્રિય શોપિંગ પ્લેટફોર્મના પ્રોડક્ટ એક જ જગ્યાએ શોધો.",title:"લોકપ્રિય પ્રોડક્ટ",all:"બધા",buy:"ડીલ જુઓ",empty:"માફ કરશો, કોઈ પ્રોડક્ટ મળી નથી.",disclosure:"જાહેરાત: મંજૂર affiliate link દ્વારા લાયક ખરીદી થાય તો SmartDeal India ને કમિશન મળી શકે છે. કિંમત અને ઉપલબ્ધતા બદલાઈ શકે છે. ઉપરના પ્રોડક્ટ અને કિંમતો માત્ર ઉદાહરણ છે, લાઇવ ઓફર નથી.",placeholder:"પ્રોડક્ટ શોધો..."},
- hi:{badge:"स्मार्ट शॉपिंग यहीं से शुरू",headline:"अपने लिए शानदार डील खोजें।",subhead:"लोकप्रिय शॉपिंग प्लेटफ़ॉर्म के प्रोडक्ट एक ही जगह देखें।",title:"लोकप्रिय प्रोडक्ट",all:"सभी",buy:"डील देखें",empty:"कोई मिलता-जुलता प्रोडक्ट नहीं मिला।",disclosure:"जानकारी: स्वीकृत affiliate link से योग्य खरीदारी होने पर SmartDeal India को कमीशन मिल सकता है। कीमत और उपलब्धता बदल सकती है। ऊपर दिए गए प्रोडक्ट और कीमतें केवल उदाहरण हैं, लाइव ऑफर नहीं।",placeholder:"प्रोडक्ट खोजें..."}
-};
-let store="all";
-function applyLanguage(){
- const lang=document.getElementById("language").value, t=copy[lang];
- ["badge","headline","subhead"].forEach(id=>document.getElementById(id).textContent=t[id]);
- document.getElementById("products-title").textContent=t.title;
- document.getElementById("all").textContent=t.all;
- document.getElementById("empty").textContent=t.empty;
- document.getElementById("disclosure").textContent=t.disclosure;
- document.getElementById("search").placeholder=t.placeholder;
- document.querySelectorAll("[data-buy]").forEach(a=>a.textContent=t.buy);
- document.querySelectorAll("[data-en]").forEach(el=>el.textContent=el.dataset[lang]||el.dataset.en);
+
+let selectedCategory = "all";
+
+function filterProducts() {
+  let search = document.getElementById("search")
+    .value.toLowerCase();
+
+  document.querySelectorAll(".card").forEach(card => {
+    let name = card.querySelector("h3")
+      .innerText.toLowerCase();
+
+    let category = card.dataset.category;
+
+    card.classList.toggle("hide",
+      !name.includes(search) ||
+      (selectedCategory !== "all" &&
+      category !== selectedCategory)
+    );
+  });
 }
-function filter(){
- const q=document.getElementById("search").value.toLowerCase();let shown=0;
- document.querySelectorAll(".card").forEach(card=>{
-  const okStore=store==="all"||card.dataset.store===store;
-  const okText=(card.dataset.search+" "+card.innerText).toLowerCase().includes(q);
-  card.style.display=okStore&&okText?"flex":"none";if(okStore&&okText)shown++;
- });
- document.getElementById("empty").style.display=shown?"none":"block";
+
+function filterCategory(category) {
+  selectedCategory = category;
+  filterProducts();
 }
-document.getElementById("language").addEventListener("change",applyLanguage);
-document.getElementById("search").addEventListener("input",filter);
-document.querySelectorAll(".chip").forEach(btn=>btn.addEventListener("click",()=>{
- document.querySelectorAll(".chip").forEach(b=>b.classList.remove("active"));
- btn.classList.add("active");store=btn.dataset.store;filter();
-}));
-document.querySelectorAll("[data-buy]").forEach(a=>a.addEventListener("click",e=>{
- e.preventDefault();alert("Demo only: add your approved affiliate product URL to this button before publishing.");
-}));
-applyLanguage();
+
 </script>
+
 </body>
 </html>
