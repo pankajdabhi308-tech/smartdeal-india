@@ -318,7 +318,13 @@ z-index:9999;
 `;
 
 document.body.appendChild(cartButton);
-
+cartButton.onclick = function() {
+    if (cart.length === 0) {
+        alert("Your cart is empty!");
+    } else {
+        alert("Your Cart:\n" + cart.join("\n"));
+    }
+};
 document.querySelectorAll(".card").forEach(card => {
 
     let button = document.createElement("button");
