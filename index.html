@@ -3,33 +3,121 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SmartDeal India</title>
+
+<title>SmartDeal India - Best Shopping Deals</title>
+
 <style>
-*{box-sizing:border-box}
-body{margin:0;font-family:Arial,sans-serif;background:#f4f6f9;color:#222}
-header{background:#102a43;color:white;padding:22px 15px;text-align:center}
-header h1{margin:0;font-size:28px}
-header p{margin:8px 0 0}
-nav{background:#174c75;padding:13px;text-align:center}
-nav a{color:white;text-decoration:none;margin:0 10px;font-weight:bold}
-.hero{text-align:center;padding:30px 15px;background:#dceeff}
-.hero h2{margin:0 0 10px;font-size:25px}
-.search{width:90%;max-width:450px;padding:13px;border:1px solid #ccc;border-radius:8px;font-size:16px}
-.products{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:15px;padding:18px;max-width:1000px;margin:auto}
-.card{background:white;border-radius:12px;padding:12px;text-align:center;box-shadow:0 2px 9px #0001}
-.card img{width:100%;height:145px;object-fit:contain;border-radius:8px}
-.card h3{font-size:16px;min-height:38px}
-.price{color:#087b3d;font-size:18px;font-weight:bold}
-.btn{display:block;background:#ff8c00;color:white;text-decoration:none;padding:11px;border-radius:7px;font-weight:bold;margin-top:10px}
-section{text-align:center;padding:22px 15px}
-footer{background:#102a43;color:white;text-align:center;padding:20px}
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f4f6f9;
+    color: #222;
+}
+
+header {
+    background: #102243;
+    color: white;
+    padding: 22px;
+    text-align: center;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 28px;
+}
+
+nav {
+    background: #174c75;
+    padding: 14px;
+    text-align: center;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    margin: 10px;
+    font-weight: bold;
+}
+
+.hero {
+    text-align: center;
+    padding: 35px 15px;
+    background: #dceeff;
+}
+
+.search {
+    width: 90%;
+    max-width: 450px;
+    padding: 14px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 16px;
+}
+
+.products {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(145px, 1fr));
+    gap: 15px;
+    padding: 18px;
+    max-width: 1100px;
+    margin: auto;
+}
+
+.card {
+    background: white;
+    border-radius: 12px;
+    padding: 12px;
+    text-align: center;
+    box-shadow: 0 2px 9px #0001;
+}
+
+.card img {
+    width: 100%;
+    height: 145px;
+    object-fit: contain;
+}
+
+.card h3 {
+    font-size: 16px;
+}
+
+.price {
+    color: #087b3d;
+    font-size: 19px;
+    font-weight: bold;
+}
+
+.btn {
+    display: block;
+    width: 100%;
+    background: #ff8c00;
+    color: white;
+    border: none;
+    padding: 11px;
+    border-radius: 7px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+footer {
+    background: #102243;
+    color: white;
+    text-align: center;
+    padding: 22px;
+    margin-top: 25px;
+}
 </style>
 </head>
+
 <body>
 
 <header>
-<h1>SmartDeal India</h1>
-<p>Best Deals • Best Products • Smart Shopping</p>
+<h1>🛍️ SmartDeal India</h1>
+<p>Best Deals | Best Products | Smart Shopping</p>
 </header>
 
 <nav>
@@ -39,91 +127,136 @@ footer{background:#102a43;color:white;text-align:center;padding:20px}
 </nav>
 
 <div class="hero" id="home">
-<h2>Welcome to SmartDeal India</h2>
-<p>Find your favourite products at great prices!</p>
-<input class="search" id="search" type="text" placeholder="Search products..." oninput="searchProducts()">
+<h2>Welcome to SmartDeal India!</h2>
+<p>Find Your Favourite Products at Great Prices!</p>
+
+<input
+class="search"
+id="search"
+type="text"
+placeholder="🔍 Search Products..."
+oninput="searchProducts()"
+>
 </div>
 
-<h2 style="text-align:center;margin-top:25px" id="products">Our Products</h2>
+<h2 style="text-align:center" id="products">
+🔥 Our Products
+</h2>
 
-<div class="products" id="productList">
+<div class="products" id="productList"></div>
 
-<div class="card">
-<img src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400" alt="Smartphone">
-<h3>Smartphone</h3>
-<p class="price">₹9,999</p>
-<a class="btn" href="#about">Buy Now</a>
-</div>
-
-<div class="card">
-<img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400" alt="Headphones">
-<h3>Wireless Headphones</h3>
-<p class="price">₹1,499</p>
-<a class="btn" href="#about">Buy Now</a>
-</div>
-
-<div class="card">
-<img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400" alt="Watch">
-<h3>Smart Watch</h3>
-<p class="price">₹1,999</p>
-<a class="btn" href="#about">Buy Now</a>
-</div>
-
-<div class="card">
-<img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400" alt="Shoes">
-<h3>Sports Shoes</h3>
-<p class="price">₹1,299</p>
-<a class="btn" href="#about">Buy Now</a>
-</div>
-
-<div class="card">
-<img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400" alt="T-shirt">
-<h3>Stylish T-Shirt</h3>
-<p class="price">₹499</p>
-<a class="btn" href="#about">Buy Now</a>
-</div>
-
-<div class="card">
-<img src="https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400" alt="Bag">
-<h3>Travel Bag</h3>
-<p class="price">₹899</p>
-<a class="btn" href="#about">Buy Now</a>
-</div>
-
-</div>
-
-<section id="about">
-<h2>About SmartDeal India</h2>
-<p>We help you discover useful products and shopping deals.</p>
-<p>More products and shopping links coming soon!</p>
-</section>
-
-<footer>
+<footer id="about">
+<h2>SmartDeal India</h2>
+<p>Thank You For Shopping With Us!</p>
 <p>© 2026 SmartDeal India</p>
-<p>Happy Shopping!</p>
 </footer>
 
 <script>
-function searchProducts(){
-const q=document.getElementById("search").value.toLowerCase();
-document.querySelectorAll(".card").forEach(card=>{
-card.style.display=card.innerText.toLowerCase().includes(q)?"block":"none";
-});
-}
-</script>
-<script>
-let savedProducts = JSON.parse(localStorage.getItem("adminProducts") || "[]");
 
-savedProducts.forEach(function(p) {
-  document.getElementById("productList").innerHTML += `
-    <div class="card">
-      <img src="${p.image || ''}" alt="${p.name}">
-      <h3>${p.name}</h3>
-      <p class="price">₹${p.price}</p>
-      <a class="btn" href="#about">Buy Now</a>
-    </div>
-  `;
+const defaultProducts = [
+{
+name: "Samsung Smartphone",
+price: 9999,
+image: "https://images.unsplash.com/photo-1511707171634-5f897ff02a29?w=400"
+},
+{
+name: "Wireless Headphones",
+price: 1499,
+image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400"
+},
+{
+name: "Smart Watch",
+price: 1999,
+image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400"
+},
+{
+name: "Sports Shoes",
+price: 1299,
+image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400"
+},
+{
+name: "Stylish T-Shirt",
+price: 499,
+image: "https://images.unsplash.com/photo-1521572163474-686419cf17ab?w=400"
+}
+];
+
+function getProducts() {
+    let saved = JSON.parse(
+        localStorage.getItem("adminProducts") || "[]"
+    );
+
+    return [...defaultProducts, ...saved];
+}
+
+function showProducts(items = getProducts()) {
+
+    const list = document.getElementById("productList");
+
+    list.innerHTML = "";
+
+    items.forEach(product => {
+
+        const card = document.createElement("div");
+        card.className = "card";
+
+        const img = document.createElement("img");
+        img.src = product.image || "https://placehold.co/250x180?text=Product";
+        img.alt = product.name;
+        img.onerror = function() {
+            this.src = "https://placehold.co/250x180?text=Product";
+        };
+
+        const name = document.createElement("h3");
+        name.textContent = product.name;
+
+        const price = document.createElement("p");
+        price.className = "price";
+        price.textContent = "₹" + product.price;
+
+        const button = document.createElement("button");
+        button.className = "btn";
+        button.textContent = "Buy Now";
+
+        button.onclick = function() {
+            alert(
+                product.name +
+                " - ₹" + product.price +
+                "\nThank you for choosing SmartDeal India!"
+            );
+        };
+
+        card.append(img, name, price, button);
+
+        list.appendChild(card);
+
+    });
+
+}
+
+function searchProducts() {
+
+    const search = document
+        .getElementById("search")
+        .value.toLowerCase();
+
+    const filtered = getProducts().filter(product =>
+        product.name.toLowerCase().includes(search)
+    );
+
+    showProducts(filtered);
+
+}
+
+window.addEventListener("storage", function(event) {
+    if (event.key === "adminProducts") {
+        searchProducts();
+    }
 });
+
+showProducts();
+
 </script>
+
 </body>
 </html>
