@@ -111,6 +111,19 @@ card.style.display=card.innerText.toLowerCase().includes(q)?"block":"none";
 });
 }
 </script>
+<script>
+let savedProducts = JSON.parse(localStorage.getItem("adminProducts") || "[]");
 
+savedProducts.forEach(function(p) {
+  document.getElementById("productList").innerHTML += `
+    <div class="card">
+      <img src="${p.image || ''}" alt="${p.name}">
+      <h3>${p.name}</h3>
+      <p class="price">₹${p.price}</p>
+      <a class="btn" href="#about">Buy Now</a>
+    </div>
+  `;
+});
+</script>
 </body>
 </html>
