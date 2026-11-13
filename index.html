@@ -1,57 +1,241 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Shop great deals on electronics, fashion and accessories at SmartDeal India.">
+
+<meta name="description" content="Shop great deals at SmartDeal India">
+
 <title>SmartDeal India - Best Shopping Deals</title>
+
 <style>
-:root{--navy:#102243;--blue:#174c75;--orange:#ff8c00;--green:#087b3d;--bg:#f4f6f9}
-*{box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{margin:0;font-family:Arial,sans-serif;background:var(--bg);color:#222}
-header{background:var(--navy);color:#fff;padding:20px 14px;text-align:center}
-header h1{margin:0;font-size:clamp(23px,5vw,30px)}
-header p{margin:8px 0 0}
-nav{background:var(--blue);padding:13px 8px;display:flex;justify-content:center;gap:22px;flex-wrap:wrap}
-nav a{color:#fff;text-decoration:none;font-weight:bold}
-nav a:hover{text-decoration:underline}
-.hero{text-align:center;padding:34px 15px;background:#dceeff}
-.hero h2{margin:0 0 10px}
-.search{width:min(92%,480px);padding:14px;border:1px solid #bbb;border-radius:9px;font-size:16px}
-.section-title{text-align:center;margin:26px 10px 12px}
-.categories{display:flex;justify-content:center;gap:9px;flex-wrap:wrap;padding:0 12px 8px}
-.category-btn{border:1px solid var(--blue);background:#fff;color:var(--blue);padding:9px 15px;border-radius:20px;font-weight:bold;cursor:pointer}
-.category-btn.active,.category-btn:hover{background:var(--blue);color:#fff}
-.products{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:15px;padding:18px;max-width:1100px;margin:auto}
-.card{background:#fff;border-radius:12px;padding:12px;text-align:center;box-shadow:0 2px 9px #0001;display:flex;flex-direction:column}
-.card img{width:100%;height:150px;object-fit:contain}
-.card h3{font-size:16px;min-height:38px;margin:10px 0 5px}
-.price{color:var(--green);font-size:19px;font-weight:bold;margin:7px 0 12px}
-.card-actions{margin-top:auto;display:grid;gap:8px}
-.btn{width:100%;background:var(--orange);color:#fff;border:0;padding:11px;border-radius:7px;font-weight:bold;cursor:pointer}
-.btn.secondary{background:var(--blue)}
-.btn:hover{filter:brightness(.94)}
-.empty{text-align:center;padding:25px;color:#555;grid-column:1/-1}
-.info{max-width:900px;margin:25px auto;padding:22px;background:#fff;border-radius:12px;line-height:1.6}
-.info h2{margin-top:0;color:var(--navy)}
-.cart-panel{max-width:900px;margin:20px auto;padding:18px;background:#fff;border-radius:12px;display:none}
-.cart-panel h2{margin-top:0}
-.cart-row{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:10px 0;border-bottom:1px solid #eee}
-.cart-row button{border:0;background:#ffe4e4;color:#a00;padding:7px 10px;border-radius:6px}
-.cart-total{font-size:20px;font-weight:bold;text-align:right;margin:16px 0}
-footer{background:var(--navy);color:#fff;text-align:center;padding:22px;margin-top:30px}
-footer a{color:#fff}
-@media(max-width:420px){nav{gap:13px}.products{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;padding:12px}.card{padding:9px}.card img{height:125px}.card h3{font-size:14px}}
+
+:root {
+  --navy: #102243;
+  --blue: #174c75;
+  --orange: #ff8c00;
+  --green: #087b3d;
+  --bg: #f4f6f9;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: var(--bg);
+  color: #222;
+}
+
+header {
+  background: var(--navy);
+  color: white;
+  padding: 22px 14px;
+  text-align: center;
+}
+
+header h1 {
+  margin: 0;
+  font-size: 30px;
+}
+
+nav {
+  background: var(--blue);
+  padding: 14px;
+  display: flex;
+  justify-content: center;
+  gap: 22px;
+  flex-wrap: wrap;
+}
+
+nav a {
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.hero {
+  text-align: center;
+  padding: 35px 15px;
+  background: #dceeff;
+}
+
+.search {
+  width: min(92%, 480px);
+  padding: 14px;
+  border: 1px solid #bbb;
+  border-radius: 9px;
+  font-size: 16px;
+}
+
+.section-title {
+  text-align: center;
+  margin: 26px 10px 12px;
+}
+
+.categories {
+  display: flex;
+  justify-content: center;
+  gap: 9px;
+  flex-wrap: wrap;
+  padding: 10px;
+}
+
+.category-btn {
+  border: 1px solid var(--blue);
+  background: white;
+  color: var(--blue);
+  padding: 9px 15px;
+  border-radius: 20px;
+  cursor: pointer;
+}
+
+.category-btn.active,
+.category-btn:hover {
+  background: var(--blue);
+  color: white;
+}
+
+.products {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(155px, 1fr));
+  gap: 15px;
+  padding: 18px;
+  max-width: 1100px;
+  margin: auto;
+}
+
+.card {
+  background: white;
+  border-radius: 12px;
+  padding: 12px;
+  text-align: center;
+  box-shadow: 0 2px 9px #0001;
+  display: flex;
+  flex-direction: column;
+}
+
+.card img {
+  width: 100%;
+  height: 150px;
+  object-fit: contain;
+}
+
+.card h3 {
+  font-size: 16px;
+  min-height: 38px;
+}
+
+.price {
+  color: var(--green);
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.card-actions {
+  margin-top: auto;
+  display: grid;
+  gap: 8px;
+}
+
+.btn {
+  width: 100%;
+  background: var(--orange);
+  color: white;
+  border: 0;
+  padding: 11px;
+  border-radius: 7px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.btn.secondary {
+  background: var(--blue);
+}
+
+.info,
+.cart-panel {
+  max-width: 900px;
+  margin: 25px auto;
+  padding: 22px;
+  background: white;
+  border-radius: 12px;
+  line-height: 1.6;
+}
+
+.cart-panel {
+  display: none;
+}
+
+.cart-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid #ddd;
+}
+
+.cart-row button {
+  border: 0;
+  background: #ffe4e4;
+  color: #a00;
+  padding: 7px 10px;
+  border-radius: 6px;
+}
+
+.cart-total {
+  font-size: 20px;
+  font-weight: bold;
+  text-align: right;
+  margin: 16px 0;
+}
+
+.empty {
+  text-align: center;
+  padding: 25px;
+  color: #555;
+  grid-column: 1 / -1;
+}
+
+footer {
+  background: var(--navy);
+  color: white;
+  text-align: center;
+  padding: 22px;
+  margin-top: 30px;
+}
+
+footer a {
+  color: white;
+}
+
+@media(max-width:420px) {
+  nav {
+    gap: 13px;
+  }
+
+  .products {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    padding: 12px;
+  }
+}
+
 </style>
 </head>
+
 <body>
+
 <header id="home">
-  <h1>🛍️ SmartDeal India</h1>
+  <h1>SmartDeal India</h1>
   <p>Best Deals | Best Products | Smart Shopping</p>
 </header>
 
-<nav aria-label="Main navigation">
+<nav>
   <a href="#home">Home</a>
   <a href="#products">Products</a>
   <a href="#cart" onclick="openCart()">Cart (<span id="cartCount">0</span>)</a>
@@ -60,115 +244,434 @@ footer a{color:#fff}
 </nav>
 
 <section class="hero">
+
   <h2>Welcome to SmartDeal India!</h2>
+
   <p>Find your favourite products at great prices.</p>
-  <input class="search" id="search" type="search" placeholder="🔍 Search products..." oninput="renderProducts()" aria-label="Search products">
+
+  <input
+    class="search"
+    id="search"
+    type="search"
+    placeholder="Search products..."
+    oninput="renderProducts()"
+  >
+
 </section>
 
-<h2 class="section-title" id="products">🔥 Our Products</h2>
+<h2 class="section-title" id="products">
+  Our Products
+</h2>
+
 <div class="categories" id="categories"></div>
+
 <div class="products" id="productList"></div>
 
 <section class="cart-panel" id="cart">
-  <h2>🛒 Your Shopping Cart</h2>
+
+  <h2>Your Shopping Cart</h2>
+
   <div id="cartItems"></div>
-  <div class="cart-total" id="cartTotal">Total: ₹0</div>
-  <button class="btn" onclick="checkoutNotice()">Proceed to Checkout</button>
-  <p style="font-size:13px;color:#666">Online payment is not connected yet. Checkout will be enabled after secure payment setup.</p>
+
+  <div class="cart-total" id="cartTotal">
+    Total: ₹0
+  </div>
+
+  <button class="btn" onclick="checkoutNotice()">
+    Proceed to Checkout
+  </button>
+
+  <p>Online payment is not connected yet.</p>
+
 </section>
 
 <section class="info" id="about">
+
   <h2>About SmartDeal India</h2>
-  <p>SmartDeal India is an online shopping destination for discovering useful products at attractive prices. Browse products, search by name, and add your favourites to the cart.</p>
+
+  <p>
+    SmartDeal India is an online shopping destination
+    for discovering useful products at attractive prices.
+    Browse products and find great deals.
+  </p>
+
 </section>
 
 <section class="info" id="contact">
+
   <h2>Contact Us</h2>
-  <p>For product or order enquiries, contact the SmartDeal India team.</p>
-  <p>Email: <a href="mailto:pankajdabhi308@gmail.com">pankajdabhi308@gmail.com</a></p>
+
+  <p>
+    For product or order enquiries, contact SmartDeal India.
+  </p>
+
+  <p>
+    Email:
+    <a href="mailto:pankajdabhi308@gmail.com">
+      pankajdabhi308@gmail.com
+    </a>
+  </p>
+
 </section>
 
 <footer>
+
   <h2>SmartDeal India</h2>
+
   <p>Thank you for shopping with us!</p>
+
   <p>© 2026 SmartDeal India</p>
+
 </footer>
 
 <script>
-const defaultProducts = [
-  {id:"p1",name:"Samsung Smartphone",price:9999,category:"Electronics",image:"https://images.unsplash.com/photo-1511707171634-5f897ff02a29?w=500"},
-  {id:"p2",name:"Wireless Headphones",price:1499,category:"Electronics",image:"https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500"},
-  {id:"p3",name:"Smart Watch",price:1999,category:"Electronics",image:"https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500"},
-  {id:"p4",name:"Sports Shoes",price:1299,category:"Fashion",image:"https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500"},
-  {id:"p5",name:"Stylish T-Shirt",price:499,category:"Fashion",image:"https://images.unsplash.com/photo-1521572163474-686419cf17ab?w=500"}
-];
-let activeCategory = "All";
-let cart = JSON.parse(localStorage.getItem("smartDealCart") || "[]");
 
-function getProducts(){
-  let saved=[];
-  try{saved=JSON.parse(localStorage.getItem("adminProducts")||"[]");if(!Array.isArray(saved))saved=[];}catch(e){}
-  return [...defaultProducts,...saved.map((p,i)=>({
-    id:p.id||"admin-"+i,
-    name:String(p.name||"Product"),
-    price:Number(p.price)||0,
-    category:p.category||"Other",
-    image:p.image||"https://placehold.co/250x180?text=Product"
-  }))];
+const STORAGE_KEY = "smartdealIndiaProducts";
+
+const defaultProducts = [
+  {
+    id: "p1",
+    name: "Samsung Smartphone",
+    price: 9999,
+    category: "Electronics",
+    image: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9"
+  },
+  {
+    id: "p2",
+    name: "Wireless Headphones",
+    price: 1499,
+    category: "Electronics",
+    image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e"
+  },
+  {
+    id: "p3",
+    name: "Smart Watch",
+    price: 1999,
+    category: "Electronics",
+    image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30"
+  },
+  {
+    id: "p4",
+    name: "Sports Shoes",
+    price: 1299,
+    category: "Fashion",
+    image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff"
+  },
+  {
+    id: "p5",
+    name: "Stylish T-Shirt",
+    price: 499,
+    category: "Fashion",
+    image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab"
+  }
+];
+
+let activeCategory = "All";
+
+let cart = [];
+
+try {
+  cart = JSON.parse(
+    localStorage.getItem("smartDealCart") || "[]"
+  );
+
+  if (!Array.isArray(cart)) cart = [];
+
+} catch (e) {
+  cart = [];
 }
-function renderCategories(){
-  const names=["All",...new Set(getProducts().map(p=>p.category||"Other"))];
-  const box=document.getElementById("categories");box.innerHTML="";
-  names.forEach(name=>{
-    const b=document.createElement("button");b.className="category-btn"+(activeCategory===name?" active":"");
-    b.textContent=name;b.onclick=()=>{activeCategory=name;renderCategories();renderProducts();};box.appendChild(b);
+
+function getProducts() {
+
+  let saved = [];
+
+  try {
+
+    saved = JSON.parse(
+      localStorage.getItem(STORAGE_KEY) || "[]"
+    );
+
+    if (!Array.isArray(saved)) {
+      saved = [];
+    }
+
+  } catch (e) {
+    saved = [];
+  }
+
+  return [
+    ...defaultProducts,
+
+    ...saved.map((p, i) => ({
+      id: p.id || "admin-" + i,
+      name: String(p.name || "Product"),
+      price: Number(p.price) || 0,
+      category: p.category || "Other",
+      image: p.image || "https://placehold.co/250x180?text=Product",
+      link: p.link || p.affiliateLink || p.url || ""
+    }))
+  ];
+}
+
+function renderCategories() {
+
+  const names = [
+    "All",
+    ...new Set(
+      getProducts().map(p => p.category || "Other")
+    )
+  ];
+
+  const box = document.getElementById("categories");
+
+  box.innerHTML = "";
+
+  names.forEach(name => {
+
+    const b = document.createElement("button");
+
+    b.className =
+      "category-btn" +
+      (activeCategory === name ? " active" : "");
+
+    b.textContent = name;
+
+    b.onclick = () => {
+      activeCategory = name;
+      renderCategories();
+      renderProducts();
+    };
+
+    box.appendChild(b);
+
   });
+
 }
-function renderProducts(){
-  const term=document.getElementById("search").value.trim().toLowerCase();
-  const items=getProducts().filter(p=>(activeCategory==="All"||(p.category||"Other")===activeCategory)&&p.name.toLowerCase().includes(term));
-  const list=document.getElementById("productList");list.innerHTML="";
-  if(!items.length){list.innerHTML='<p class="empty">No products found. Try another search.</p>';return;}
-  items.forEach(p=>{
-    const card=document.createElement("article");card.className="card";
-    const img=document.createElement("img");img.src=p.image;img.alt=p.name;img.loading="lazy";
-    img.onerror=function(){this.src="https://placehold.co/250x180?text=Product";};
-    const name=document.createElement("h3");name.textContent=p.name;
-    const price=document.createElement("p");price.className="price";price.textContent="₹"+p.price.toLocaleString("en-IN");
-    const actions=document.createElement("div");actions.className="card-actions";
-    const add=document.createElement("button");add.className="btn secondary";add.textContent="Add to Cart";add.onclick=()=>addToCart(p.id);
-    const buy=document.createElement("button");buy.className="btn";buy.textContent="Buy Now";buy.onclick=()=>{addToCart(p.id);openCart();document.getElementById("cart").scrollIntoView({behavior:"smooth"});};
-    actions.append(add,buy);card.append(img,name,price,actions);list.appendChild(card);
+
+function renderProducts() {
+
+  const term = document
+    .getElementById("search")
+    .value.trim()
+    .toLowerCase();
+
+  const items = getProducts().filter(p => {
+
+    const categoryMatch =
+      activeCategory === "All" ||
+      (p.category || "Other") === activeCategory;
+
+    const searchMatch =
+      p.name.toLowerCase().includes(term);
+
+    return categoryMatch && searchMatch;
+
   });
-}
-function saveCart(){localStorage.setItem("smartDealCart",JSON.stringify(cart));updateCart();}
-function addToCart(id){
-  const p=getProducts().find(x=>String(x.id)===String(id));if(!p)return;
-  const item=cart.find(x=>String(x.id)===String(id));
-  if(item)item.qty++;else cart.push({id:p.id,name:p.name,price:p.price,qty:1});
-  saveCart();alert(p.name+" added to your cart.");
-}
-function removeFromCart(id){cart=cart.filter(x=>String(x.id)!==String(id));saveCart();}
-function updateCart(){
-  document.getElementById("cartCount").textContent=cart.reduce((n,x)=>n+x.qty,0);
-  const box=document.getElementById("cartItems");box.innerHTML="";
-  if(!cart.length)box.innerHTML='<p>Your cart is empty.</p>';
-  cart.forEach(item=>{
-    const row=document.createElement("div");row.className="cart-row";
-    const label=document.createElement("span");label.textContent=item.name+" × "+item.qty+" — ₹"+(item.price*item.qty).toLocaleString("en-IN");
-    const remove=document.createElement("button");remove.textContent="Remove";remove.onclick=()=>removeFromCart(item.id);
-    row.append(label,remove);box.appendChild(row);
+
+  const list = document.getElementById("productList");
+
+  list.innerHTML = "";
+
+  if (!items.length) {
+
+    list.innerHTML =
+      '<p class="empty">No products found.</p>';
+
+    return;
+  }
+
+  items.forEach(p => {
+
+    const card = document.createElement("article");
+
+    card.className = "card";
+
+    const img = document.createElement("img");
+
+    img.src = p.image;
+
+    img.alt = p.name;
+
+    img.loading = "lazy";
+
+    img.onerror = function() {
+      this.src = "https://placehold.co/250x180?text=Product";
+    };
+
+    const name = document.createElement("h3");
+
+    name.textContent = p.name;
+
+    const price = document.createElement("p");
+
+    price.className = "price";
+
+    price.textContent =
+      "₹" + p.price.toLocaleString("en-IN");
+
+    const actions = document.createElement("div");
+
+    actions.className = "card-actions";
+
+    const add = document.createElement("button");
+
+    add.className = "btn secondary";
+
+    add.textContent = "Add to Cart";
+
+    add.onclick = () => addToCart(p.id);
+
+    const buy = document.createElement("button");
+
+    buy.className = "btn";
+
+    buy.textContent = "Buy Now";
+
+    buy.onclick = () => {
+
+      if (p.link) {
+        window.open(p.link, "_blank", "noopener");
+      } else {
+        alert("Affiliate link is not available for this product.");
+      }
+
+    };
+
+    actions.append(add, buy);
+
+    card.append(img, name, price, actions);
+
+    list.appendChild(card);
+
   });
-  const total=cart.reduce((n,x)=>n+x.price*x.qty,0);
-  document.getElementById("cartTotal").textContent="Total: ₹"+total.toLocaleString("en-IN");
+
 }
-function openCart(){document.getElementById("cart").style.display="block";updateCart();}
-function checkoutNotice(){
-  if(!cart.length){alert("Your cart is empty.");return;}
-  alert("Your cart is ready. Secure online checkout will be enabled after Razorpay backend integration.");
+
+function saveCart() {
+
+  localStorage.setItem(
+    "smartDealCart",
+    JSON.stringify(cart)
+  );
+
+  updateCart();
+
 }
-window.addEventListener("storage",e=>{if(e.key==="adminProducts"){renderCategories();renderProducts();}});
-renderCategories();renderProducts();updateCart();
+
+function addToCart(id) {
+
+  const p = getProducts().find(
+    x => String(x.id) === String(id)
+  );
+
+  if (!p) return;
+
+  const item = cart.find(
+    x => String(x.id) === String(id)
+  );
+
+  if (item) {
+    item.qty++;
+  } else {
+    cart.push({
+      id: p.id,
+      name: p.name,
+      price: p.price,
+      qty: 1
+    });
+  }
+
+  saveCart();
+
+  alert(p.name + " added to your cart.");
+
+}
+
+function removeFromCart(id) {
+
+  cart = cart.filter(
+    x => String(x.id) !== String(id)
+  );
+
+  saveCart();
+
+}
+
+function updateCart() {
+
+  document.getElementById("cartCount").textContent =
+    cart.reduce((n, x) => n + x.qty, 0);
+
+  const box = document.getElementById("cartItems");
+
+  box.innerHTML = "";
+
+  if (!cart.length) {
+
+    box.innerHTML = "<p>Your cart is empty.</p>";
+
+  }
+
+  cart.forEach(item => {
+
+    const row = document.createElement("div");
+
+    row.className = "cart-row";
+
+    const label = document.createElement("span");
+
+    label.textContent =
+      item.name + " × " + item.qty +
+      " = ₹" + (item.price * item.qty).toLocaleString("en-IN");
+
+    const remove = document.createElement("button");
+
+    remove.textContent = "Remove";
+
+    remove.onclick = () => removeFromCart(item.id);
+
+    row.append(label, remove);
+
+    box.appendChild(row);
+
+  });
+
+  const total = cart.reduce(
+    (n, x) => n + x.price * x.qty,
+    0
+  );
+
+  document.getElementById("cartTotal").textContent =
+    "Total: ₹" + total.toLocaleString("en-IN");
+
+}
+
+function openCart() {
+
+  document.getElementById("cart").style.display = "block";
+
+  updateCart();
+
+}
+
+function checkoutNotice() {
+
+  if (!cart.length) {
+    alert("Your cart is empty.");
+    return;
+  }
+
+  alert("Online checkout is coming soon!");
+
+}
+
+renderCategories();
+
+renderProducts();
+
+updateCart();
+
 </script>
+
 </body>
 </html>
