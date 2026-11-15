@@ -1,709 +1,609 @@
-<!DOCTYPE html><html lang="en"><head>
+<!DOCTYPE html>
+<html lang="en">
+<head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="Shop great deals at SmartDeal India"><title>SmartDeal India - Best Shopping Deals</title><style>
-:root {
-  --navy: #102243;
-  --blue: #174c75;
-  --orange: #ff8c00;
-  --green: #087b3d;
-  --bg: #f4f6f9;
-}
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+<title>SmartDeal India | Best Online Shopping Deals</title>
+
+<meta name="description" content="Discover amazing shopping deals, discounts and offers on Amazon and Flipkart with SmartDeal India.">
+
+<meta name="theme-color" content="#101d38">
+
+<style>
 * {
+  margin: 0;
+  padding: 0;
   box-sizing: border-box;
 }
 
 body {
-  margin: 0;
   font-family: Arial, sans-serif;
-  background: var(--bg);
+  background: #f4f6fa;
   color: #222;
 }
 
 header {
-  background: var(--navy);
+  background: #101d38;
   color: white;
-  padding: 22px 14px;
+  padding: 22px 15px;
   text-align: center;
 }
 
 header h1 {
-  margin: 0;
   font-size: 30px;
+  margin-bottom: 8px;
+}
+
+header p {
+  color: #ddd;
+}
+
+.topbar {
+  background: #fca311;
+  color: #111;
+  padding: 10px;
+  text-align: center;
+  font-weight: bold;
 }
 
 nav {
-  background: var(--blue);
-  padding: 14px;
-  display: flex;
-  justify-content: center;
-  gap: 22px;
-  flex-wrap: wrap;
+  background: #172b4d;
+  padding: 13px;
+  text-align: center;
+  overflow-x: auto;
+  white-space: nowrap;
 }
 
 nav a {
   color: white;
   text-decoration: none;
+  margin: 0 12px;
   font-weight: bold;
 }
 
 .hero {
+  background: linear-gradient(120deg,#14213d,#2874f0);
+  color: white;
   text-align: center;
-  padding: 35px 15px;
-  background: #dceeff;
+  padding: 45px 15px;
+}
+
+.hero h2 {
+  font-size: 27px;
+  margin-bottom: 12px;
+}
+
+.hero p {
+  margin-bottom: 20px;
+}
+
+.search-area {
+  max-width: 650px;
+  margin: 25px auto;
+  padding: 0 15px;
 }
 
 .search {
-  width: min(92%, 480px);
-  padding: 14px;
-  border: 1px solid #bbb;
+  width: 100%;
+  padding: 15px;
+  border: 1px solid #ccc;
   border-radius: 9px;
   font-size: 16px;
 }
 
-.section-title {
-  text-align: center;
-  margin: 26px 10px 12px;
-}
-
 .categories {
   display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding: 15px;
   justify-content: center;
-  gap: 9px;
-  flex-wrap: wrap;
-  padding: 10px;
 }
 
 .category-btn {
-  border: 1px solid var(--blue);
+  border: none;
+  padding: 11px 17px;
   background: white;
-  color: var(--blue);
-  padding: 9px 15px;
   border-radius: 20px;
   cursor: pointer;
+  font-weight: bold;
+  white-space: nowrap;
 }
 
-.category-btn.active,
-.category-btn:hover {
-  background: var(--blue);
+.category-btn.active {
+  background: #14213d;
   color: white;
+}
+
+.section-title {
+  text-align: center;
+  margin: 25px 10px;
+  font-size: 23px;
 }
 
 .products {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(155px, 1fr));
-  gap: 15px;
-  padding: 18px;
-  max-width: 1100px;
+  max-width: 1250px;
   margin: auto;
+  padding: 15px;
+  display: grid;
+  grid-template-columns:
+    repeat(auto-fit,minmax(220px,1fr));
+  gap: 20px;
 }
 
-.card {
+.product-card {
   background: white;
   border-radius: 12px;
-  padding: 12px;
-  text-align: center;
-  box-shadow: 0 2px 9px #0001;
-  display: flex;
-  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 3px 12px rgba(0,0,0,.08);
+  padding: 13px;
+  position: relative;
 }
 
-.card img {
+.product-card img {
   width: 100%;
-  height: 150px;
+  height: 190px;
   object-fit: contain;
 }
 
-.card h3 {
+.product-card h3 {
   font-size: 16px;
-  min-height: 38px;
+  margin: 12px 0;
+}
+
+.description {
+  color: #666;
+  font-size: 13px;
+  margin-bottom: 10px;
 }
 
 .price {
-  color: var(--green);
-  font-size: 18px;
+  color: #e63946;
+  font-size: 21px;
   font-weight: bold;
+  margin: 8px 0;
 }
 
-.card-actions {
-  margin-top: auto;
-  display: grid;
+.old-price {
+  color: #888;
+  text-decoration: line-through;
+  font-size: 14px;
+  margin-right: 7px;
+}
+
+.discount {
+  display: inline-block;
+  background: #d9fbe5;
+  color: #087c36;
+  padding: 5px 8px;
+  border-radius: 5px;
+  font-size: 12px;
+  margin-bottom: 10px;
+}
+
+.buy-buttons {
+  display: flex;
   gap: 8px;
+  margin-top: 13px;
 }
 
-.btn {
-  width: 100%;
-  background: var(--orange);
-  color: white;
-  border: 0;
-  padding: 11px;
-  border-radius: 7px;
+.buy-buttons a {
+  flex: 1;
+  text-align: center;
+  padding: 11px 5px;
+  text-decoration: none;
+  border-radius: 6px;
   font-weight: bold;
-  cursor: pointer;
+  font-size: 13px;
 }
 
-.btn.secondary {
-  background: var(--blue);
-}
-
-.btn.amazon {
+.amazon {
   background: #ff9900;
   color: #111;
 }
 
-.btn.flipkart {
+.flipkart {
   background: #2874f0;
   color: white;
 }
 
-.info,
-.cart-panel {
-  max-width: 900px;
-  margin: 25px auto;
-  padding: 22px;
-  background: white;
-  border-radius: 12px;
-  line-height: 1.6;
-}
-
-.cart-panel {
-  display: none;
-}
-
-.cart-row {
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
-  align-items: center;
-  padding: 10px 0;
-  border-bottom: 1px solid #ddd;
-}
-
-.cart-row button {
-  border: 0;
-  background: #ffe4e4;
-  color: #a00;
-  padding: 7px 10px;
+.share {
+  display: block;
+  width: 100%;
+  background: #168b45;
+  color: white;
+  text-align: center;
+  padding: 10px;
   border-radius: 6px;
-}
-
-.cart-total {
-  font-size: 20px;
+  margin-top: 9px;
+  text-decoration: none;
   font-weight: bold;
-  text-align: right;
-  margin: 16px 0;
+  border: none;
+  cursor: pointer;
 }
 
 .empty {
   text-align: center;
-  padding: 25px;
-  color: #555;
-  grid-column: 1 / -1;
+  padding: 40px 10px;
+  grid-column: 1/-1;
 }
 
 footer {
-  background: var(--navy);
+  background: #101d38;
   color: white;
   text-align: center;
-  padding: 22px;
-  margin-top: 30px;
+  padding: 30px 15px;
+  margin-top: 35px;
 }
 
-footer a {
-  color: white;
+footer p {
+  margin: 8px;
 }
 
-@media(max-width:420px) {
-  nav {
-    gap: 13px;
+@media(max-width:600px) {
+  header h1 {
+    font-size: 24px;
+  }
+
+  .hero h2 {
+    font-size: 22px;
   }
 
   .products {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(2,minmax(0,1fr));
     gap: 10px;
-    padding: 12px;
+    padding: 10px;
+  }
+
+  .product-card {
+    padding: 9px;
+  }
+
+  .product-card img {
+    height: 125px;
+  }
+
+  .product-card h3 {
+    font-size: 14px;
+  }
+
+  .buy-buttons {
+    flex-direction: column;
+  }
+
+  .categories {
+    justify-content: flex-start;
   }
 }
-</style></head><body><header id="home">
-  <h1>SmartDeal India</h1>
-  <p>Best Deals | Best Products | Smart Shopping</p>
-</header><nav>
-  <a href="#home">Home</a>
-  <a href="#products">Products</a>
-  <a href="#cart" onclick="openCart()">Cart (<span id="cartCount">0</span>)</a>
-  <a href="#about">About</a>
-  <a href="#contact">Contact</a>
-</nav><section class="hero">  <h2>Welcome to SmartDeal India!</h2>  <p>Find your favourite products at great prices.</p><input
-class="search"
-id="search"
-type="search"
-placeholder="Search products..."
-oninput="renderProducts()"
+</style>
+</head>
 
-«»
+<body>
 
-</section><h2 class="section-title" id="products">
-  Our Products
-</h2><div class="categories" id="categories"></div><div class="products" id="productList"></div><section class="cart-panel" id="cart">  <h2>Your Shopping Cart</h2>  <div id="cartItems"></div>  <div class="cart-total" id="cartTotal">
-    Total: ₹0
-  </div>  <button class="btn" onclick="checkoutNotice()">
-    Proceed to Checkout
-  </button>  <p>Online payment is not connected yet.</p></section><section class="info" id="about">  <h2>About SmartDeal India</h2>  <p>
-    SmartDeal India is an online shopping destination
-    for discovering useful products at attractive prices.
-    Browse products and find great deals.
-  </p></section><section class="info" id="contact">  <h2>Contact Us</h2>  <p>
-    For product or order enquiries, contact SmartDeal India.
-  </p>  <p>
-    Email:
-    <a href="mailto:pankajdabhi308@gmail.com">
-      pankajdabhi308@gmail.com
-    </a>
-  </p></section><footer>  <h2>SmartDeal India</h2>  <p>Thank you for shopping with us!</p>  <p>© 2026 SmartDeal India</p></footer><script>
+<header>
+  <h1>🛍️ SmartDeal India</h1>
+  <p>Your Destination for Smart Shopping Deals</p>
+</header>
+
+<div class="topbar">
+  🔥 Discover Amazing Deals & Offers Every Day!
+</div>
+
+<nav>
+  <a href="#">Home</a>
+  <a href="#categories">Categories</a>
+  <a href="#products-section">Products</a>
+  <a href="#footer">Contact</a>
+</nav>
+
+<section class="hero">
+  <h2>Welcome to SmartDeal India</h2>
+  <p>Find Your Favourite Products at Great Prices</p>
+  <a href="#products-section"
+     style="background:#fca311;color:#111;padding:13px 24px;
+     text-decoration:none;border-radius:7px;font-weight:bold;">
+    Explore Deals
+  </a>
+</section>
+
+<div class="search-area">
+  <input
+    class="search"
+    id="search"
+    type="search"
+    placeholder="Search products..."
+    oninput="renderProducts()"
+  >
+</div>
+
+<h2 class="section-title" id="categories">
+  Shop by Category
+</h2>
+
+<div class="categories">
+  <button class="category-btn active"
+    onclick="selectCategory('All',this)">All</button>
+
+  <button class="category-btn"
+    onclick="selectCategory('Electronics',this)">Electronics</button>
+
+  <button class="category-btn"
+    onclick="selectCategory('Fashion',this)">Fashion</button>
+
+  <button class="category-btn"
+    onclick="selectCategory('Home',this)">Home</button>
+
+  <button class="category-btn"
+    onclick="selectCategory('Mobiles',this)">Mobiles</button>
+
+  <button class="category-btn"
+    onclick="selectCategory('Accessories',this)">Accessories</button>
+</div>
+
+<h2 class="section-title" id="products-section">
+  🔥 Latest Shopping Deals
+</h2>
+
+<div class="products" id="products">
+</div>
+
+<footer id="footer">
+  <h2>SmartDeal India</h2>
+  <p>Shop Smart. Save More.</p>
+  <p>Amazon & Flipkart Shopping Deals</p>
+  <p>© 2026 SmartDeal India. All Rights Reserved.</p>
+</footer>
+
+<script>
 
 const STORAGE_KEY = "smartdealIndiaProducts";
 
-const defaultProducts = [
-  {
-    id: "p1",
-    name: "Samsung Smartphone",
-    price: 9999,
-    category: "Electronics",
-    image: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9"
-  },
-  {
-    id: "p2",
-    name: "Wireless Headphones",
-    price: 1499,
-    category: "Electronics",
-    image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e"
-  },
-  {
-    id: "p3",
-    name: "Smart Watch",
-    price: 1999,
-    category: "Electronics",
-    image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30"
-  },
-  {
-    id: "p4",
-    name: "Sports Shoes",
-    price: 1299,
-    category: "Fashion",
-    image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff"
-  },
-  {
-    id: "p5",
-    name: "Stylish T-Shirt",
-    price: 499,
-    category: "Fashion",
-    image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab"
-  }
-];
-
-let activeCategory = "All";
-
-let cart = [];
-
-try {
-  cart = JSON.parse(
-    localStorage.getItem("smartDealCart") || "[]"
-  );
-
-  if (!Array.isArray(cart)) cart = [];
-
-} catch (e) {
-  cart = [];
-}
-
-
-// GET PRODUCTS FROM ADMIN PANEL
+let selectedCategory = "All";
 
 function getProducts() {
-
-  let saved = [];
-
   try {
+    const data = localStorage.getItem(STORAGE_KEY);
+    const products = data ? JSON.parse(data) : [];
 
-    saved = JSON.parse(
-      localStorage.getItem(STORAGE_KEY) || "[]"
-    );
+    return Array.isArray(products) ? products : [];
 
-    if (!Array.isArray(saved)) {
-      saved = [];
+  } catch(error) {
+    console.error("Product loading error:",error);
+    return [];
+  }
+}
+
+function selectCategory(category,button) {
+
+  selectedCategory = category;
+
+  document.querySelectorAll(".category-btn")
+    .forEach(btn => btn.classList.remove("active"));
+
+  button.classList.add("active");
+
+  renderProducts();
+}
+
+function safeUrl(value) {
+  try {
+    const url = new URL(value);
+
+    if(url.protocol === "https:" || url.protocol === "http:") {
+      return url.href;
     }
 
-  } catch (e) {
-    saved = [];
-  }
+  } catch(error) {}
 
-  return [
-    ...defaultProducts,
-
-    ...saved.map((p, i) => ({
-
-      id: p.id || "admin-" + i,
-
-      name: String(p.name || "Product"),
-
-      price: Number(p.price) || 0,
-
-      category: p.category || "Other",
-
-      image: p.image || "https://placehold.co/250x180?text=Product",
-
-      // AMAZON AFFILIATE LINK
-      amazonLink:
-        p.amazon ||
-        p.amazonLink ||
-        p.amazonAffiliateLink ||
-        p.amazonURL ||
-        p.link ||
-        p.affiliateLink ||
-        p.url ||
-        "",
-
-      // FLIPKART AFFILIATE LINK
-      flipkartLink:
-        p.flipkart ||
-        p.flipkartLink ||
-        p.flipkartAffiliateLink ||
-        p.flipkartURL ||
-        ""
-
-    }))
-  ];
-
+  return "";
 }
-
-
-// RENDER CATEGORIES
-
-function renderCategories() {
-
-  const names = [
-    "All",
-    ...new Set(
-      getProducts().map(p => p.category || "Other")
-    )
-  ];
-
-  const box = document.getElementById("categories");
-
-  box.innerHTML = "";
-
-  names.forEach(name => {
-
-    const b = document.createElement("button");
-
-    b.className =
-      "category-btn" +
-      (activeCategory === name ? " active" : "");
-
-    b.textContent = name;
-
-    b.onclick = () => {
-      activeCategory = name;
-      renderCategories();
-      renderProducts();
-    };
-
-    box.appendChild(b);
-
-  });
-
-}
-
-
-// RENDER PRODUCTS
 
 function renderProducts() {
 
-  const term = document
-    .getElementById("search")
-    .value.trim()
-    .toLowerCase();
+  const container = document.getElementById("products");
 
-  const items = getProducts().filter(p => {
+  const search = document.getElementById("search")
+    .value.toLowerCase().trim();
 
-    const categoryMatch =
-      activeCategory === "All" ||
-      (p.category || "Other") === activeCategory;
+  const products = getProducts();
 
-    const searchMatch =
-      p.name.toLowerCase().includes(term);
+  const filtered = products.filter(product => {
 
-    return categoryMatch && searchMatch;
+    const name = String(product.name || "").toLowerCase();
 
+    const category = String(product.category || "").toLowerCase();
+
+    const matchesSearch =
+      name.includes(search) || category.includes(search);
+
+    const matchesCategory =
+      selectedCategory === "All" ||
+      category === selectedCategory.toLowerCase();
+
+    return matchesSearch && matchesCategory;
   });
 
-  const list = document.getElementById("productList");
+  container.innerHTML = "";
 
-  list.innerHTML = "";
+  if(filtered.length === 0) {
 
-  if (!items.length) {
-
-    list.innerHTML =
-      '<p class="empty">No products found.</p>';
+    container.innerHTML = `
+      <div class="empty">
+        <h3>No Products Found!</h3>
+        <p>New shopping deals will appear here when available.</p>
+      </div>
+    `;
 
     return;
   }
 
-  items.forEach(p => {
+  filtered.forEach(product => {
 
-    const card = document.createElement("article");
+    const card = document.createElement("div");
 
-    card.className = "card";
+    card.className = "product-card";
 
-    const img = document.createElement("img");
+    const image = document.createElement("img");
 
-    img.src = p.image;
+    image.src = safeUrl(product.image) || "";
 
-    img.alt = p.name;
+    image.alt = product.name || "Product";
 
-    img.loading = "lazy";
-
-    img.onerror = function() {
-      this.src = "https://placehold.co/250x180?text=Product";
+    image.onerror = function() {
+      this.style.display = "none";
     };
 
-    const name = document.createElement("h3");
+    const title = document.createElement("h3");
 
-    name.textContent = p.name;
+    title.textContent = product.name || "Product";
 
-    const price = document.createElement("p");
+    const description = document.createElement("p");
+
+    description.className = "description";
+
+    description.textContent = product.description || "";
+
+    const price = document.createElement("div");
 
     price.className = "price";
 
-    price.textContent =
-      "₹" + p.price.toLocaleString("en-IN");
+    price.textContent = product.price
+      ? "₹" + product.price
+      : "Check latest price";
 
-    const actions = document.createElement("div");
+    const oldPrice = document.createElement("span");
 
-    actions.className = "card-actions";
+    oldPrice.className = "old-price";
 
-    // ADD TO CART BUTTON
+    oldPrice.textContent = product.oldPrice
+      ? "₹" + product.oldPrice
+      : "";
 
-    const add = document.createElement("button");
+    const discount = document.createElement("div");
 
-    add.className = "btn secondary";
+    discount.className = "discount";
 
-    add.textContent = "Add to Cart";
+    const current = Number(product.price);
 
-    add.onclick = () => addToCart(p.id);
+    const old = Number(product.oldPrice);
 
+    if(old > current && current > 0) {
 
-    // AMAZON AND FLIPKART LINKS
+      const percentage = Math.round(
+        ((old-current)/old)*100
+      );
 
-    const amazonLink = p.amazonLink;
+      discount.textContent = percentage + "% OFF";
 
-    const flipkartLink = p.flipkartLink;
+    } else {
 
-
-    // AMAZON BUTTON
-
-    if (amazonLink) {
-
-      const amazonBtn = document.createElement("button");
-
-      amazonBtn.className = "btn amazon";
-
-      amazonBtn.textContent = "Buy on Amazon";
-
-      amazonBtn.onclick = () => {
-
-        window.open(
-          amazonLink,
-          "_blank",
-          "noopener,noreferrer"
-        );
-
-      };
-
-      actions.appendChild(amazonBtn);
-
+      discount.style.display = "none";
     }
 
+    const buttons = document.createElement("div");
 
-    // FLIPKART BUTTON
+    buttons.className = "buy-buttons";
 
-    if (flipkartLink) {
+    const amazonUrl = safeUrl(product.amazon);
 
-      const flipkartBtn = document.createElement("button");
+    const flipkartUrl = safeUrl(product.flipkart);
 
-      flipkartBtn.className = "btn flipkart";
+    if(amazonUrl) {
 
-      flipkartBtn.textContent = "Buy on Flipkart";
+      const amazon = document.createElement("a");
 
-      flipkartBtn.onclick = () => {
+      amazon.href = amazonUrl;
 
-        window.open(
-          flipkartLink,
-          "_blank",
-          "noopener,noreferrer"
-        );
+      amazon.target = "_blank";
 
-      };
+      amazon.rel = "noopener noreferrer";
 
-      actions.appendChild(flipkartBtn);
+      amazon.className = "amazon";
 
+      amazon.textContent = "Amazon Buy";
+
+      buttons.appendChild(amazon);
     }
 
+    if(flipkartUrl) {
 
-    actions.prepend(add);
+      const flipkart = document.createElement("a");
 
-    card.append(img, name, price, actions);
+      flipkart.href = flipkartUrl;
 
-    list.appendChild(card);
+      flipkart.target = "_blank";
 
-  });
+      flipkart.rel = "noopener noreferrer";
 
-}
+      flipkart.className = "flipkart";
 
+      flipkart.textContent = "Flipkart Buy";
 
-// SAVE CART
+      buttons.appendChild(flipkart);
+    }
 
-function saveCart() {
+    const share = document.createElement("button");
 
-  localStorage.setItem(
-    "smartDealCart",
-    JSON.stringify(cart)
-  );
+    share.className = "share";
 
-  updateCart();
+    share.textContent = "Share Product";
 
-}
+    share.onclick = async function() {
 
+      const text =
+        (product.name || "Shopping Deal") +
+        " - " + (product.price || "") +
+        "\nSmartDeal India";
 
-// ADD TO CART
+      if(navigator.share) {
 
-function addToCart(id) {
+        try {
+          await navigator.share({
+            title: product.name || "Shopping Deal",
+            text: text,
+            url: location.href
+          });
+        } catch(error) {}
 
-  const p = getProducts().find(
-    x => String(x.id) === String(id)
-  );
+      } else {
 
-  if (!p) return;
+        const message = encodeURIComponent(
+          text + "\n" + location.href
+        );
 
-  const item = cart.find(
-    x => String(x.id) === String(id)
-  );
+        window.open(
+          "https://wa.me/?text=" + message,
+          "_blank",
+          "noopener"
+        );
+      }
+    };
 
-  if (item) {
-    item.qty++;
-  } else {
-    cart.push({
-      id: p.id,
-      name: p.name,
-      price: p.price,
-      qty: 1
-    });
-  }
+    card.appendChild(image);
+    card.appendChild(title);
+    card.appendChild(description);
+    card.appendChild(oldPrice);
+    card.appendChild(price);
+    card.appendChild(discount);
+    card.appendChild(buttons);
+    card.appendChild(share);
 
-  saveCart();
-
-  alert(p.name + " added to your cart.");
-
-}
-
-
-// REMOVE FROM CART
-
-function removeFromCart(id) {
-
-  cart = cart.filter(
-    x => String(x.id) !== String(id)
-  );
-
-  saveCart();
-
-}
-
-
-// UPDATE CART
-
-function updateCart() {
-
-  document.getElementById("cartCount").textContent =
-    cart.reduce((n, x) => n + x.qty, 0);
-
-  const box = document.getElementById("cartItems");
-
-  box.innerHTML = "";
-
-  if (!cart.length) {
-
-    box.innerHTML = "<p>Your cart is empty.</p>";
-
-  }
-
-  cart.forEach(item => {
-
-    const row = document.createElement("div");
-
-    row.className = "cart-row";
-
-    const label = document.createElement("span");
-
-    label.textContent =
-      item.name + " × " + item.qty +
-      " = ₹" + (item.price * item.qty).toLocaleString("en-IN");
-
-    const remove = document.createElement("button");
-
-    remove.textContent = "Remove";
-
-    remove.onclick = () => removeFromCart(item.id);
-
-    row.append(label, remove);
-
-    box.appendChild(row);
+    container.appendChild(card);
 
   });
-
-  const total = cart.reduce(
-    (n, x) => n + x.price * x.qty,
-    0
-  );
-
-  document.getElementById("cartTotal").textContent =
-    "Total: ₹" + total.toLocaleString("en-IN");
-
 }
 
+document.addEventListener("DOMContentLoaded",renderProducts);
 
-// OPEN CART
+window.addEventListener("storage",function(event) {
 
-function openCart() {
-
-  document.getElementById("cart").style.display = "block";
-
-  updateCart();
-
-}
-
-
-// CHECKOUT NOTICE
-
-function checkoutNotice() {
-
-  if (!cart.length) {
-    alert("Your cart is empty.");
-    return;
+  if(event.key === STORAGE_KEY) {
+    renderProducts();
   }
 
-  alert("Online checkout is coming soon!");
+});
 
-}
+</script>
 
-
-// INITIALIZE WEBSITE
-
-renderCategories();
-
-renderProducts();
-
-updateCart();
-
-</script></body>
+</body>
 </html>
