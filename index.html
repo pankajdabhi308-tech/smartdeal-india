@@ -1,16 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
+<!DOCTYPE html><html lang="en"><head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<meta name="description" content="Shop great deals at SmartDeal India">
-
-<title>SmartDeal India - Best Shopping Deals</title>
-
-<style>
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="Shop great deals at SmartDeal India"><title>SmartDeal India - Best Shopping Deals</title><style>
 :root {
   --navy: #102243;
   --blue: #174c75;
@@ -156,6 +146,16 @@ nav a {
   background: var(--blue);
 }
 
+.btn.amazon {
+  background: #ff9900;
+  color: #111;
+}
+
+.btn.flipkart {
+  background: #2874f0;
+  color: white;
+}
+
 .info,
 .cart-panel {
   max-width: 900px;
@@ -224,107 +224,42 @@ footer a {
     padding: 12px;
   }
 }
-
-</style>
-</head>
-
-<body>
-
-<header id="home">
+</style></head><body><header id="home">
   <h1>SmartDeal India</h1>
   <p>Best Deals | Best Products | Smart Shopping</p>
-</header>
-
-<nav>
+</header><nav>
   <a href="#home">Home</a>
   <a href="#products">Products</a>
   <a href="#cart" onclick="openCart()">Cart (<span id="cartCount">0</span>)</a>
   <a href="#about">About</a>
   <a href="#contact">Contact</a>
-</nav>
+</nav><section class="hero">  <h2>Welcome to SmartDeal India!</h2>  <p>Find your favourite products at great prices.</p><input
+class="search"
+id="search"
+type="search"
+placeholder="Search products..."
+oninput="renderProducts()"
 
-<section class="hero">
+«»
 
-  <h2>Welcome to SmartDeal India!</h2>
-
-  <p>Find your favourite products at great prices.</p>
-
-  <input
-    class="search"
-    id="search"
-    type="search"
-    placeholder="Search products..."
-    oninput="renderProducts()"
-  >
-
-</section>
-
-<h2 class="section-title" id="products">
+</section><h2 class="section-title" id="products">
   Our Products
-</h2>
-
-<div class="categories" id="categories"></div>
-
-<div class="products" id="productList"></div>
-
-<section class="cart-panel" id="cart">
-
-  <h2>Your Shopping Cart</h2>
-
-  <div id="cartItems"></div>
-
-  <div class="cart-total" id="cartTotal">
+</h2><div class="categories" id="categories"></div><div class="products" id="productList"></div><section class="cart-panel" id="cart">  <h2>Your Shopping Cart</h2>  <div id="cartItems"></div>  <div class="cart-total" id="cartTotal">
     Total: ₹0
-  </div>
-
-  <button class="btn" onclick="checkoutNotice()">
+  </div>  <button class="btn" onclick="checkoutNotice()">
     Proceed to Checkout
-  </button>
-
-  <p>Online payment is not connected yet.</p>
-
-</section>
-
-<section class="info" id="about">
-
-  <h2>About SmartDeal India</h2>
-
-  <p>
+  </button>  <p>Online payment is not connected yet.</p></section><section class="info" id="about">  <h2>About SmartDeal India</h2>  <p>
     SmartDeal India is an online shopping destination
     for discovering useful products at attractive prices.
     Browse products and find great deals.
-  </p>
-
-</section>
-
-<section class="info" id="contact">
-
-  <h2>Contact Us</h2>
-
-  <p>
+  </p></section><section class="info" id="contact">  <h2>Contact Us</h2>  <p>
     For product or order enquiries, contact SmartDeal India.
-  </p>
-
-  <p>
+  </p>  <p>
     Email:
     <a href="mailto:pankajdabhi308@gmail.com">
       pankajdabhi308@gmail.com
     </a>
-  </p>
-
-</section>
-
-<footer>
-
-  <h2>SmartDeal India</h2>
-
-  <p>Thank you for shopping with us!</p>
-
-  <p>© 2026 SmartDeal India</p>
-
-</footer>
-
-<script>
+  </p></section><footer>  <h2>SmartDeal India</h2>  <p>Thank you for shopping with us!</p>  <p>© 2026 SmartDeal India</p></footer><script>
 
 const STORAGE_KEY = "smartdealIndiaProducts";
 
@@ -381,6 +316,9 @@ try {
   cart = [];
 }
 
+
+// GET PRODUCTS FROM ADMIN PANEL
+
 function getProducts() {
 
   let saved = [];
@@ -403,15 +341,43 @@ function getProducts() {
     ...defaultProducts,
 
     ...saved.map((p, i) => ({
+
       id: p.id || "admin-" + i,
+
       name: String(p.name || "Product"),
+
       price: Number(p.price) || 0,
+
       category: p.category || "Other",
+
       image: p.image || "https://placehold.co/250x180?text=Product",
-      link: p.link || p.affiliateLink || p.url || ""
+
+      // AMAZON AFFILIATE LINK
+      amazonLink:
+        p.amazon ||
+        p.amazonLink ||
+        p.amazonAffiliateLink ||
+        p.amazonURL ||
+        p.link ||
+        p.affiliateLink ||
+        p.url ||
+        "",
+
+      // FLIPKART AFFILIATE LINK
+      flipkartLink:
+        p.flipkart ||
+        p.flipkartLink ||
+        p.flipkartAffiliateLink ||
+        p.flipkartURL ||
+        ""
+
     }))
   ];
+
 }
+
+
+// RENDER CATEGORIES
 
 function renderCategories() {
 
@@ -447,6 +413,9 @@ function renderCategories() {
   });
 
 }
+
+
+// RENDER PRODUCTS
 
 function renderProducts() {
 
@@ -513,6 +482,8 @@ function renderProducts() {
 
     actions.className = "card-actions";
 
+    // ADD TO CART BUTTON
+
     const add = document.createElement("button");
 
     add.className = "btn secondary";
@@ -521,23 +492,65 @@ function renderProducts() {
 
     add.onclick = () => addToCart(p.id);
 
-    const buy = document.createElement("button");
 
-    buy.className = "btn";
+    // AMAZON AND FLIPKART LINKS
 
-    buy.textContent = "Buy Now";
+    const amazonLink = p.amazonLink;
 
-    buy.onclick = () => {
+    const flipkartLink = p.flipkartLink;
 
-      if (p.link) {
-        window.open(p.link, "_blank", "noopener");
-      } else {
-        alert("Affiliate link is not available for this product.");
-      }
 
-    };
+    // AMAZON BUTTON
 
-    actions.append(add, buy);
+    if (amazonLink) {
+
+      const amazonBtn = document.createElement("button");
+
+      amazonBtn.className = "btn amazon";
+
+      amazonBtn.textContent = "Buy on Amazon";
+
+      amazonBtn.onclick = () => {
+
+        window.open(
+          amazonLink,
+          "_blank",
+          "noopener,noreferrer"
+        );
+
+      };
+
+      actions.appendChild(amazonBtn);
+
+    }
+
+
+    // FLIPKART BUTTON
+
+    if (flipkartLink) {
+
+      const flipkartBtn = document.createElement("button");
+
+      flipkartBtn.className = "btn flipkart";
+
+      flipkartBtn.textContent = "Buy on Flipkart";
+
+      flipkartBtn.onclick = () => {
+
+        window.open(
+          flipkartLink,
+          "_blank",
+          "noopener,noreferrer"
+        );
+
+      };
+
+      actions.appendChild(flipkartBtn);
+
+    }
+
+
+    actions.prepend(add);
 
     card.append(img, name, price, actions);
 
@@ -546,6 +559,9 @@ function renderProducts() {
   });
 
 }
+
+
+// SAVE CART
 
 function saveCart() {
 
@@ -557,6 +573,9 @@ function saveCart() {
   updateCart();
 
 }
+
+
+// ADD TO CART
 
 function addToCart(id) {
 
@@ -587,6 +606,9 @@ function addToCart(id) {
 
 }
 
+
+// REMOVE FROM CART
+
 function removeFromCart(id) {
 
   cart = cart.filter(
@@ -596,6 +618,9 @@ function removeFromCart(id) {
   saveCart();
 
 }
+
+
+// UPDATE CART
 
 function updateCart() {
 
@@ -646,6 +671,9 @@ function updateCart() {
 
 }
 
+
+// OPEN CART
+
 function openCart() {
 
   document.getElementById("cart").style.display = "block";
@@ -653,6 +681,9 @@ function openCart() {
   updateCart();
 
 }
+
+
+// CHECKOUT NOTICE
 
 function checkoutNotice() {
 
@@ -665,13 +696,14 @@ function checkoutNotice() {
 
 }
 
+
+// INITIALIZE WEBSITE
+
 renderCategories();
 
 renderProducts();
 
 updateCart();
 
-</script>
-
-</body>
+</script></body>
 </html>
