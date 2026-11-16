@@ -1028,10 +1028,10 @@ async function importProducts(event) {
       const amazon=amazonRaw?safeUrl(amazonRaw):"";
       const flipkart=flipkartRaw?safeUrl(flipkartRaw):"";
       const availability=String(importValue(p,["availability","stock_status"])||"unknown").toLowerCase();
-      if(!name||!Number.isFinite(price)||price<=0||!image||!category||
+      if(!name||!Number.isFinite(price)||price<=0||!category||
          (oldPrice!==null&&(!Number.isFinite(oldPrice)||oldPrice<0))||
          (amazonRaw&&!amazon)||(flipkartRaw&&!flipkart)){
-        skipped++; if(errors.length<8)errors.push("Row "+(n+2)+": name, positive price, valid image URL, category and valid retailer links are required."); continue;
+        skipped++; if(errors.length<8)errors.push("Row "+(n+2)+": name, positive price, category and valid retailer links are required; image URL may be added later."); continue;
       }
       const match=existing.find(x=>String(x.name).toLowerCase()===name.toLowerCase());
       const row={
