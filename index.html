@@ -425,7 +425,7 @@ async function loadSupabaseProducts() {
         flipkart:p.flipkart||p.flipkart_affiliate_link||p.flipkart_link||p.flipkartLink||"",
         category:p.category||"Other", description:p.description||"",
         featured:p.featured===true||p.is_featured===true
-      })).filter(p=>p.name);
+      })).filter(p=>p.name) : [];
     } catch(e) { liveProducts=[]; }
     renderCategories();
     renderProducts();
