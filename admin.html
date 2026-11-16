@@ -1055,15 +1055,15 @@ async function importProducts(event) {
         amazon_affiliate_link:amazon||null,flipkart_affiliate_link:flipkart||null,
         category,description:String(importValue(p,["description","details"])||"").slice(0,2000)||null,
         availability:["in_stock","out_of_stock","unknown"].includes(availability)?availability:"unknown",
-        is_active:true,is_featured:false,source:"bulk_import",updated_at:new Date().toISOString()
+        is_active:true,is_featured:false,source:"manual",updated_at:new Date().toISOString()
       };
       let result;
       if(match&&match.id){
         result=await window.smartDealSupabase.from("products").update(row).eq("id",match.id);
         if(!result.error){updated++;match.price=price;match.image=image;match.category=category;}
       } else {
-        result=await window.smartDealSupabase.from("products").insert(row);
-        if(!result.error){inserted++;existing.push({name,id:null});}
+        result=await window.smartDealSupabase.from("products").insert(row).select("id").single();
+        if(!result.error){inserted++;existing.push({name,id:result.data.id,price,image,category});}
       }
       if(result.error){skipped++;if(errors.length<8)errors.push("Row "+(n+2)+": "+result.error.message);}
     }
