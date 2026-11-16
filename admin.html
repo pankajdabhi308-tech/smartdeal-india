@@ -332,24 +332,14 @@ footer {
 <div id="message" class="message"></div>
 
 <div class="stats">
-
-<div class="stat-box">
-Total Products
-<h2 id="totalProducts">0</h2>
+<div class="stat-box">Total Product Records<h2 id="totalProducts">0</h2></div>
+<div class="stat-box">Active Products<h2 id="activeProducts">0 / 1000</h2></div>
+<div class="stat-box">Amazon Affiliate Links<h2 id="amazonProducts">0</h2></div>
+<div class="stat-box">Flipkart Affiliate Links<h2 id="flipkartProducts">0</h2></div>
+<div class="stat-box">Active Products with Images<h2 id="imageProducts">0 / 1000</h2></div>
+<div class="stat-box">Featured Products<h2 id="featuredProducts">0</h2></div>
+<div class="stat-box">Categories<h2 id="totalCategories">0</h2></div>
 </div>
-
-<div class="stat-box">
-Featured Products
-<h2 id="featuredProducts">0</h2>
-</div>
-
-<div class="stat-box">
-Categories
-<h2 id="totalCategories">0</h2>
-</div>
-
-</div>
-
 <div class="form-box" id="affiliateDashboard"><h2>💰 Affiliate Income Dashboard</h2><p class="note">આ રિપોર્ટમાં Supabaseના affiliate_commissions રેકોર્ડ દેખાશે. Amazon/Flipkartની વાસ્તવિક કમાણી આપમેળે આવતી નથી; રિપોર્ટ/APIથી દાખલ થયેલા રેકોર્ડ જ અહીં ગણાશે.</p><div class="buttons" style="margin-top:0;margin-bottom:14px"><button class="primary" id="refreshAffiliate" type="button">↻ Refresh Income</button><label style="display:flex;align-items:center;gap:8px">Status<select id="affiliateStatusFilter" style="width:auto;padding:9px"><option value="All">All</option><option value="reported">Reported</option><option value="pending">Pending</option><option value="approved">Approved</option><option value="paid">Paid</option><option value="reversed">Reversed</option></select></label></div><p id="affiliateMessage" role="status" style="margin:8px 0;color:#475569">Loading commission records…</p><div class="affiliate-grid"><div class="affiliate-stat"><span>Records Loaded</span><strong id="affiliateCount">0</strong></div><div class="affiliate-stat"><span>Total Commission</span><strong id="affiliateTotal">₹0.00</strong></div><div class="affiliate-stat"><span>Approved</span><strong id="affiliateApproved">₹0.00</strong></div><div class="affiliate-stat"><span>Paid</span><strong id="affiliatePaid">₹0.00</strong></div></div><div class="affiliate-table-wrap"><table class="affiliate-table"><thead><tr><th>Date</th><th>Retailer</th><th>Product / Order Ref.</th><th>Commission</th><th>Status</th></tr></thead><tbody id="affiliateRows"><tr><td colspan="5">No records loaded.</td></tr></tbody></table></div><small style="display:block;margin-top:10px;color:#64748b">ડેશબોર્ડ તાજેતરના વધુમાં વધુ 500 રેકોર્ડ બતાવે છે. સંપૂર્ણ ઇતિહાસ માટે Supabase રિપોર્ટ તપાસો.</small></div>
 
 <div class="form-box" id="affiliateEntryBox"><h2>➕ Add Commission Record</h2><p class="note">Amazon/Flipkartના Associates રિપોર્ટમાં મળેલી કમિશન વિગતો અહીં હાથથી દાખલ કરો.</p><form id="affiliateEntryForm"><div class="form-grid"><div class="field"><label>Retailer *</label><select id="commissionRetailer" required><option value="">Select</option><option value="amazon">Amazon</option><option value="flipkart">Flipkart</option></select></div><div class="field"><label>Commission Amount (₹) *</label><input id="commissionAmount" type="number" min="0" step="0.01" required></div><div class="field"><label>Report Date</label><input id="commissionDate" type="date"></div><div class="field"><label>Status</label><select id="commissionStatus"><option value="reported">Reported</option><option value="pending">Pending</option><option value="approved">Approved</option><option value="paid">Paid</option><option value="reversed">Reversed</option></select></div><div class="field"><label>Order Reference</label><input id="commissionOrder" maxlength="200"></div><div class="field"><label>Product Name</label><input id="commissionProduct" maxlength="250"></div><div class="field full"><label>Notes / Source Report</label><textarea id="commissionNotes" maxlength="2000"></textarea></div></div><div class="buttons"><button class="primary" type="submit">Save Commission</button></div></form><p id="commissionEntryMessage" role="status"></p></div>
@@ -669,24 +659,18 @@ let affiliateCommissionRows=[];const rupee=value=>new Intl.NumberFormat("en-IN",
 document.getElementById("refreshAffiliate").addEventListener("click",loadAffiliateDashboard);document.getElementById("affiliateStatusFilter").addEventListener("change",renderAffiliateRows);
 
 function updateStats() {
-
   const products = getProducts();
-
-  document.getElementById("totalProducts").textContent =
-    products.length;
-
-  document.getElementById("featuredProducts").textContent =
-    products.filter(p => p.featured === true).length;
-
-  const categories = [
-    ...new Set(products.map(p => p.category).filter(Boolean))
-  ];
-
-  document.getElementById("totalCategories").textContent =
-    categories.length;
-
+  const active = products.filter(p => p.active !== false);
+  const countLinks = key => active.filter(p => String(p[key] || "").trim()).length;
+  document.getElementById("totalProducts").textContent = products.length;
+  document.getElementById("activeProducts").textContent = active.length + " / 1000";
+  document.getElementById("amazonProducts").textContent = countLinks("amazon");
+  document.getElementById("flipkartProducts").textContent = countLinks("flipkart");
+  document.getElementById("imageProducts").textContent = active.filter(p => String(p.image || "").trim()).length + " / 1000";
+  document.getElementById("featuredProducts").textContent = active.filter(p => p.featured === true).length;
+  const categories = [...new Set(active.map(p => p.category).filter(Boolean))];
+  document.getElementById("totalCategories").textContent = categories.length;
 }
-
 document.getElementById("image").addEventListener("input",function() {
 
   const preview = document.getElementById("imagePreview");
