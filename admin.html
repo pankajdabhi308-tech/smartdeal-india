@@ -385,6 +385,8 @@ maxlength="2000"
 <div class="field">
 
 <label>Product Image URL *</label>
+<input type="file" id="imageFile" accept="image/*">
+<small>અથવા મોબાઇલમાંથી ફોટો પસંદ કરો (5 MB સુધી).</small>
 
 <input
 type="url"
@@ -571,6 +573,7 @@ const STORAGE_KEY = "smartdealIndiaProducts";
 
 let editingId = null;
 let liveProducts = [];
+let pendingImageUpload = null;
 
 function getProducts() { return liveProducts; }
 
@@ -588,6 +591,23 @@ async function loadAdminProducts() {
   }));
   updateStats();renderProducts();
 }
+
+async function uploadProductImage(file) {
+  if(!file) return "";
+  if(!file.type.startsWith("image/")) throw new Error("ફક્ત image file પસંદ કરો.");
+  if(file.size > 5 * 1024 * 1024) throw new Error("Image 5 MBથી નાની હોવી જોઈએ.");
+  const ext=(file.name.split(".").pop()||"jpg").toLowerCase().replace(/[^a-z0-9]/g,"")||"jpg";
+  const path="products/"+crypto.randomUUID()+"."+ext;
+  const {error}=await window.smartDealSupabase.storage.from("product-images").upload(path,file,{contentType:file.type,upsert:false});
+  if(error) throw error;
+  const {data}=window.smartDealSupabase.storage.from("product-images").getPublicUrl(path);
+  return data.publicUrl;
+}
+document.getElementById("imageFile").addEventListener("change",function(){
+  const file=this.files&&this.files[0];
+  pendingImageUpload=file?uploadProductImage(file):null;
+  if(file){const preview=document.getElementById("imagePreview");preview.src=URL.createObjectURL(file);preview.style.display="block";}
+});
 
 function saveProducts(_products) { showMessage("Bulk backup restore is paused to protect live database records. Individual Add, Edit and Delete are connected.","error"); return false; }
 
@@ -746,6 +766,7 @@ document.getElementById("productForm").addEventListener("submit",async function(
   }
 
   try {
+    if(pendingImageUpload){image=await pendingImageUpload;document.getElementById("image").value=image;pendingImageUpload=null;document.getElementById("imageFile").value="";}
     await saveProductToDatabase({name,description,image,category,price,oldPrice,amazon,flipkart,featured});
     showMessage(editingId ? "Product updated in live database." : "Product saved to live database.","ok");
     resetForm();
