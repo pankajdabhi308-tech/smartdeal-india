@@ -437,15 +437,36 @@ function safeUrl(value) {
   return "";
 }
 
-function trackAffiliateClick(product, retailer) {
+async function trackAffiliateClick(product, retailer) {
   try {
-    if(!window.smartDealSupabase) return;
-    window.smartDealSupabase.from("affiliate_clicks").insert({
+    if(!window.smartDealSupabaseReady || !window.smartDealSupabase) return false;
+    await window.smartDealSupabaseReady;
+    const { error } = await window.smartDealSupabase.from("affiliate_clicks").insert({
       product_id:product.id||null, retailer:retailer,
       page_url:location.href, referrer:document.referrer||null,
       user_agent:navigator.userAgent
-    }).then(({error})=>{if(error)console.warn("Click tracking:",error.message);});
-  } catch(error) { console.warn("Click tracking unavailable.",error); }
+    });
+    if(error) {
+      console.warn("Click tracking:", error.message);
+      return false;
+    }
+    return true;
+  } catch(error) {
+    console.warn("Click tracking unavailable.", error);
+    return false;
+  }
+}
+
+function openAffiliateAfterTracking(event, product, retailer, url) {
+  event.preventDefault();
+  const destination = window.open("about:blank", "_blank");
+  trackAffiliateClick(product, retailer).finally(() => {
+    if(destination) {
+      destination.location.href = url;
+    } else {
+      window.location.href = url;
+    }
+  });
 }
 
 function renderProducts() {
@@ -573,7 +594,7 @@ function renderProducts() {
       amazon.target = "_blank";
 
       amazon.rel = "noopener noreferrer";
-      amazon.addEventListener("click",()=>trackAffiliateClick(product,"amazon"));
+      amazon.addEventListener("click",(event)=>openAffiliateAfterTracking(event,product,"amazon",amazonUrl));
 
       amazon.className = "amazon";
 
@@ -591,7 +612,7 @@ function renderProducts() {
       flipkart.target = "_blank";
 
       flipkart.rel = "noopener noreferrer";
-      flipkart.addEventListener("click",()=>trackAffiliateClick(product,"flipkart"));
+      flipkart.addEventListener("click",(event)=>openAffiliateAfterTracking(event,product,"flipkart",flipkartUrl));
 
       flipkart.className = "flipkart";
 
