@@ -536,8 +536,9 @@ oninput="renderProducts()"
 </button>
 
 <button class="primary" onclick="document.getElementById('importFile').click()">
-⬆ Import Backup
+⬆ Bulk Import CSV / JSON
 </button>
+<button class="orange" type="button" onclick="downloadImportTemplate()">⬇ CSV Template</button>
 
 <button class="danger" onclick="clearProducts()">
 Delete All Products
@@ -546,7 +547,7 @@ Delete All Products
 <input
 type="file"
 id="importFile"
-accept=".json,application/json"
+accept=".json,.csv,application/json,text/csv"
 hidden
 onchange="importProducts(event)"
 >
@@ -585,11 +586,11 @@ function getProducts() { return liveProducts; }
 async function loadAdminProducts() {
   await window.smartDealSupabaseReady;
   const {data,error}=await window.smartDealSupabase.from("products")
-    .select("id,product_name,product_price,product_image_url,amazon_affiliate_link,flipkart_affiliate_link,category,description,is_active,is_featured")
+    .select("id,product_name,product_price,old_price,product_image_url,amazon_affiliate_link,flipkart_affiliate_link,category,description,is_active,is_featured,availability,price_checked_at")
     .order("created_at",{ascending:false});
   if(error) throw error;
   liveProducts=(data||[]).map(p=>({
-    id:p.id,name:p.product_name,price:Number(p.product_price),image:p.product_image_url||"",
+    id:p.id,name:p.product_name,price:Number(p.product_price),oldPrice:Number(p.old_price||0),image:p.product_image_url||"", availability:p.availability||"unknown", priceCheckedAt:p.price_checked_at||null,
     amazon:p.amazon_affiliate_link||"",flipkart:p.flipkart_affiliate_link||"",
     category:p.category||"Other",description:p.description||"",featured:p.is_featured===true,
     active:p.is_active!==false
@@ -618,7 +619,7 @@ function saveProducts(_products) { showMessage("Bulk backup restore is paused to
 
 async function saveProductToDatabase(product) {
   const row={
-    product_name:product.name, product_price:product.price, product_image_url:product.image,
+    product_name:product.name, product_price:product.price, old_price:product.oldPrice||null, product_image_url:product.image, availability:product.availability||"unknown",
     amazon_affiliate_link:product.amazon||null, flipkart_affiliate_link:product.flipkart||null,
     category:product.category, description:product.description||null, is_active:true,
     is_featured:product.featured, source:"manual", updated_at:new Date().toISOString()
@@ -775,7 +776,7 @@ document.getElementById("productForm").addEventListener("submit",async function(
 
   try {
     if(pendingImageUpload){image=await pendingImageUpload;document.getElementById("image").value=image;pendingImageUpload=null;document.getElementById("imageFile").value="";}
-    await saveProductToDatabase({name,description,image,category,price,oldPrice,amazon,flipkart,featured});
+    await saveProductToDatabase({name,description,image,category,price,oldPrice,amazon,flipkart,featured,availability:"unknown"});
     showMessage(editingId ? "Product updated in live database." : "Product saved to live database.","ok");
     resetForm();
   } catch(error) {
@@ -984,73 +985,94 @@ function exportProducts() {
 
 }
 
-function importProducts(event) {
 
-  const file = event.target.files[0];
+function downloadImportTemplate() {
+  const headers = ["name","price","oldPrice","image","category","description","amazon","flipkart","availability"];
+  const sample = ["Example product","999","1299","https://example.com/real-product-image.jpg","Electronics","Product description","https://www.amazon.in/your-affiliate-link","https://www.flipkart.com/your-affiliate-link","in_stock"];
+  const csv = [headers, sample].map(row => row.map(v => '"' + String(v).replace(/"/g,'""') + '"').join(",")).join("\r\n");
+  const blob = new Blob(["\uFEFF"+csv],{type:"text/csv;charset=utf-8"});
+  const url = URL.createObjectURL(blob); const a=document.createElement("a");
+  a.href=url; a.download="smartdeal-india-product-import-template.csv"; a.click(); URL.revokeObjectURL(url);
+}
 
-  if(!file) return;
+function parseImportCSV(text) {
+  const rows=[]; let row=[], cell="", quoted=false;
+  for(let n=0;n<text.length;n++){
+    const ch=text[n], next=text[n+1];
+    if(ch==='"' && quoted && next==='"'){cell+='"';n++;}
+    else if(ch==='"'){quoted=!quoted;}
+    else if(ch===',' && !quoted){row.push(cell);cell="";}
+    else if((ch==="\n"||ch==="\r") && !quoted){
+      if(ch==="\r"&&next==="\n")n++;
+      row.push(cell); if(row.some(v=>v.trim()))rows.push(row); row=[];cell="";
+    } else cell+=ch;
+  }
+  row.push(cell); if(row.some(v=>v.trim()))rows.push(row);
+  if(rows.length<2) return [];
+  const keys=rows.shift().map(k=>k.trim().toLowerCase().replace(/[\s-]+/g,"_"));
+  return rows.map(values=>Object.fromEntries(keys.map((k,i)=>[k,(values[i]||"").trim()])));
+}
 
-  const reader = new FileReader();
+function importValue(p, keys) {
+  for(const key of keys){ if(p[key]!==undefined && p[key]!==null && String(p[key]).trim()!=="") return p[key]; }
+  return "";
+}
 
-  reader.onload = function() {
-
-    try {
-
-      const imported = JSON.parse(reader.result);
-
-      if(!Array.isArray(imported)) {
-        throw new Error("Invalid backup");
+async function importProducts(event) {
+  const file=event.target.files&&event.target.files[0]; if(!file)return;
+  const input=event.target; showMessage("Reading import file…","ok");
+  try {
+    const raw=await file.text();
+    let imported;
+    if(file.name.toLowerCase().endsWith(".csv")) imported=parseImportCSV(raw);
+    else { imported=JSON.parse(raw); if(!Array.isArray(imported)) throw new Error("JSON must contain an array of products."); }
+    if(!imported.length) throw new Error("The file has no product rows.");
+    if(imported.length>1000) throw new Error("Import is limited to 1,000 rows per file.");
+    await window.smartDealSupabaseReady;
+    const existing=[...liveProducts];
+    let inserted=0,updated=0,skipped=0; const errors=[];
+    for(let n=0;n<imported.length;n++){
+      const p=imported[n]||{};
+      const name=String(importValue(p,["name","product_name","title"])).trim();
+      const price=Number(importValue(p,["price","product_price","current_price"]));
+      const image=safeUrl(String(importValue(p,["image","product_image_url","image_url","photo"])).trim());
+      const category=String(importValue(p,["category","product_category"])||"Other").trim();
+      const oldRaw=importValue(p,["oldprice","old_price","mrp","list_price"]);
+      const oldPrice=oldRaw===""?null:Number(oldRaw);
+      const amazonRaw=String(importValue(p,["amazon","amazon_affiliate_link","amazon_link"])).trim();
+      const flipkartRaw=String(importValue(p,["flipkart","flipkart_affiliate_link","flipkart_link"])).trim();
+      const amazon=amazonRaw?safeUrl(amazonRaw):"";
+      const flipkart=flipkartRaw?safeUrl(flipkartRaw):"";
+      const availability=String(importValue(p,["availability","stock_status"])||"unknown").toLowerCase();
+      if(!name||!Number.isFinite(price)||price<=0||!image||!category||
+         (oldPrice!==null&&(!Number.isFinite(oldPrice)||oldPrice<0))||
+         (amazonRaw&&!amazon)||(flipkartRaw&&!flipkart)){
+        skipped++; if(errors.length<8)errors.push("Row "+(n+2)+": name, positive price, valid image URL, category and valid retailer links are required."); continue;
       }
-
-      const valid = imported.every(p =>
-        p &&
-        typeof p.name === "string" &&
-        typeof p.price === "number" &&
-        typeof p.image === "string" &&
-        typeof p.category === "string"
-      );
-
-      if(!valid) {
-        throw new Error("Invalid product format");
+      const match=existing.find(x=>String(x.name).toLowerCase()===name.toLowerCase());
+      const row={
+        product_name:name,product_price:price,old_price:oldPrice,product_image_url:image,
+        amazon_affiliate_link:amazon||null,flipkart_affiliate_link:flipkart||null,
+        category,description:String(importValue(p,["description","details"])||"").slice(0,2000)||null,
+        availability:["in_stock","out_of_stock","unknown"].includes(availability)?availability:"unknown",
+        is_active:true,is_featured:false,source:"bulk_import",updated_at:new Date().toISOString()
+      };
+      let result;
+      if(match&&match.id){
+        result=await window.smartDealSupabase.from("products").update(row).eq("id",match.id);
+        if(!result.error){updated++;match.price=price;match.image=image;match.category=category;}
+      } else {
+        result=await window.smartDealSupabase.from("products").insert(row);
+        if(!result.error){inserted++;existing.push({name,id:null});}
       }
-
-      if(!confirm(
-        "Importing will replace the current product list. Continue?"
-      )) {
-        return;
-      }
-
-      const products = imported.map(p => ({
-
-        ...p,
-
-        id: p.id || (
-          "product-" + Date.now() + "-" +
-          Math.random().toString(36).slice(2,8)
-        )
-
-      }));
-
-      if(saveProducts(products)) {
-
-        showMessage("Products imported successfully.","ok");
-
-        resetForm();
-
-      }
-
-    } catch(error) {
-
-      showMessage("Invalid backup file. Please check your JSON.","error");
-
+      if(result.error){skipped++;if(errors.length<8)errors.push("Row "+(n+2)+": "+result.error.message);}
     }
-
-    event.target.value = "";
-
-  };
-
-  reader.readAsText(file);
-
+    await loadAdminProducts();
+    const summary="Bulk import finished: "+inserted+" added, "+updated+" updated, "+skipped+" skipped out of "+imported.length+".";
+    showMessage(summary+(errors.length?" Details: "+errors.join(" | "):""),skipped?"error":"ok");
+  } catch(error) {
+    showMessage("Import failed: "+(error.message||"Check the file format and try again."),"error");
+  } finally { input.value=""; }
 }
 
 function clearProducts() {
