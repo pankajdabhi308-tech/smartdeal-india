@@ -589,6 +589,8 @@ async function loadAdminProducts() {
   updateStats();renderProducts();
 }
 
+function saveProducts(_products) { showMessage("Bulk backup restore is paused to protect live database records. Individual Add, Edit and Delete are connected.","error"); return false; }
+
 async function saveProductToDatabase(product) {
   const row={
     product_name:product.name, product_price:product.price, product_image_url:product.image,
