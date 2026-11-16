@@ -280,6 +280,13 @@ footer {
 
 }
 
+
+#adminApp{display:none}
+#adminLogin{max-width:440px;margin:35px auto;padding:22px;background:#fff;border-radius:12px;box-shadow:0 2px 12px rgba(0,0,0,.08)}
+#adminLogin h2{margin-bottom:14px}
+#adminLogin input{margin:8px 0 14px}
+#authMessage{margin:10px 0;color:#b00020;overflow-wrap:anywhere}
+#adminToolbar{max-width:1100px;margin:14px auto 0;padding:0 15px;text-align:right}
 </style>
 
 </head>
@@ -293,6 +300,18 @@ footer {
 <p>Professional Product Admin Panel</p>
 
 </header>
+<div id="adminLogin">
+<h2>🔐 Admin Login</h2>
+<p>Sign in with the authorized SmartDeal India administrator account.</p>
+<form id="adminLoginForm">
+<label for="adminEmail">Email</label>
+<input id="adminEmail" type="email" autocomplete="username" required>
+<label for="adminPassword">Password</label>
+<input id="adminPassword" type="password" autocomplete="current-password" required>
+<button class="primary" type="submit">Sign In</button>
+</form><p id="authMessage" role="alert"></p></div>
+<div id="adminToolbar" style="display:none"><button class="secondary" id="adminSignOut" type="button">Sign Out</button></div>
+<div id="adminApp">
 
 <div class="container">
 
@@ -533,6 +552,7 @@ onchange="importProducts(event)"
 
 </div>
 
+</div>
 <footer>
 
 <h3>SmartDeal India</h3>
@@ -1112,5 +1132,29 @@ renderProducts();
 
 </script>
 
+<script>
+(function(){
+"use strict";
+const login=document.getElementById("adminLogin"), app=document.getElementById("adminApp"), bar=document.getElementById("adminToolbar"), msg=document.getElementById("authMessage");
+function signedOut(t){login.style.display="block";app.style.display="none";bar.style.display="none";if(t)msg.textContent=t;}
+async function verify(session){
+ if(!session||!session.user){signedOut("");return;}
+ try{
+  await window.smartDealSupabaseReady;
+  const {data,error}=await window.smartDealSupabase.from("admin_users").select("user_id,role").eq("user_id",session.user.id).eq("role","admin").maybeSingle();
+  if(error)throw error;
+  if(!data){await window.smartDealSupabase.auth.signOut();signedOut("This account is not authorized as an administrator.");return;}
+  login.style.display="none";app.style.display="block";bar.style.display="block";
+ }catch(e){console.error("Admin verification failed",e);signedOut("Could not verify administrator access. Please retry.");}
+}
+document.getElementById("adminLoginForm").addEventListener("submit",async e=>{
+ e.preventDefault();msg.textContent="Signing in...";
+ try{await window.smartDealSupabaseReady;const {data,error}=await window.smartDealSupabase.auth.signInWithPassword({email:document.getElementById("adminEmail").value.trim(),password:document.getElementById("adminPassword").value});if(error)throw error;await verify(data.session);}
+ catch(err){msg.textContent=err.message||"Sign-in failed.";}
+});
+document.getElementById("adminSignOut").addEventListener("click",async()=>{await window.smartDealSupabase.auth.signOut();signedOut("You have been signed out.");});
+window.smartDealSupabaseReady.then(async()=>{const {data}=await window.smartDealSupabase.auth.getSession();await verify(data.session);}).catch(()=>signedOut("Supabase connection is unavailable."));
+})();
+</script>
 </body>
   </html>
