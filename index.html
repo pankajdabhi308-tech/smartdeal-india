@@ -404,6 +404,8 @@ async function loadSupabaseProducts() {
       description: row.description || "",
       featured: row.is_featured === true
     }));
+    const sharedProduct = new URLSearchParams(location.search).get("product");
+    if(sharedProduct) document.getElementById("search").value = sharedProduct;
     renderProducts();
   } catch (error) {
     console.error("Supabase product loading failed:", error);
@@ -630,7 +632,7 @@ if(!safeUrl(product.image)) image.style.display = "none";
 
     share.onclick = async function() {
 
-      const productUrl = location.origin + location.pathname + "?product=" + encodeURIComponent(product.id || product.name || "");
+      const productUrl = location.origin + location.pathname + "?product=" + encodeURIComponent(product.name || "");
       const text =
         (product.name || "Shopping Deal") +
         (product.price ? " - ₹" + product.price : " - Check latest price") +
