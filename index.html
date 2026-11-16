@@ -651,7 +651,20 @@ function renderProducts() {
   });
 }
 
-document.addEventListener("DOMContentLoaded",loadSupabaseProducts);
+function trackSiteVisit() {
+  try {
+    if(!window.smartDealSupabase) return;
+    const key="smartdealIndiaVisitorId";
+    let visitorId=localStorage.getItem(key);
+    if(!visitorId){visitorId=crypto.randomUUID();localStorage.setItem(key,visitorId);}
+    window.smartDealSupabase.from("site_visits").insert({
+      visitor_id:visitorId,page_url:location.href,
+      referrer:document.referrer||null,user_agent:navigator.userAgent
+    }).then(({error})=>{if(error)console.warn("Visit tracking:",error.message);});
+  } catch(error) { console.warn("Visit tracking unavailable.",error); }
+}
+
+document.addEventListener("DOMContentLoaded",function(){trackSiteVisit();loadSupabaseProducts();});
 
 window.addEventListener("storage",function(event) {
 
