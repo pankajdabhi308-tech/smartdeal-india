@@ -555,7 +555,8 @@ function renderProducts() {
 
     const image = document.createElement("img");
 
-    image.src = safeUrl(product.image) || "";\n    image.loading = "lazy";
+    image.src = safeUrl(product.image) || "";
+    image.loading = "lazy";
 
     image.alt = product.name || "Product";
 
