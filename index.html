@@ -504,9 +504,15 @@ function renderProducts() {
 
     buttons.className = "buy-buttons";
 
-    const amazonUrl = safeUrl(product.amazon);
+    // Support Admin fields and legacy/imported affiliate-link names.
+    const amazonUrl = safeUrl(
+      product.amazon || product.amazon_link || product.amazonLink ||
+      product.affiliate_link || product.affiliateLink || product.link
+    );
 
-    const flipkartUrl = safeUrl(product.flipkart);
+    const flipkartUrl = safeUrl(
+      product.flipkart || product.flipkart_link || product.flipkartLink
+    );
 
     if(amazonUrl) {
 
