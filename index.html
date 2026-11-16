@@ -394,7 +394,7 @@ async function loadSupabaseProducts() {
       .eq("is_active", true)
       .order("created_at", { ascending: false });
     if (error) throw error;
-    liveProducts = (data || []).map(row => ({
+    const remoteProducts = (data || []).map(row => ({
       id: row.id, name: row.product_name || "",
       price: Number(row.product_price || 0),
       image: row.product_image_url || "",
@@ -404,13 +404,43 @@ async function loadSupabaseProducts() {
       description: row.description || "",
       featured: row.is_featured === true
     }));
+    // Admin panel stores its catalog in this same-origin LocalStorage key.
+    // Include it so locally managed products appear on the storefront too.
+    let adminProducts = [];
+    try {
+      const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+      if (Array.isArray(saved)) adminProducts = saved.map(p => ({
+        id: p.id || null, name: p.name || p.product_name || "",
+        price: Number(p.price ?? p.product_price ?? 0),
+        oldPrice: Number(p.oldPrice ?? p.old_price ?? 0),
+        image: p.image || p.product_image_url || "",
+        amazon: p.amazon || p.amazon_affiliate_link || p.amazon_link || p.amazonLink || p.affiliate_link || p.link || "",
+        flipkart: p.flipkart || p.flipkart_affiliate_link || p.flipkart_link || p.flipkartLink || "",
+        category: p.category || "Other", description: p.description || "",
+        featured: p.featured === true || p.is_featured === true
+      })).filter(p => p.name);
+    } catch(e) { console.warn("Admin catalog could not be read.", e); }
+    const seen = new Set(remoteProducts.map(p => p.name.toLowerCase()));
+    liveProducts = remoteProducts.concat(adminProducts.filter(p => !seen.has(p.name.toLowerCase())));
     const sharedProduct = new URLSearchParams(location.search).get("product");
     if(sharedProduct) document.getElementById("search").value = sharedProduct;
     renderProducts();
   } catch (error) {
     console.error("Supabase product loading failed:", error);
-    liveProducts = [];
-    container.innerHTML = '<div class="empty"><h3>Products are temporarily unavailable.</h3><p>Please try again shortly.</p></div>';
+    // Keep the storefront usable from the Admin Panel even if Supabase is offline.
+    try {
+      const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+      liveProducts = Array.isArray(saved) ? saved.map(p => ({
+        id:p.id||null, name:p.name||p.product_name||"",
+        price:Number(p.price??p.product_price??0), oldPrice:Number(p.oldPrice??p.old_price??0),
+        image:p.image||p.product_image_url||"",
+        amazon:p.amazon||p.amazon_affiliate_link||p.amazon_link||p.amazonLink||p.affiliate_link||p.link||"",
+        flipkart:p.flipkart||p.flipkart_affiliate_link||p.flipkart_link||p.flipkartLink||"",
+        category:p.category||"Other", description:p.description||"",
+        featured:p.featured===true||p.is_featured===true
+      })).filter(p=>p.name);
+    } catch(e) { liveProducts=[]; }
+    renderProducts();
   }
 }
 
