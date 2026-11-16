@@ -384,7 +384,8 @@ async function loadSupabaseProducts() {
       oldPrice: Number(row.old_price || 0),
       availability: row.availability || "unknown",
       image: row.product_image_url || "",
-      amazon: row.amazon_affiliate_link || "",
+      amazon: row.amazon_affiliate_link || (row.source === "amazon" ? row.product_url || "" : ""),
+      amazonIsAffiliate: !!row.amazon_affiliate_link,
       flipkart: row.flipkart_affiliate_link || "",
       category: row.category || "Other",
       description: row.description || "",
@@ -639,7 +640,7 @@ if(!safeUrl(product.image)) image.style.display = "none";
 
       amazon.className = "amazon";
 
-      amazon.textContent = amazonUrl.includes("/s?k=") ? "View on Amazon" : "Buy on Amazon";
+      amazon.textContent = product.amazonIsAffiliate ? "Buy on Amazon" : "View on Amazon";
 
       buttons.appendChild(amazon);
     }
