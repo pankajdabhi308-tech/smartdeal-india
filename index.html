@@ -390,13 +390,15 @@ async function loadSupabaseProducts() {
     await window.smartDealSupabaseReady;
     const { data, error } = await window.smartDealSupabase
       .from("products")
-      .select("id, product_name, product_price, product_image_url, amazon_affiliate_link, flipkart_affiliate_link, category, description, is_active, is_featured")
+      .select("id, product_name, product_price, old_price, product_image_url, amazon_affiliate_link, flipkart_affiliate_link, category, description, is_active, is_featured, availability, price_checked_at")
       .eq("is_active", true)
       .order("created_at", { ascending: false });
     if (error) throw error;
     const remoteProducts = (data || []).map(row => ({
       id: row.id, name: row.product_name || "",
       price: Number(row.product_price || 0),
+      oldPrice: Number(row.old_price || 0),
+      availability: row.availability || "unknown",
       image: row.product_image_url || "",
       amazon: row.amazon_affiliate_link || "",
       flipkart: row.flipkart_affiliate_link || "",
