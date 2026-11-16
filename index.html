@@ -6,12 +6,12 @@
 
 <title>SmartDeal India | Best Online Shopping Deals</title>
 
-<meta name="description" content="Discover amazing shopping deals, discounts and offers on Amazon and Flipkart with SmartDeal India.">
+<meta name="description" content="Explore trending fashion, footwear, mobile accessories, earbuds, chargers and daily shopping deals in India. Compare retailer offers on SmartDeal India.">
 <meta name="robots" content="index,follow,max-image-preview:large">
 <link rel="canonical" href="https://smartdeal-india-six.vercel.app/">
 <meta property="og:type" content="website">
 <meta property="og:title" content="SmartDeal India | Best Online Shopping Deals">
-<meta property="og:description" content="Discover shopping deals and offers on Amazon and Flipkart with SmartDeal India.">
+<meta property="og:description" content="Explore trending fashion, footwear, mobile accessories and daily shopping deals in India with SmartDeal India.">
 <meta property="og:url" content="https://smartdeal-india-six.vercel.app/">
 <meta name="twitter:card" content="summary">
 <script type="application/ld+json">
@@ -20,8 +20,13 @@
   "@type": "WebSite",
   "name": "SmartDeal India",
   "url": "https://smartdeal-india-six.vercel.app/",
-  "description": "Discover shopping deals and offers on Amazon and Flipkart with SmartDeal India.",
-  "inLanguage": "en-IN"
+  "description": "Explore trending fashion, footwear, mobile accessories and daily shopping deals in India.",
+  "inLanguage": "en-IN",
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": "https://smartdeal-india-six.vercel.app/?q={search_term_string}",
+    "query-input": "required name=search_term_string"
+  }
 }
 </script>
 
@@ -386,7 +391,8 @@ async function loadSupabaseProducts() {
       image: row.product_image_url || "",
       amazon: row.amazon_affiliate_link || (row.source === "amazon" ? row.product_url || "" : ""),
       amazonIsAffiliate: !!row.amazon_affiliate_link,
-      flipkart: row.flipkart_affiliate_link || "",
+      flipkart: row.flipkart_affiliate_link || (row.source === "flipkart" ? row.product_url || "" : ""),
+      flipkartIsAffiliate: !!row.flipkart_affiliate_link,
       category: row.category || "Other",
       description: row.description || "",
       featured: row.is_featured === true
@@ -403,6 +409,7 @@ async function loadSupabaseProducts() {
         image: p.image || p.product_image_url || "",
         amazon: p.amazon || p.amazon_affiliate_link || p.amazon_link || p.amazonLink || p.affiliate_link || p.link || "",
         flipkart: p.flipkart || p.flipkart_affiliate_link || p.flipkart_link || p.flipkartLink || "",
+        flipkartIsAffiliate: !!(p.flipkart || p.flipkart_affiliate_link || p.flipkart_link || p.flipkartLink),
         category: p.category || "Other", description: p.description || "",
         featured: p.featured === true || p.is_featured === true
       })).filter(p => p.name);
@@ -424,6 +431,7 @@ async function loadSupabaseProducts() {
         image:p.image||p.product_image_url||"",
         amazon:p.amazon||p.amazon_affiliate_link||p.amazon_link||p.amazonLink||p.affiliate_link||p.link||"",
         flipkart:p.flipkart||p.flipkart_affiliate_link||p.flipkart_link||p.flipkartLink||"",
+        flipkartIsAffiliate:!!(p.flipkart||p.flipkart_affiliate_link||p.flipkart_link||p.flipkartLink),
         category:p.category||"Other", description:p.description||"",
         featured:p.featured===true||p.is_featured===true
       })).filter(p=>p.name) : [];
@@ -658,7 +666,7 @@ if(!safeUrl(product.image)) image.style.display = "none";
 
       flipkart.className = "flipkart";
 
-      flipkart.textContent = flipkartUrl.includes("/search?q=") ? "View on Flipkart" : "Buy on Flipkart";
+      flipkart.textContent = product.flipkartIsAffiliate ? "Buy on Flipkart" : "View on Flipkart";
 
       buttons.appendChild(flipkart);
     }
