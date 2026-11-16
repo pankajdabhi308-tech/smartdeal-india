@@ -337,24 +337,8 @@ footer p {
   Shop by Category
 </h2>
 
-<div class="categories">
-  <button class="category-btn active"
-    onclick="selectCategory('All',this)">All</button>
-
-  <button class="category-btn"
-    onclick="selectCategory('Electronics',this)">Electronics</button>
-
-  <button class="category-btn"
-    onclick="selectCategory('Fashion',this)">Fashion</button>
-
-  <button class="category-btn"
-    onclick="selectCategory('Home',this)">Home</button>
-
-  <button class="category-btn"
-    onclick="selectCategory('Mobiles',this)">Mobiles</button>
-
-  <button class="category-btn"
-    onclick="selectCategory('Accessories',this)">Accessories</button>
+<div class="categories" id="categoryFilters" aria-label="Filter products by category">
+  <button class="category-btn active" type="button" data-category="All">All</button>
 </div>
 
 <h2 class="section-title" id="products-section">
@@ -447,15 +431,34 @@ async function loadSupabaseProducts() {
 }
 
 function selectCategory(category,button) {
-
   selectedCategory = category;
-
-  document.querySelectorAll(".category-btn")
-    .forEach(btn => btn.classList.remove("active"));
-
-  button.classList.add("active");
-
+  document.querySelectorAll(".category-btn").forEach(btn => {
+    btn.classList.toggle("active", btn === button);
+  });
   renderProducts();
+}
+
+function renderCategories() {
+  const container = document.getElementById("categoryFilters");
+  if(!container) return;
+  const categories = [...new Set(liveProducts
+    .map(product => String(product.category || "Other").trim())
+    .filter(Boolean))]
+    .sort((a,b) => a.localeCompare(b));
+  if(selectedCategory !== "All" && !categories.some(c => c.toLowerCase() === selectedCategory.toLowerCase())) {
+    selectedCategory = "All";
+  }
+  container.replaceChildren();
+  ["All", ...categories].forEach(category => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "category-btn";
+    button.dataset.category = category;
+    button.textContent = category;
+    button.classList.toggle("active", category.toLowerCase() === selectedCategory.toLowerCase());
+    button.addEventListener("click", () => selectCategory(category, button));
+    container.appendChild(button);
+  });
 }
 
 function safeUrl(value) {
@@ -519,11 +522,11 @@ function renderProducts() {
     const category = String(product.category || "").toLowerCase();
 
     const matchesSearch =
-      name.includes(search) || category.includes(search);
+      name.includes(search) || category.includes(search) || String(product.description || "").toLowerCase().includes(search);
 
     const matchesCategory =
       selectedCategory === "All" ||
-      category === selectedCategory.toLowerCase();
+      category.trim() === selectedCategory.toLowerCase();
 
     return matchesSearch && matchesCategory;
   });
@@ -550,7 +553,7 @@ function renderProducts() {
 
     const image = document.createElement("img");
 
-    image.src = safeUrl(product.image) || "";
+    image.src = safeUrl(product.image) || "";\n    image.loading = "lazy";
 
     image.alt = product.name || "Product";
 
