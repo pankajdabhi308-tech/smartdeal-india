@@ -287,6 +287,8 @@ footer {
 #adminLogin input{margin:8px 0 14px}
 #authMessage{margin:10px 0;color:#b00020;overflow-wrap:anywhere}
 #adminToolbar{max-width:1100px;margin:14px auto 0;padding:0 15px;text-align:right}
+
+.affiliate-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:14px 0 20px}.affiliate-stat{background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:16px;text-align:center}.affiliate-stat span{display:block;color:#475569;font-size:13px}.affiliate-stat strong{display:block;font-size:22px;color:#0f3b75;margin-top:7px;overflow-wrap:anywhere}.affiliate-table-wrap{overflow-x:auto}.affiliate-table{width:100%;border-collapse:collapse;min-width:680px;font-size:14px}.affiliate-table th,.affiliate-table td{padding:11px 9px;border-bottom:1px solid #e5e7eb;text-align:left}.affiliate-table th{background:#f8fafc}.affiliate-status{display:inline-block;padding:4px 8px;border-radius:20px;background:#e2e8f0;font-size:12px}@media(max-width:700px){.affiliate-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 </style>
 
 </head>
@@ -347,6 +349,8 @@ Categories
 </div>
 
 </div>
+
+<div class="form-box" id="affiliateDashboard"><h2>💰 Affiliate Income Dashboard</h2><p class="note">આ રિપોર્ટમાં Supabaseના affiliate_commissions રેકોર્ડ દેખાશે. Amazon/Flipkartની વાસ્તવિક કમાણી આપમેળે આવતી નથી; રિપોર્ટ/APIથી દાખલ થયેલા રેકોર્ડ જ અહીં ગણાશે.</p><div class="buttons" style="margin-top:0;margin-bottom:14px"><button class="primary" id="refreshAffiliate" type="button">↻ Refresh Income</button><label style="display:flex;align-items:center;gap:8px">Status<select id="affiliateStatusFilter" style="width:auto;padding:9px"><option value="All">All</option><option>Reported</option><option>Pending</option><option>Approved</option><option>Paid</option><option>Reversed</option></select></label></div><p id="affiliateMessage" role="status" style="margin:8px 0;color:#475569">Loading commission records…</p><div class="affiliate-grid"><div class="affiliate-stat"><span>Records Loaded</span><strong id="affiliateCount">0</strong></div><div class="affiliate-stat"><span>Total Commission</span><strong id="affiliateTotal">₹0.00</strong></div><div class="affiliate-stat"><span>Approved</span><strong id="affiliateApproved">₹0.00</strong></div><div class="affiliate-stat"><span>Paid</span><strong id="affiliatePaid">₹0.00</strong></div></div><div class="affiliate-table-wrap"><table class="affiliate-table"><thead><tr><th>Date</th><th>Retailer</th><th>Product / Order Ref.</th><th>Commission</th><th>Status</th></tr></thead><tbody id="affiliateRows"><tr><td colspan="5">No records loaded.</td></tr></tbody></table></div><small style="display:block;margin-top:10px;color:#64748b">ડેશબોર્ડ તાજેતરના વધુમાં વધુ 500 રેકોર્ડ બતાવે છે. સંપૂર્ણ ઇતિહાસ માટે Supabase રિપોર્ટ તપાસો.</small></div>
 
 <div class="form-box">
 
@@ -658,6 +662,8 @@ function safeUrl(value) {
   return "";
 
 }
+
+let affiliateCommissionRows=[];const rupee=value=>new Intl.NumberFormat("en-IN",{style:"currency",currency:"INR"}).format(Number(value)||0);async function loadAffiliateDashboard(){const message=document.getElementById("affiliateMessage");if(!message||!window.smartDealSupabase)return;message.textContent="Loading commission records…";try{const {data,error}=await window.smartDealSupabase.from("affiliate_commissions").select("id,retailer,order_reference,product_name,commission_amount,currency,commission_status,report_date,created_at").order("report_date",{ascending:false}).order("created_at",{ascending:false}).limit(500);if(error)throw error;affiliateCommissionRows=data||[];const total=affiliateCommissionRows.reduce((s,r)=>s+Number(r.commission_amount||0),0);const approved=affiliateCommissionRows.filter(r=>r.commission_status==="Approved").reduce((s,r)=>s+Number(r.commission_amount||0),0);const paid=affiliateCommissionRows.filter(r=>r.commission_status==="Paid").reduce((s,r)=>s+Number(r.commission_amount||0),0);document.getElementById("affiliateCount").textContent=affiliateCommissionRows.length;document.getElementById("affiliateTotal").textContent=rupee(total);document.getElementById("affiliateApproved").textContent=rupee(approved);document.getElementById("affiliatePaid").textContent=rupee(paid);renderAffiliateRows();message.textContent=affiliateCommissionRows.length?"Showing latest "+affiliateCommissionRows.length+" commission records.":"No commission records yet. Import a retailer report when available.";}catch(error){console.error("Affiliate dashboard:",error);message.textContent="Could not load affiliate commissions: "+(error.message||"Please retry.");document.getElementById("affiliateRows").innerHTML="<tr><td colspan='5'>Unable to load records.</td></tr>";}}function renderAffiliateRows(){const body=document.getElementById("affiliateRows"),filter=document.getElementById("affiliateStatusFilter").value,rows=affiliateCommissionRows.filter(r=>filter==="All"||r.commission_status===filter);body.replaceChildren();if(!rows.length){const tr=document.createElement("tr"),td=document.createElement("td");td.colSpan=5;td.textContent="No records for this status.";tr.appendChild(td);body.appendChild(tr);return;}rows.forEach(r=>{const tr=document.createElement("tr");[r.report_date||"—",r.retailer||"—",(r.product_name||"—")+(r.order_reference?" / "+r.order_reference:""),rupee(r.commission_amount)+" "+(r.currency||"INR"),r.commission_status||"—"].forEach((v,i)=>{const td=document.createElement("td");td.textContent=v;if(i===4){const badge=document.createElement("span");badge.className="affiliate-status";badge.textContent=v;td.replaceChildren(badge);}tr.appendChild(td);});body.appendChild(tr);});}document.getElementById("refreshAffiliate").addEventListener("click",loadAffiliateDashboard);document.getElementById("affiliateStatusFilter").addEventListener("change",renderAffiliateRows);
 
 function updateStats() {
 
@@ -1106,7 +1112,7 @@ document.getElementById("adminLoginForm").addEventListener("submit",async e=>{
 document.getElementById("adminSignOut").addEventListener("click",async()=>{await window.smartDealSupabase.auth.signOut();signedOut("You have been signed out.");});
 window.smartDealSupabaseReady.then(async()=>{const {data}=await window.smartDealSupabase.auth.getSession();await verify(data.session);}).catch(()=>signedOut("Supabase connection is unavailable."));
 const originalVerify=verify;
-window.smartDealSupabase.auth.onAuthStateChange(async(_event,session)=>{if(session){await originalVerify(session);if(app.style.display==="block"){try{await loadAdminProducts();}catch(e){showMessage("Could not load products: "+e.message,"error");}}}});
+window.smartDealSupabase.auth.onAuthStateChange(async(_event,session)=>{if(session){await originalVerify(session);if(app.style.display==="block"){try{await loadAdminProducts();await loadAffiliateDashboard();}catch(e){showMessage("Could not load admin data: "+e.message,"error");}}}});
 
 })();
 </script>
