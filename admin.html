@@ -712,7 +712,7 @@ document.getElementById("productForm").addEventListener("submit",async function(
 
   const description = document.getElementById("description").value.trim();
 
-  const image = safeUrl(document.getElementById("image").value.trim());
+  let image = safeUrl(document.getElementById("image").value.trim());
 
   const category = document.getElementById("category").value;
 
@@ -732,7 +732,7 @@ document.getElementById("productForm").addEventListener("submit",async function(
 
   const featured = document.getElementById("featured").checked;
 
-  if(!name || !image || !category || !Number.isFinite(price) || price <= 0) {
+  if(!name || (!image && !pendingImageUpload) || !category || !Number.isFinite(price) || price <= 0) {
 
     showMessage("Please enter valid product details.","error");
 
