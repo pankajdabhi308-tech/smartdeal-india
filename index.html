@@ -410,6 +410,7 @@ async function loadSupabaseProducts() {
     liveProducts = remoteProducts.concat(adminProducts.filter(p => !seen.has(p.name.toLowerCase())));
     const sharedProduct = new URLSearchParams(location.search).get("product");
     if(sharedProduct) document.getElementById("search").value = sharedProduct;
+    renderCategories();
     renderProducts();
   } catch (error) {
     console.error("Supabase product loading failed:", error);
@@ -426,6 +427,7 @@ async function loadSupabaseProducts() {
         featured:p.featured===true||p.is_featured===true
       })).filter(p=>p.name);
     } catch(e) { liveProducts=[]; }
+    renderCategories();
     renderProducts();
   }
 }
@@ -729,6 +731,7 @@ document.addEventListener("DOMContentLoaded",function(){trackSiteVisit();loadSup
 window.addEventListener("storage",function(event) {
 
   if(event.key === STORAGE_KEY) {
+    renderCategories();
     renderProducts();
   }
 
