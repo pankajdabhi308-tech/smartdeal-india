@@ -315,7 +315,7 @@ footer p {
 
 <section class="hero">
   <h2>Welcome to SmartDeal India</h2>
-  <p>Find Your Favourite Products at Great Prices</p>
+  <p>Find Products • Compare Offers • Shop on Amazon & Flipkart</p>
   <a href="#products-section"
      style="background:#fca311;color:#111;padding:13px 24px;
      text-decoration:none;border-radius:7px;font-weight:bold;">
@@ -367,7 +367,7 @@ footer p {
 <footer id="footer">
   <h2>SmartDeal India</h2>
   <p>Shop Smart. Save More.</p>
-  <p>Amazon & Flipkart Shopping Deals</p>
+  <p>Prices and offers are confirmed on the retailer's website. They may change anytime.</p>
   <p>© 2026 SmartDeal India. All Rights Reserved.</p>
 </footer>
 
@@ -523,6 +523,7 @@ function renderProducts() {
     image.onerror = function() {
       this.style.display = "none";
     };
+if(!safeUrl(product.image)) image.style.display = "none";
 
     const title = document.createElement("h3");
 
@@ -598,7 +599,7 @@ function renderProducts() {
 
       amazon.className = "amazon";
 
-      amazon.textContent = "Amazon Buy";
+      amazon.textContent = amazonUrl.includes("/s?k=") ? "View on Amazon" : "Buy on Amazon";
 
       buttons.appendChild(amazon);
     }
@@ -616,7 +617,7 @@ function renderProducts() {
 
       flipkart.className = "flipkart";
 
-      flipkart.textContent = "Flipkart Buy";
+      flipkart.textContent = flipkartUrl.includes("/search?q=") ? "View on Flipkart" : "Buy on Flipkart";
 
       buttons.appendChild(flipkart);
     }
@@ -629,10 +630,11 @@ function renderProducts() {
 
     share.onclick = async function() {
 
+      const productUrl = location.origin + location.pathname + "?product=" + encodeURIComponent(product.id || product.name || "");
       const text =
         (product.name || "Shopping Deal") +
-        " - " + (product.price || "") +
-        "\nSmartDeal India";
+        (product.price ? " - ₹" + product.price : " - Check latest price") +
+        "\nSmartDeal India પર જુઓ:";
 
       if(navigator.share) {
 
@@ -640,14 +642,14 @@ function renderProducts() {
           await navigator.share({
             title: product.name || "Shopping Deal",
             text: text,
-            url: location.href
+            url: productUrl
           });
         } catch(error) {}
 
       } else {
 
         const message = encodeURIComponent(
-          text + "\n" + location.href
+          text + "\n" + productUrl
         );
 
         window.open(
