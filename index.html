@@ -388,7 +388,7 @@ const PRODUCT_PLACEHOLDER = "data:image/svg+xml;charset=UTF-8," + encodeURICompo
 
 function normalizeCategory(value) {
   const label = String(value || "Other").trim();
-  const key = label.toLowerCase().replace(/\\s+/g, " ");
+  const key = label.toLowerCase().replace(/\s+/g, " ");
   if (["mobile", "mobiles", "mobile phone", "mobile phones", "smartphone", "smartphones"].includes(key)) return "Mobiles";
   return label || "Other";
 }
