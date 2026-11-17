@@ -155,17 +155,23 @@ nav a {
 
 .product-card {
   background: white;
-  border-radius: 12px;
+  border-radius: 14px;
   overflow: hidden;
   box-shadow: 0 3px 12px rgba(0,0,0,.08);
-  padding: 13px;
-  position: relative;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-width: 0;
 }
 
 .product-card img {
+  display: block;
   width: 100%;
   height: 190px;
   object-fit: contain;
+  background: #fff;
+  border-radius: 9px;
 }
 
 .product-card h3 {
@@ -205,16 +211,17 @@ nav a {
 
 .buy-buttons {
   display: flex;
-  gap: 8px;
-  margin-top: 13px;
+  gap: 7px;
+  margin-top: 9px;
 }
 
 .buy-buttons a {
   flex: 1;
+  min-width: 0;
   text-align: center;
   padding: 11px 5px;
   text-decoration: none;
-  border-radius: 6px;
+  border-radius: 7px;
   font-weight: bold;
   font-size: 13px;
 }
@@ -282,15 +289,23 @@ footer p {
   }
 
   .product-card img {
-    height: 125px;
+    height: 135px;
   }
 
-  .product-card h3 {
-    font-size: 14px;
+  .price {
+    font-size: 17px;
+    margin: 8px 0 2px;
   }
 
   .buy-buttons {
     flex-direction: column;
+    gap: 6px;
+    margin-top: 7px;
+  }
+
+  .buy-buttons a {
+    font-size: 12px;
+    padding: 10px 4px;
   }
 
   .categories {
@@ -565,164 +580,72 @@ function renderProducts() {
   filtered.forEach(product => {
 
     const card = document.createElement("div");
-
     card.className = "product-card";
 
+    // Keep every product tile clean: product photo, price and retailer buttons only.
     const image = document.createElement("img");
     image.src = safeUrl(product.image) || PRODUCT_PLACEHOLDER;
     image.addEventListener("error", function() {
-      // Broken or blocked third-party image URLs should never leave a blank card.
       if (image.src !== PRODUCT_PLACEHOLDER) image.src = PRODUCT_PLACEHOLDER;
     }, { once: true });
     image.loading = "lazy";
-    image.alt = product.name ? product.name + " (illustrative placeholder; actual product photo unavailable)" : "Product image placeholder";
-
-    const title = document.createElement("h3");
-
-    title.textContent = product.name || "Product";
-
-    const description = document.createElement("p");
-
-    description.className = "description";
-
-    description.textContent = product.description || "";
+    image.alt = product.name ? product.name + " product photo" : "Product photo unavailable";
 
     const price = document.createElement("div");
-
     price.className = "price";
-
     price.textContent = Number(product.price) > 0
       ? "₹" + Number(product.price).toLocaleString("en-IN")
       : (safeUrl(product.amazon) ? "Check latest price on Amazon" :
          safeUrl(product.flipkart) ? "Check latest price on Flipkart" :
          "Price not currently available");
 
-    const oldPrice = document.createElement("span");
-
-    oldPrice.className = "old-price";
-
-    oldPrice.textContent = product.oldPrice
-      ? "₹" + product.oldPrice
-      : "";
-
-    const discount = document.createElement("div");
-
-    discount.className = "discount";
-
-    const current = Number(product.price);
-
-    const old = Number(product.oldPrice);
-
-    if(old > current && current > 0) {
-
-      const percentage = Math.round(
-        ((old-current)/old)*100
-      );
-
-      discount.textContent = percentage + "% OFF";
-
-    } else {
-
-      discount.style.display = "none";
-    }
-
     const buttons = document.createElement("div");
-
     buttons.className = "buy-buttons";
 
-    // Support Admin fields and legacy/imported affiliate-link names.
     const amazonUrl = safeUrl(
       product.amazon || product.amazon_link || product.amazonLink ||
       product.affiliate_link || product.affiliateLink || product.link
     );
-
     const flipkartUrl = safeUrl(
       product.flipkart || product.flipkart_link || product.flipkartLink
     );
 
-    if(amazonUrl) {
-
+    if (amazonUrl) {
       const amazon = document.createElement("a");
-
       amazon.href = amazonUrl;
-
       amazon.target = "_blank";
-
       amazon.rel = "noopener noreferrer";
-      amazon.addEventListener("click",(event)=>openAffiliateAfterTracking(event,product,"amazon",amazonUrl));
-
+      amazon.addEventListener("click", (event) =>
+        openAffiliateAfterTracking(event, product, "amazon", amazonUrl)
+      );
       amazon.className = "amazon";
-
       amazon.textContent = "Buy Now";
-
       buttons.appendChild(amazon);
     }
 
-    if(flipkartUrl) {
-
+    if (flipkartUrl) {
       const flipkart = document.createElement("a");
-
       flipkart.href = flipkartUrl;
-
       flipkart.target = "_blank";
-
       flipkart.rel = "noopener noreferrer";
-      flipkart.addEventListener("click",(event)=>openAffiliateAfterTracking(event,product,"flipkart",flipkartUrl));
-
+      flipkart.addEventListener("click", (event) =>
+        openAffiliateAfterTracking(event, product, "flipkart", flipkartUrl)
+      );
       flipkart.className = "flipkart";
-
       flipkart.textContent = product.flipkartIsAffiliate ? "Buy on Flipkart" : "View on Flipkart";
-
       buttons.appendChild(flipkart);
     }
 
-    const share = document.createElement("button");
-
-    share.className = "share";
-
-    share.textContent = "Share Product";
-
-    share.onclick = async function() {
-
-      const productUrl = location.origin + location.pathname + "?product=" + encodeURIComponent(product.name || "");
-      const text =
-        (product.name || "Shopping Deal") +
-        (product.price ? " - ₹" + product.price : " - Check latest price") +
-        "\nSmartDeal India પર જુઓ:";
-
-      if(navigator.share) {
-
-        try {
-          await navigator.share({
-            title: product.name || "Shopping Deal",
-            text: text,
-            url: productUrl
-          });
-        } catch(error) {}
-
-      } else {
-
-        const message = encodeURIComponent(
-          text + "\n" + productUrl
-        );
-
-        window.open(
-          "https://wa.me/?text=" + message,
-          "_blank",
-          "noopener"
-        );
-      }
-    };
+    if (!amazonUrl && !flipkartUrl) {
+      const unavailable = document.createElement("span");
+      unavailable.className = "retailer-unavailable";
+      unavailable.textContent = "Buy link coming soon";
+      buttons.appendChild(unavailable);
+    }
 
     card.appendChild(image);
-    card.appendChild(title);
-    card.appendChild(description);
-    card.appendChild(oldPrice);
     card.appendChild(price);
-    card.appendChild(discount);
     card.appendChild(buttons);
-    card.appendChild(share);
-
     container.appendChild(card);
 
   });
