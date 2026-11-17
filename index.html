@@ -386,6 +386,13 @@ const PRODUCT_PLACEHOLDER = "data:image/svg+xml;charset=UTF-8," + encodeURICompo
   '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 420"><rect width="600" height="420" fill="#f1f4f8"/><rect x="235" y="65" width="130" height="250" rx="22" fill="#d7deea" stroke="#64748b" stroke-width="8"/><rect x="250" y="88" width="100" height="190" rx="8" fill="#eef2f7"/><circle cx="300" cy="295" r="7" fill="#64748b"/><text x="300" y="370" font-family="Arial,sans-serif" font-size="23" text-anchor="middle" fill="#475569">Product image unavailable</text></svg>'
 );
 
+function normalizeCategory(value) {
+  const label = String(value || "Other").trim();
+  const key = label.toLowerCase().replace(/\\s+/g, " ");
+  if (["mobile", "mobiles", "mobile phone", "mobile phones", "smartphone", "smartphones"].includes(key)) return "Mobiles";
+  return label || "Other";
+}
+
 let selectedCategory = "All";
 
 let liveProducts = [];
@@ -414,7 +421,7 @@ async function loadSupabaseProducts() {
       amazonIsAffiliate: !!row.amazon_affiliate_link,
       flipkart: row.flipkart_affiliate_link || "",
       flipkartIsAffiliate: !!row.flipkart_affiliate_link,
-      category: row.category || "Other",
+      category: normalizeCategory(row.category),
       description: row.description || "",
       featured: row.is_featured === true
     }));
@@ -431,7 +438,7 @@ async function loadSupabaseProducts() {
         amazon: p.amazon || p.amazon_affiliate_link || p.amazon_link || p.amazonLink || p.affiliate_link || p.link || "",
         flipkart: p.flipkart || p.flipkart_affiliate_link || p.flipkart_link || p.flipkartLink || "",
         flipkartIsAffiliate: !!(p.flipkart || p.flipkart_affiliate_link || p.flipkart_link || p.flipkartLink),
-        category: p.category || "Other", description: p.description || "",
+        category: normalizeCategory(p.category), description: p.description || "",
         featured: p.featured === true || p.is_featured === true
       })).filter(p => p.name);
     } catch(e) { console.warn("Admin catalog could not be read.", e); }
@@ -453,7 +460,7 @@ async function loadSupabaseProducts() {
         amazon:p.amazon||p.amazon_affiliate_link||p.amazon_link||p.amazonLink||p.affiliate_link||p.link||"",
         flipkart:p.flipkart||p.flipkart_affiliate_link||p.flipkart_link||p.flipkartLink||"",
         flipkartIsAffiliate:!!(p.flipkart||p.flipkart_affiliate_link||p.flipkart_link||p.flipkartLink),
-        category:p.category||"Other", description:p.description||"",
+        category:normalizeCategory(p.category), description:p.description||"",
         featured:p.featured===true||p.is_featured===true
       })).filter(p=>p.name) : [];
     } catch(e) { liveProducts=[]; }
@@ -474,7 +481,7 @@ function renderCategories() {
   const container = document.getElementById("categoryFilters");
   if(!container) return;
   const categories = [...new Set(liveProducts
-    .map(product => String(product.category || "Other").trim())
+    .map(product => normalizeCategory(product.category))
     .filter(Boolean))]
     .sort((a,b) => a.localeCompare(b));
   if(selectedCategory !== "All" && !categories.some(c => c.toLowerCase() === selectedCategory.toLowerCase())) {
@@ -551,7 +558,7 @@ function renderProducts() {
 
     const name = String(product.name || "").toLowerCase();
 
-    const category = String(product.category || "").toLowerCase();
+    const category = normalizeCategory(product.category).toLowerCase();
 
     const matchesSearch =
       name.includes(search) || category.includes(search) || String(product.description || "").toLowerCase().includes(search);
