@@ -361,6 +361,9 @@ footer p {
   <button class="category-btn active" type="button" data-category="All">All</button>
 </div>
 
+<h2 class="section-title" id="today-deals">🔥 Today's Best Deals</h2>
+<div class="products" id="todayDeals" aria-live="polite"></div>
+
 <h2 class="section-title" id="products-section">
   🔥 Latest Shopping Deals
 </h2>
@@ -374,6 +377,7 @@ footer p {
   <p>As an Amazon Associate I earn from qualifying purchases.</p>
   <p>SmartDeal India may earn a commission when you shop through qualifying affiliate links, at no extra cost to you.</p>
   <p>Prices, discounts, stock and delivery details are controlled by the retailer and may change. Please confirm all details on the retailer website before ordering.</p>
+  <p><a href="./about.html" style="color:#fff;margin:0 8px;">About</a><a href="./contact.html" style="color:#fff;margin:0 8px;">Contact</a><a href="./privacy-policy.html" style="color:#fff;margin:0 8px;">Privacy Policy</a><a href="./terms.html" style="color:#fff;margin:0 8px;">Terms &amp; Conditions</a></p>
   <p>© 2026 SmartDeal India. All Rights Reserved.</p>
 </footer>
 
@@ -448,6 +452,7 @@ async function loadSupabaseProducts() {
     if(sharedProduct) document.getElementById("search").value = sharedProduct;
     renderCategories();
     renderProducts();
+    renderTodayDeals();
   } catch (error) {
     console.error("Supabase product loading failed:", error);
     // Keep the storefront usable from the Admin Panel even if Supabase is offline.
@@ -466,6 +471,7 @@ async function loadSupabaseProducts() {
     } catch(e) { liveProducts=[]; }
     renderCategories();
     renderProducts();
+    renderTodayDeals();
   }
 }
 
@@ -671,6 +677,59 @@ function renderProducts() {
   });
 }
 
+function renderTodayDeals() {
+  const container = document.getElementById("todayDeals");
+  if (!container) return;
+  container.replaceChildren();
+  const deals = liveProducts
+    .filter(p => Number(p.price) > 0 && Number(p.oldPrice) > Number(p.price))
+    .sort((a,b) => ((Number(b.oldPrice)-Number(b.price))/Number(b.oldPrice))-((Number(a.oldPrice)-Number(a.price))/Number(a.oldPrice)))
+    .slice(0,6);
+  if (!deals.length) {
+    container.innerHTML = '<div class="empty"><p>Fresh deals will appear here when verified offer prices are available.</p></div>';
+    return;
+  }
+  deals.forEach(product => {
+    const card = document.createElement("div");
+    card.className = "product-card";
+    const img = document.createElement("img");
+    img.src = safeUrl(product.image) || PRODUCT_PLACEHOLDER;
+    img.alt = product.name + " product photo";
+    img.loading = "lazy";
+    img.addEventListener("error", () => { img.src = PRODUCT_PLACEHOLDER; }, { once:true });
+    const title = document.createElement("h3");
+    title.textContent = product.name;
+    const price = document.createElement("div");
+    price.className = "price";
+    price.textContent = "₹" + Number(product.price).toLocaleString("en-IN");
+    const old = document.createElement("span");
+    old.className = "old-price";
+    old.textContent = "₹" + Number(product.oldPrice).toLocaleString("en-IN");
+    const discount = document.createElement("span");
+    discount.className = "discount";
+    discount.textContent = Math.round((1-Number(product.price)/Number(product.oldPrice))*100) + "% OFF";
+    price.append(document.createElement("br"), old, discount);
+    const buttons = document.createElement("div");
+    buttons.className = "buy-buttons";
+    const links = [
+      ["amazon", product.amazon || product.amazon_affiliate_link || product.amazon_link || product.amazonLink || product.affiliate_link || product.link, "Buy on Amazon"],
+      ["flipkart", product.flipkart || product.flipkart_affiliate_link || product.flipkart_link || product.flipkartLink, "Buy on Flipkart"]
+    ];
+    links.forEach(([retailer, raw, label]) => {
+      const url = safeUrl(raw);
+      if (!url) return;
+      const a = document.createElement("a");
+      a.href = url; a.target = "_blank"; a.rel = "noopener noreferrer";
+      a.className = retailer;
+      a.textContent = label;
+      a.addEventListener("click", event => openAffiliateAfterTracking(event, product, retailer, url));
+      buttons.appendChild(a);
+    });
+    card.append(img,title,price,buttons);
+    container.appendChild(card);
+  });
+}
+
 function trackSiteVisit() {
   try {
     if(!window.smartDealSupabase) return;
@@ -691,6 +750,7 @@ window.addEventListener("storage",function(event) {
   if(event.key === STORAGE_KEY) {
     renderCategories();
     renderProducts();
+    renderTodayDeals();
   }
 
 });
