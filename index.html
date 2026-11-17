@@ -408,13 +408,13 @@ async function loadSupabaseProducts() {
     // and keeps the storefront query aligned with the database's public contract.
     const { data, error } = await window.smartDealSupabase
       .from("storefront_products")
-      .select("id, product_name, product_price, product_image_url, amazon_affiliate_link, flipkart_affiliate_link, category, description, is_featured, source, created_at")
+      .select("id, product_name, product_price, old_price, product_image_url, amazon_affiliate_link, flipkart_affiliate_link, category, description, is_featured, source, created_at")
       .order("created_at", { ascending: false });
     if (error) throw error;
     const remoteProducts = (data || []).map(row => ({
       id: row.id, name: row.product_name || "",
       price: Number(row.product_price || 0),
-      oldPrice: 0,
+      oldPrice: Number(row.old_price || 0),
       availability: "unknown",
       image: row.product_image_url || "",
       amazon: row.amazon_affiliate_link || "",
@@ -600,11 +600,24 @@ function renderProducts() {
 
     const price = document.createElement("div");
     price.className = "price";
-    price.textContent = Number(product.price) > 0
-      ? "₹" + Number(product.price).toLocaleString("en-IN")
-      : (safeUrl(product.amazon) ? "Check latest price on Amazon" :
-         safeUrl(product.flipkart) ? "Check latest price on Flipkart" :
-         "Price not currently available");
+    if (Number(product.price) > 0) {
+      price.textContent = "₹" + Number(product.price).toLocaleString("en-IN");
+      if (Number(product.oldPrice) > Number(product.price)) {
+        const oldPrice = document.createElement("span");
+        oldPrice.className = "old-price";
+        oldPrice.textContent = "₹" + Number(product.oldPrice).toLocaleString("en-IN");
+        const discount = document.createElement("span");
+        discount.className = "discount";
+        discount.textContent = Math.round((1 - Number(product.price) / Number(product.oldPrice)) * 100) + "% OFF";
+        price.appendChild(document.createElement("br"));
+        price.appendChild(oldPrice);
+        price.appendChild(discount);
+      }
+    } else {
+      price.textContent = safeUrl(product.amazon) ? "Check latest price on Amazon" :
+        safeUrl(product.flipkart) ? "Check latest price on Flipkart" :
+        "Price not currently available";
+    }
 
     const buttons = document.createElement("div");
     buttons.className = "buy-buttons";
