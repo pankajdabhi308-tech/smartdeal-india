@@ -6,7 +6,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>SmartDeal India - Admin Panel</title>
+<title>SmartDeals India — Professional Admin Panel</title>
 
 <meta name="theme-color" content="#101d38">
 
@@ -289,6 +289,53 @@ footer {
 #adminToolbar{max-width:1100px;margin:14px auto 0;padding:0 15px;text-align:right}
 
 .affiliate-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:14px 0 20px}.affiliate-stat{background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:16px;text-align:center}.affiliate-stat span{display:block;color:#475569;font-size:13px}.affiliate-stat strong{display:block;font-size:22px;color:#0f3b75;margin-top:7px;overflow-wrap:anywhere}.affiliate-table-wrap{overflow-x:auto}.affiliate-table{width:100%;border-collapse:collapse;min-width:680px;font-size:14px}.affiliate-table th,.affiliate-table td{padding:11px 9px;border-bottom:1px solid #e5e7eb;text-align:left}.affiliate-table th{background:#f8fafc}.affiliate-status{display:inline-block;padding:4px 8px;border-radius:20px;background:#e2e8f0;font-size:12px}@media(max-width:700px){.affiliate-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* SmartDeals India admin refresh — visual-only, database and admin auth unchanged */
+:root{--admin-navy:#10233f;--admin-blue:#1769e0;--admin-bg:#f3f6fb}
+body{background:var(--admin-bg);color:#18263b;font-family:Inter,"DM Sans",Arial,sans-serif;line-height:1.5}
+header{background:linear-gradient(115deg,#10233f,#1769e0);padding:25px 18px;box-shadow:0 8px 26px #10233f22}
+header h1{font-size:clamp(22px,4vw,32px);letter-spacing:-.5px}
+header p{color:#e2edff}
+.container{max-width:1240px;padding:18px 22px 48px}
+#adminToolbar{max-width:1240px;display:flex;justify-content:flex-end;gap:10px;padding:14px 22px}
+#adminToolbar:after{content:"Storefront";display:block}
+#adminLogin{margin:42px auto;padding:28px;border:1px solid #e3eaf4;box-shadow:0 16px 45px #10233f12}
+.stats{grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:14px}
+.stat-box,.form-box{border:1px solid #e6edf6;border-radius:15px;box-shadow:0 8px 24px #10233f0a}
+.stat-box{padding:20px 14px;transition:transform .18s ease,box-shadow .18s ease}
+.stat-box:hover,.product-card:hover{transform:translateY(-2px);box-shadow:0 12px 28px #10233f16}
+.stat-box h2{color:var(--admin-blue);font-size:clamp(22px,3vw,29px)}
+.form-box{padding:clamp(16px,2.5vw,26px);margin-bottom:20px}
+.form-box h2{font-size:clamp(19px,2.4vw,24px);color:var(--admin-navy)}
+.note{border:1px solid #f2dfad}
+input,textarea,select{border:1px solid #d7e0ed;border-radius:10px;min-height:44px;background:#fff}
+input:focus,textarea:focus,select:focus{border-color:var(--admin-blue);box-shadow:0 0 0 3px #1769e018}
+button{border-radius:10px;min-height:42px;transition:filter .15s ease,transform .15s ease}
+button:hover{filter:brightness(.96);transform:translateY(-1px)}
+.primary{background:var(--admin-blue)}
+.product-list{grid-template-columns:repeat(auto-fit,minmax(min(100%,245px),1fr));gap:16px}
+.product-card{border:1px solid #e5ebf4;border-radius:14px;padding:16px;min-width:0;overflow:hidden}
+.product-card img{height:165px;object-fit:contain;background:#f8faff;border-radius:10px}
+.product-card h3{line-height:1.35;overflow-wrap:anywhere}
+.product-actions{gap:10px}
+.affiliate-stat{background:linear-gradient(145deg,#f8fbff,#eef4fc);border-radius:12px}
+.affiliate-stat strong{color:var(--admin-blue)}
+.affiliate-table th{color:#233d61}
+footer{background:var(--admin-navy)}
+@media(max-width:700px){
+ .container{padding:12px 12px 34px;margin:12px auto}
+ .stats{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+ .stat-box{padding:14px 8px;font-size:13px}
+ .stat-box h2{font-size:22px}
+ .form-grid{grid-template-columns:1fr}
+ .form-box{padding:15px;margin-bottom:14px}
+ .affiliate-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ #adminToolbar{padding:10px 12px}
+ #adminLogin{margin:22px 12px;padding:20px}
+ .buttons button{flex:1 1 140px}
+}
+@media(max-width:360px){.stats{grid-template-columns:1fr}.affiliate-grid{grid-template-columns:1fr}}
+
 </style>
 
 </head>
@@ -299,7 +346,7 @@ footer {
 
 <h1>🛍️ SmartDeal India</h1>
 
-<p>Professional Product Admin Panel</p>
+<p>Professional Product Admin Panel · Manage your store securely</p>
 
 </header>
 <div id="adminLogin">
@@ -312,7 +359,7 @@ footer {
 <input id="adminPassword" type="password" autocomplete="current-password" required>
 <button class="primary" type="submit">Sign In</button>
 </form><p id="authMessage" role="alert"></p></div>
-<div id="adminToolbar" style="display:none"><button class="secondary" id="adminSignOut" type="button">Sign Out</button></div>
+<div id="adminToolbar" style="display:none"><a class="primary" href="./" style="display:inline-flex;align-items:center;padding:11px 16px;border-radius:10px;color:white;text-decoration:none;font-weight:bold;margin-right:8px">View Store ↗</a><button class="secondary" id="adminSignOut" type="button">Sign Out</button></div>
 <div id="adminApp">
 
 <div class="container">
