@@ -38,6 +38,7 @@
    <a class="cat" href="#products" data-filter="Baby"><div class="caticon">🧸</div><b>Baby & Kids</b><small>Care & comfort</small></a>
    <a class="cat" href="#products" data-filter="Home"><div class="caticon">🏠</div><b>Home</b><small>Everyday living</small></a>
    <a class="cat" href="#products" data-filter="Accessories"><div class="caticon">🔋</div><b>Accessories</b><small>Useful add-ons</small></a>
+   <a class="cat" href="#products" data-filter="Grocery"><div class="caticon">🛒</div><b>Grocery</b><small>Daily essentials</small></a>
   </div>
  </section>
  <div class="trust"><div><span>🔎</span>Easy product discovery</div><div><span>🛒</span>Retailer shopping links</div><div><span>📱</span>Mobile-friendly design</div><div><span>🔐</span>Secure retailer checkout</div></div>
@@ -210,5 +211,41 @@ footer{background:#232f3e}
  .retailers{flex-direction:column}
  .section h2{font-size:18px}
  .dealband{padding:16px}
+}
+</style>
+
+<style id="smartdeal-final-compact-fixes">
+/* Final compact layout overrides */
+.hero{min-height:0;height:178px;grid-template-columns:1.2fr .8fr;border-radius:5px}
+.hero-copy{padding:18px 25px}
+.hero h1{font-size:clamp(22px,2.7vw,32px);line-height:1.12;margin:8px 0 6px;letter-spacing:-.6px}
+.hero p{font-size:12px;line-height:1.35;margin:0 0 10px;white-space:nowrap}
+.hero-buttons{display:flex;gap:8px;align-items:center;flex-wrap:nowrap}
+.hero .primary,.hero .secondary{padding:8px 12px;font-size:11px;white-space:nowrap}
+.hero-art,.hero-photo{height:100%;min-height:0}
+.hero-photo{clip-path:none;border-radius:0;background-position:center;background-size:cover}
+.cats{grid-template-columns:repeat(7,minmax(0,1fr))}
+@media(max-width:850px){
+ .hero{height:auto;grid-template-columns:1fr}
+ .hero-copy{padding:17px 18px 12px}
+ .hero h1{font-size:25px}
+ .hero p{white-space:normal}
+ .hero-art,.hero-photo{height:72px;min-height:72px}
+ .cats{grid-template-columns:repeat(3,minmax(0,1fr))}
+ .products{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+}
+@media(max-width:480px){
+ .hero-copy{padding:16px 14px 10px}
+ .hero h1{font-size:22px;line-height:1.15}
+ .hero p{font-size:11px;margin-bottom:8px}
+ .hero-buttons{gap:6px}
+ .hero .primary,.hero .secondary{padding:8px 9px;font-size:10px}
+ .hero-art,.hero-photo{height:58px;min-height:58px}
+ .cats{grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+ .photo{height:135px;padding:7px}
+ .cardbody{padding:9px}
+ .card h3{font-size:12px;line-height:1.3;min-height:46px}
+ .retailers{gap:5px}
+ .retailers a,.retailers button{padding:8px 5px;font-size:10px}
 }
 </style>
