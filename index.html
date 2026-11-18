@@ -27,8 +27,8 @@
 </header>
 <main class="wrap" id="home">
  <section class="hero">
-  <div class="hero-copy"><span class="eyebrow">India’s smart shopping destination</span><h1>Find the deal.<br>Make the smart choice.</h1><p>Discover popular products, compare retailer options and shop confidently — all in one simple place.</p><a class="primary" href="#products">Explore Products&nbsp; →</a></div>
-  <div class="hero-art"><div class="hero-photo" role="img" aria-label="Smart shopping products including smartphones, earbuds, smartwatch and shoes"></div><div class="floating float1">⚡ Today’s best picks</div><div class="floating float2">✓ Compare retailer offers</div></div>
+  <div class="hero-copy"><span class="eyebrow">India’s smart shopping destination</span><h1>Find the deal. Make the smart choice.</h1><p>Compare Amazon &amp; Flipkart offers. Shop smart.</p><div class="hero-buttons"><a class="primary" href="#products">Explore Products →</a><a class="secondary" href="#products">Today’s best picks</a></div></div>
+  <div class="hero-art"><div class="hero-photo" role="img" aria-label="Smart shopping products"></div></div>
  </section>
  <section class="section" id="categories"><div class="section-head"><div><h2>Shop by Category</h2><p>Explore the products you are looking for</p></div><a class="viewall" href="#products">View all →</a></div>
   <div class="cats">
@@ -62,3 +62,24 @@ document.getElementById("clearFilter").addEventListener("click",()=>{activeFilte
 document.querySelectorAll("[data-filter]").forEach(a=>a.addEventListener("click",()=>{activeFilter=a.dataset.filter;document.getElementById("searchInput").value="";render()}));load();
 </script>
 </body></html>
+<style>
+/* Compact homepage hero */
+.hero{min-height:0;height:170px;grid-template-columns:1.2fr .8fr;border-radius:15px;align-items:center}
+.hero-copy{padding:17px 26px}
+.hero-copy .eyebrow{font-size:9px;padding:5px 9px}
+.hero h1{font-size:clamp(21px,2.6vw,30px);line-height:1.12;letter-spacing:-.7px;margin:8px 0 6px;max-width:560px}
+.hero p{font-size:12px;line-height:1.35;margin:0 0 11px}
+.hero-buttons{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.hero .primary,.hero .secondary{padding:8px 12px;border-radius:7px;font-size:11px;white-space:nowrap}
+.hero .secondary{display:inline-block;background:#ffffff20;border:1px solid #ffffff65;color:#fff;font-weight:800}
+.hero-art{min-height:0;height:100%;padding:0}
+.hero-photo{min-height:0;height:100%;width:100%;clip-path:none;border-radius:0 15px 15px 0;background-position:center 48%}
+@media(max-width:650px){
+ .hero{height:auto;min-height:0;grid-template-columns:1fr}
+ .hero-copy{padding:17px 18px 13px}
+ .hero h1{font-size:24px}
+ .hero p{font-size:11px;margin-bottom:9px}
+ .hero-art{height:62px;min-height:62px}
+ .hero-photo{height:62px;min-height:62px;border-radius:0 0 15px 15px;background-position:center 52%}
+}
+</style>
