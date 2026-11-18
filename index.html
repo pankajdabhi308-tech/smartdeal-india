@@ -2,8 +2,8 @@
 <html lang="en-IN">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>SmartDeals India — SmartDeals India | Smart Shopping & Best Deals</title>
-<meta name="description" content="SmartDeals India shopping homepage preview. Discover mobiles, electronics, fashion and baby essentials.">
+<title>SmartDeal India — Shop Mobiles, Electronics, Fashion & Best Deals</title>
+<meta name="description" content="Discover popular products, compare Amazon and Flipkart offers, and shop smarter with SmartDeal India.">
 <meta name="theme-color" content="#10233f">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
@@ -16,12 +16,12 @@
 </style>
 </head>
 <body>
-<div class="promo">SMART DEALS, SMARTER SHOPPING &nbsp;•&nbsp; <b>Compare Amazon & Flipkart offers</b></div>
+<div class="promo">SMARTDEAL INDIA &nbsp;•&nbsp; <b>Discover deals. Compare offers. Shop smart.</b></div>
 <header class="header">
  <div class="headrow">
-  <a class="logo" href="./">SmartDeals <span>India</span></a>
+  <a class="logo" href="./">SmartDeal <span>India</span></a>
   <form class="search" id="searchForm"><input id="searchInput" placeholder="Search mobiles, earbuds, fashion and more..." aria-label="Search products"><button>Search</button></form>
-  <div class="head-actions"><a href="#categories">☷ Categories</a><a href="#products">♡ Deals</a></div>
+  <div class="head-actions"><a href="#categories">☷ Categories</a><a href="#products">★ Best Deals</a></div>
  </div>
  <nav class="nav"><div class="navinner"><a href="#home">Home</a><a href="#products" data-filter="Mobiles">Mobiles</a><a href="#products" data-filter="Electronics">Electronics</a><a href="#products" data-filter="Fashion">Fashion</a><a href="#products" data-filter="Baby">Baby & Kids</a><a href="#products" data-filter="Deals">Today’s Deals</a><a href="#footer">About</a></div></nav>
 </header>
@@ -44,7 +44,7 @@
  <section class="section" id="products"><div class="section-head"><div><h2 id="productHeading">Popular Products</h2><p id="productSub">A hand-picked selection from our catalogue</p></div><a class="viewall" href="#home" id="clearFilter">Clear filter ↗</a></div><div class="products" id="productGrid"><div class="empty">Loading products…</div></div></section>
  <section class="dealband"><div><h2>One destination. More ways to shop.</h2><p>Choose the retailer link available on each product and complete your purchase there.</p></div><a href="#products">Browse deals →</a></section>
 </main>
-<footer id="footer"><div class="foot"><div><strong>SmartDeals India</strong><p>Helping shoppers discover useful products and retailer offers. Product prices and availability may change on retailer websites.</p><div class="status" id="loadStatus">Storefront preview • Product feed loading</div></div><div class="footlinks"><a href="#home">Home</a><a href="#categories">Categories</a><a href="#products">Products</a><a href="./admin.html">Admin</a></div></div></footer>
+<footer id="footer"><div class="foot"><div><strong>SmartDeal India</strong><p>Helping shoppers discover useful products and retailer offers. Product prices and availability may change on retailer websites.</p><div class="status" id="loadStatus">Storefront preview • Product feed loading</div></div><div class="footlinks"><a href="#home">Home</a><a href="#categories">Categories</a><a href="#products">Products</a><a href="./admin.html">Admin</a></div></div></footer>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="./supabase-config.js"></script>
 <script>
 "use strict";
@@ -120,4 +120,95 @@ document.querySelectorAll("[data-filter]").forEach(a=>a.addEventListener("click"
 .imgfallback small{font:600 10px "DM Sans",Arial,sans-serif}
 .checkprice{font-size:14px;color:#68758a}
 .retailers a{line-height:1.2}
+</style>
+
+<style id="amazon-inspired-homepage">
+:root{--navy:#131921;--blue:#146eb4;--ink:#0f1111;--muted:#565959;--bg:#eaeded;--line:#d5d9d9;--green:#007600;--orange:#ff9900}
+body{background:#eaeded;color:#0f1111;font-family:Arial,Helvetica,sans-serif}
+.promo{background:#131921;color:#fff;padding:8px 14px;font-size:12px}
+.promo b{color:#ffd814}
+.header{background:#131921;color:#fff;box-shadow:0 2px 7px #0002}
+.headrow{max-width:1440px;padding:12px 18px;gap:18px}
+.logo{color:#fff;font-size:25px;letter-spacing:-1.2px}
+.logo span{color:#ff9900}
+.search{background:#fff;border:0;border-radius:7px;max-width:none;overflow:hidden}
+.search input{background:#fff;color:#0f1111;padding:13px 15px;font-size:14px}
+.search button{background:#febd69;color:#111;padding:0 22px;font-weight:800}
+.search button:hover{background:#f3a847}
+.head-actions{color:#fff;gap:18px}
+.head-actions a{padding:8px 5px;border:1px solid transparent;border-radius:3px}
+.head-actions a:hover{border-color:#fff;color:#fff}
+.nav{background:#232f3e;border:0}
+.navinner{max-width:1440px;padding:11px 18px;color:#fff;gap:25px}
+.nav a{white-space:nowrap}
+.nav a:hover{color:#ffce75}
+.wrap{max-width:1440px;padding:18px 18px 48px}
+.hero{height:auto;min-height:285px;border-radius:4px;grid-template-columns:1.05fr .95fr;background:linear-gradient(110deg,#12304a,#1b5b80 58%,#f39a35);box-shadow:0 2px 5px #0001}
+.hero-copy{padding:35px 38px}
+.hero .eyebrow{background:#ffffff22;border-color:#ffffff55}
+.hero h1{font-size:clamp(30px,3.7vw,46px);max-width:560px}
+.hero p{font-size:15px}
+.hero .primary{background:#ffd814;color:#111;border-radius:24px;padding:12px 23px}
+.hero .primary:hover{background:#f7ca00}
+.hero .secondary{background:#fff;color:#111;border:0;border-radius:24px}
+.hero-art{min-height:285px}
+.hero-photo{min-height:285px;border-radius:0;background-position:center;background-size:cover}
+.section{margin-top:24px}
+.section-head{margin-bottom:12px}
+.section h2{font:700 21px Arial,sans-serif;letter-spacing:0;color:#0f1111}
+.section-head p{color:#565959}
+.viewall{color:#007185}
+.cats{grid-template-columns:repeat(6,minmax(0,1fr));gap:12px}
+.cat{border-radius:3px;border:0;padding:17px 9px;box-shadow:0 1px 2px #00000012}
+.cat:hover{transform:none;box-shadow:0 2px 8px #0002;border-color:transparent}
+.caticon{background:#f7fafa;border-radius:50%;width:62px;height:62px}
+.cat b{font-size:14px}
+.cat small{color:#565959}
+.trust{gap:10px;margin-top:14px}
+.trust div{border:0;border-radius:3px;box-shadow:0 1px 2px #00000010;padding:13px}
+.products{grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.card{border:0;border-radius:3px;box-shadow:0 1px 2px #00000012}
+.card:hover{transform:translateY(-2px);box-shadow:0 3px 10px #0002}
+.photo{height:205px;background:#fff;padding:14px}
+.photo img{object-fit:contain}
+.imgfallback{background:#f7fafa}
+.cardbody{padding:13px}
+.card h3{font-size:14px;font-weight:500;min-height:40px}
+.price{font-size:20px;color:#b12704}
+.old{color:#565959}
+.badge{background:#cc0c39;color:#fff;border-radius:2px}
+.retailers{gap:7px}
+.retailers a,.retailers button{border-radius:20px;padding:9px 7px;font-size:11px}
+.amazon{background:#ffd814;color:#111}
+.flip{background:#e7f3ff;color:#0759a5}
+.dealband{background:#fff;border:0;border-radius:3px;box-shadow:0 1px 2px #0001}
+.dealband h2{font-size:20px}
+.dealband a{background:#ffd814;color:#111;border-radius:20px}
+footer{background:#232f3e}
+.footlinks a:hover{text-decoration:underline}
+@media(max-width:850px){
+ .headrow{gap:10px}.head-actions{margin-left:auto}
+ .hero{grid-template-columns:1fr}.hero-copy{padding:25px 23px 15px}
+ .hero-art{min-height:125px;height:125px}.hero-photo{height:125px;min-height:125px}
+ .cats{grid-template-columns:repeat(3,minmax(0,1fr))}
+ .products{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:480px){
+ .headrow{padding:10px}.logo{font-size:21px}
+ .head-actions{font-size:10px;gap:5px}
+ .search input{padding:11px;font-size:12px}.search button{padding:0 13px}
+ .navinner{padding:10px 13px;gap:18px;font-size:12px}
+ .wrap{padding:12px 10px 35px}
+ .hero{border-radius:3px}.hero h1{font-size:27px}
+ .hero-copy{padding:22px 17px 13px}
+ .hero-art,.hero-photo{height:95px;min-height:95px}
+ .cats{gap:8px}.cat{padding:12px 4px}.caticon{width:48px;height:48px;font-size:23px}
+ .trust{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+ .trust div{font-size:10px;padding:9px}
+ .photo{height:150px;padding:8px}
+ .cardbody{padding:10px}.card h3{font-size:12px}
+ .retailers{flex-direction:column}
+ .section h2{font-size:18px}
+ .dealband{padding:16px}
+}
 </style>
