@@ -437,6 +437,7 @@ required
 >
 
 <img id="imagePreview" class="preview" alt="Product preview">
+<div class="field full"><label for="extraImages">વધારાના Product Photo URLs (દરેક URL નવી લાઇનમાં)</label><textarea id="extraImages" placeholder="https://example.com/photo-2.jpg&#10;https://example.com/photo-3.jpg"></textarea><small>મુખ્ય ફોટા ઉપરાંત અહીં બધા વધારાના ફોટાની લિંક મૂકો. ગ્રાહક ફોટા પર ટચ કરીને ગેલેરીમાં જોઈ શકશે.</small></div>
 
 </div>
 
@@ -626,11 +627,11 @@ function getProducts() { return liveProducts; }
 async function loadAdminProducts() {
   await window.smartDealSupabaseReady;
   const {data,error}=await window.smartDealSupabase.from("products")
-    .select("id,product_name,product_price,old_price,product_image_url,amazon_affiliate_link,flipkart_affiliate_link,category,description,is_active,is_featured,availability,price_checked_at")
+    .select("id,product_name,product_price,old_price,product_image_url,image_urls,amazon_affiliate_link,flipkart_affiliate_link,category,description,is_active,is_featured,availability,price_checked_at")
     .order("created_at",{ascending:false});
   if(error) throw error;
   liveProducts=(data||[]).map(p=>({
-    id:p.id,name:p.product_name,price:Number(p.product_price),oldPrice:Number(p.old_price||0),image:p.product_image_url||"", availability:p.availability||"unknown", priceCheckedAt:p.price_checked_at||null,
+    id:p.id,name:p.product_name,price:Number(p.product_price),oldPrice:Number(p.old_price||0),image:p.product_image_url||"", images:Array.isArray(p.image_urls)?p.image_urls:[], availability:p.availability||"unknown", priceCheckedAt:p.price_checked_at||null,
     amazon:p.amazon_affiliate_link||"",flipkart:p.flipkart_affiliate_link||"",
     category:p.category||"Other",description:p.description||"",featured:p.is_featured===true,
     active:p.is_active!==false
@@ -659,7 +660,7 @@ function saveProducts(_products) { showMessage("Bulk backup restore is paused to
 
 async function saveProductToDatabase(product) {
   const row={
-    product_name:product.name, product_price:product.price, old_price:product.oldPrice||null, product_image_url:product.image, availability:product.availability||"unknown",
+    product_name:product.name, product_price:product.price, old_price:product.oldPrice||null, product_image_url:product.image, image_urls:product.images||[], availability:product.availability||"unknown",
     amazon_affiliate_link:product.amazon||null, flipkart_affiliate_link:product.flipkart||null,
     category:product.category, description:product.description||null, is_active:true,
     is_featured:product.featured, source:"manual", updated_at:new Date().toISOString()
@@ -794,6 +795,9 @@ document.getElementById("productForm").addEventListener("submit",async function(
   const flipkart = flipkartInput ? safeUrl(flipkartInput) : "";
 
   const featured = document.getElementById("featured").checked;
+  const extraRaw = document.getElementById("extraImages").value.split(/\r?\n/).map(v=>v.trim()).filter(Boolean);
+  const extraImages = extraRaw.map(safeUrl);
+  if(extraImages.some((url,i)=>!url)){showMessage("વધારાના દરેક ફોટા માટે સાચી http/https image URL આપો.","error");return;}
 
   if(!name || (!image && !pendingImageUpload) || !category || !Number.isFinite(price) || price <= 0) {
 
@@ -830,7 +834,7 @@ document.getElementById("productForm").addEventListener("submit",async function(
 
   try {
     if(pendingImageUpload){image=await pendingImageUpload;document.getElementById("image").value=image;pendingImageUpload=null;document.getElementById("imageFile").value="";}
-    await saveProductToDatabase({name,description,image,category,price,oldPrice,amazon,flipkart,featured,availability:"unknown"});
+    await saveProductToDatabase({name,description,image,images:[...new Set([image,...extraImages])].filter(Boolean),category,price,oldPrice,amazon,flipkart,featured,availability:"unknown"});
     showMessage(editingId ? "Product updated in live database." : "Product saved to live database.","ok");
     resetForm();
   } catch(error) {
@@ -853,6 +857,7 @@ function editProduct(id) {
     product.description || "";
 
   document.getElementById("image").value = product.image || "";
+  document.getElementById("extraImages").value = (product.images||[]).filter(u=>u!==product.image).join("\n");
 
   document.getElementById("category").value =
     product.category || "";
