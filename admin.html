@@ -626,11 +626,22 @@ function getProducts() { return liveProducts; }
 
 async function loadAdminProducts() {
   await window.smartDealSupabaseReady;
-  const {data,error}=await window.smartDealSupabase.from("products")
-    .select("id,product_name,product_price,old_price,product_image_url,image_urls,amazon_affiliate_link,flipkart_affiliate_link,category,description,is_active,is_featured,availability,price_checked_at")
-    .order("created_at",{ascending:false});
-  if(error) throw error;
-  liveProducts=(data||[]).map(p=>({
+  const pageSize=500;
+  let offset=0;
+  const rows=[];
+  while(true) {
+    const {data,error}=await window.smartDealSupabase.from("products")
+      .select("id,product_name,product_price,old_price,product_image_url,image_urls,amazon_affiliate_link,flipkart_affiliate_link,category,description,is_active,is_featured,availability,price_checked_at,created_at")
+      .order("created_at",{ascending:false})
+      .order("id",{ascending:true})
+      .range(offset,offset+pageSize-1);
+    if(error) throw error;
+    const batch=data||[];
+    rows.push(...batch);
+    if(batch.length<pageSize) break;
+    offset+=pageSize;
+  }
+  liveProducts=rows.map(p=>({
     id:p.id,name:p.product_name,price:Number(p.product_price),oldPrice:Number(p.old_price||0),image:p.product_image_url||"", images:Array.isArray(p.image_urls)?p.image_urls:[], availability:p.availability||"unknown", priceCheckedAt:p.price_checked_at||null,
     amazon:p.amazon_affiliate_link||"",flipkart:p.flipkart_affiliate_link||"",
     category:p.category||"Other",description:p.description||"",featured:p.is_featured===true,
@@ -734,10 +745,10 @@ function updateStats() {
   const active = products.filter(p => p.active !== false);
   const countLinks = key => active.filter(p => String(p[key] || "").trim()).length;
   document.getElementById("totalProducts").textContent = products.length;
-  document.getElementById("activeProducts").textContent = active.length + " / 1000";
+  document.getElementById("activeProducts").textContent = active.length.toLocaleString("en-IN");
   document.getElementById("amazonProducts").textContent = countLinks("amazon");
   document.getElementById("flipkartProducts").textContent = countLinks("flipkart");
-  document.getElementById("imageProducts").textContent = active.filter(p => String(p.image || "").trim()).length + " / 1000";
+  document.getElementById("imageProducts").textContent = active.filter(p => String(p.image || "").trim()).length.toLocaleString("en-IN");
   document.getElementById("featuredProducts").textContent = active.filter(p => p.featured === true).length;
   const categories = [...new Set(active.map(p => p.category).filter(Boolean))];
   document.getElementById("totalCategories").textContent = categories.length;
@@ -827,6 +838,14 @@ document.getElementById("productForm").addEventListener("submit",async function(
   if(flipkartInput && !flipkart) {
 
     showMessage("Please enter a valid Flipkart link.","error");
+
+    return;
+
+  }
+
+  if(!amazon && !flipkart) {
+
+    showMessage("At least one valid Amazon or Flipkart affiliate link is required before saving this product.","error");
 
     return;
 
