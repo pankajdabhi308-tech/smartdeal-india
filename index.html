@@ -213,7 +213,7 @@ document.addEventListener("click",async e=>{
 },true);
 recordVisit();
 document.getElementById("searchForm").addEventListener("submit",e=>{e.preventDefault();activeFilter="All";render();document.getElementById("products").scrollIntoView({behavior:"smooth"})});document.getElementById("searchInput").addEventListener("input",render);
-document.getElementById("clearFilter").addEventListener("click",()=>{activeFilter="All";document.getElementById("searchInput").value="";render()});
+document.getElementById("clearFilter").addEventListener("click",e=>{e.preventDefault();activeFilter="All";document.getElementById("searchInput").value="";render();document.getElementById("products").scrollIntoView({behavior:"smooth",block:"start"});});
 document.querySelectorAll("[data-filter]").forEach(a=>a.addEventListener("click",()=>{activeFilter=a.dataset.filter;document.getElementById("searchInput").value="";render()}));
 load();
 let galleryItems=[],galleryIndex=0;
