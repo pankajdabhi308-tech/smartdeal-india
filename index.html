@@ -88,7 +88,11 @@ const STORAGE_KEY="smartdealIndiaProducts";let allProducts=[],activeFilter="All"
 const fmt=n=>"₹"+Number(n||0).toLocaleString("en-IN",{maximumFractionDigits:0});
 const safeUrl=v=>{try{const u=new URL(v);return ["https:","http:"].includes(u.protocol)?u.href:""}catch{return ""}};
 const esc=v=>String(v??"").replace(/[&<>"\']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","\'":"&#39;"}[c]));
-function normalize(p){return {id:p.id||null,name:p.name||p.product_name||p.title||"Product",price:Number(p.price??p.product_price??0),oldPrice:Number(p.oldPrice??p.old_price??0),image:p.image||p.product_image_url||p.image_url||"",images:Array.isArray(p.image_urls)?p.image_urls:(Array.isArray(p.images)?p.images:[]),rating:p.rating??p.average_rating??null,review_count:p.review_count??p.reviews_count??null,reviews:p.reviews||[],amazon:p.amazon||p.amazon_affiliate_link||p.amazon_link||p.amazonLink||p.affiliate_link||p.link||"",flipkart:p.flipkart||p.flipkart_affiliate_link||p.flipkart_link||p.flipkartLink||"",category:p.category||p.product_category||"Other",description:p.description||"",featured:p.featured===true||p.is_featured===true}}
+function normalize(p){
+ const images=Array.isArray(p.image_urls)?p.image_urls:(Array.isArray(p.images)?p.images:[]);
+ const primaryImage=p.image||p.product_image_url||p.image_url||images.find(value=>typeof value==="string"&&safeUrl(value))||"";
+ return {id:p.id||null,name:p.name||p.product_name||p.title||"Product",price:Number(p.price??p.product_price??0),oldPrice:Number(p.oldPrice??p.old_price??0),image:primaryImage,images,rating:p.rating??p.average_rating??null,review_count:p.review_count??p.reviews_count??null,reviews:p.reviews||[],amazon:p.amazon||p.amazon_affiliate_link||p.amazon_link||p.amazonLink||p.affiliate_link||p.link||"",flipkart:p.flipkart||p.flipkart_affiliate_link||p.flipkart_link||p.flipkartLink||"",category:p.category||p.product_category||"Other",description:p.description||"",featured:p.featured===true||p.is_featured===true};
+}
 function categoryMatch(cat,f){if(f==="All"||f==="Deals")return true;const c=String(cat||"").toLowerCase(),x=f.toLowerCase();return c.includes(x)||(x==="baby"&&c.includes("baby"))||(x==="home"&&c.includes("home"))||(x==="accessories"&&c.includes("accessor"))}
 function card(p){
  const im=safeUrl(p.image),a=safeUrl(p.amazon),f=safeUrl(p.flipkart),hasPrice=Number(p.price)>0;
@@ -98,12 +102,9 @@ function card(p){
 }
 function render(){const q=document.getElementById("searchInput").value.trim().toLowerCase(),list=allProducts.filter(p=>(activeFilter==="Deals"?(p.featured||p.oldPrice>p.price):categoryMatch(p.category,activeFilter))&&(!q||(p.name+" "+p.category+" "+p.description).toLowerCase().includes(q)));document.getElementById("productHeading").textContent=activeFilter==="All"?(q?"Search Results":"Popular Products"):activeFilter==="Deals"?"Today’s Deals":activeFilter+" Products";document.getElementById("productSub").textContent=list.length+" products found"+(activeFilter==="Deals"?" • Featured or discounted items":"");document.getElementById("productGrid").innerHTML=list.length?list.map(card).join(''):'<div class="empty"><strong>No products found</strong><br>Try another category or search. New products added in Admin will appear here.</div>'}
 function isCompleteProduct(p){
- return Boolean(
-  String(p.name||"").trim() &&
-  Number.isFinite(Number(p.price)) && Number(p.price)>0 &&
-  safeUrl(p.image) &&
-  safeUrl(p.amazon)
- );
+ const hasImage=safeUrl(p.image)||(Array.isArray(p.images)&&p.images.some(value=>safeUrl(value)));
+ const hasRetailerLink=safeUrl(p.amazon)||safeUrl(p.flipkart);
+ return Boolean(String(p.name||"").trim()&&Number.isFinite(Number(p.price))&&Number(p.price)>0&&hasImage&&hasRetailerLink);
 }
 async function load(){
  const status=document.getElementById("loadStatus");
@@ -115,13 +116,27 @@ async function load(){
  }catch(e){console.warn("Local product cache unavailable",e)}
  if(window.smartDealSupabase){
   try{
-   const request=window.smartDealSupabase.from("products")
-    .select("id,product_name,product_price,old_price,product_image_url,image_urls,amazon_affiliate_link,flipkart_affiliate_link,category,description,is_featured,created_at,is_active")
-    .eq("is_active",true).order("created_at",{ascending:false}).limit(1000);
-   const timeout=new Promise((_,reject)=>setTimeout(()=>reject(new Error("Product feed timed out. Showing any saved catalogue instead.")),12000));
-   const {data,error}=await Promise.race([request,timeout]);
-   if(error) throw error;
-   remote=(data||[]).map(normalize).filter(isCompleteProduct);
+   // Fetch in stable 500-row pages so the Supabase 1,000-row default cap never truncates the catalogue.
+   const pageSize=500;
+   let offset=0;
+   const fetchAllPages=async()=>{
+    while(true){
+     const {data,error}=await window.smartDealSupabase.from("products")
+      .select("id,product_name,product_price,old_price,product_image_url,image_urls,amazon_affiliate_link,flipkart_affiliate_link,category,description,is_featured,created_at,is_active")
+      .eq("is_active",true)
+      .order("created_at",{ascending:false})
+      .order("id",{ascending:true})
+      .range(offset,offset+pageSize-1);
+     if(error) throw error;
+     const batch=data||[];
+     remote.push(...batch);
+     if(batch.length<pageSize) break;
+     offset+=pageSize;
+    }
+   };
+   const timeout=new Promise((_,reject)=>setTimeout(()=>reject(new Error("Product feed timed out. Showing any saved catalogue instead.")),20000));
+   await Promise.race([fetchAllPages(),timeout]);
+   remote=remote.map(normalize).filter(isCompleteProduct);
    status.textContent="Live catalogue • "+remote.length+" complete products available";
   }catch(e){
    console.warn("Live catalogue unavailable",e);
