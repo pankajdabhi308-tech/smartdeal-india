@@ -168,7 +168,7 @@ function openProductDetails(p){
  const reviews=Array.isArray(p.reviews)?p.reviews:[];
  document.getElementById("detailReviews").innerHTML=reviews.length?'<h3>Customer reviews</h3>'+reviews.slice(0,5).map(r=>'<p class="review-item">★ '+esc(r.rating||"")+' '+esc(r.title||"")+'<br>'+esc(r.text||r.body||"")+'</p>').join(""):'<p class="review-item">Verified review text is not stored here. View retailer page for current customer reviews.</p>';
  const a=safeUrl(p.amazon),f=safeUrl(p.flipkart);
- document.getElementById("detailBuy").innerHTML=(a?'<a class="amazon" target="_blank" rel="noopener sponsored" href="'+esc(a)+'">Buy on Amazon ↗</a>':'')+(f?'<a class="flip" target="_blank" rel="noopener sponsored" href="'+esc(f)+'">Buy on Flipkart ↗</a>':'');
+ document.getElementById("detailBuy").innerHTML=(a?'<a class="amazon" data-track-retailer="amazon" data-product-id="'+esc(p.id||"")+'" target="_blank" rel="noopener noreferrer sponsored" href="'+esc(a)+'">Buy on Amazon ↗</a>':'')+(f?'<a class="flip" data-track-retailer="flipkart" data-product-id="'+esc(p.id||"")+'" target="_blank" rel="noopener noreferrer sponsored" href="'+esc(f)+'">Buy on Flipkart ↗</a>':'');
  document.getElementById("productDetails").classList.add("open");document.body.style.overflow="hidden";
 }
 document.addEventListener("click",e=>{
@@ -197,19 +197,31 @@ async function recordVisit(){
   if(error) console.warn("Visit analytics not saved:",error.message);
  }catch(e){console.warn("Visit analytics unavailable:",e.message)}
 }
-document.addEventListener("click",async e=>{
+document.addEventListener("click",e=>{
  const link=e.target.closest("a[data-track-retailer]");
- if(!link||!window.smartDealSupabase) return;
+ if(!link||!window.smartDealSupabase||e.defaultPrevented||e.button!==0||e.metaKey||e.ctrlKey||e.shiftKey||e.altKey) return;
  const retailer=link.dataset.trackRetailer;
  if(!["amazon","flipkart"].includes(retailer)) return;
- try{
-  await window.smartDealSupabaseReady;
-  const {error}=await window.smartDealSupabase.from("affiliate_clicks").insert({
-   product_id:link.dataset.productId||null,retailer,page_url:location.href,
-   referrer:document.referrer||null,user_agent:navigator.userAgent
-  });
-  if(error) console.warn("Affiliate click not saved:",error.message);
- }catch(err){console.warn("Affiliate click analytics unavailable:",err.message)}
+ e.preventDefault();
+ const destination=link.href;
+ const openNewTab=link.target==="_blank";
+ const popup=openNewTab?window.open("about:blank","_blank"):null;
+ if(popup) popup.opener=null;
+ const navigate=()=>{
+  if(openNewTab){if(popup)popup.location.href=destination;else window.location.href=destination;}
+  else window.location.href=destination;
+ };
+ (async()=>{
+  try{
+   await window.smartDealSupabaseReady;
+   const {error}=await window.smartDealSupabase.from("affiliate_clicks").insert({
+    product_id:link.dataset.productId||null,retailer,page_url:location.href,
+    referrer:document.referrer||null,user_agent:navigator.userAgent
+   });
+   if(error) console.warn("Affiliate click not saved:",error.message);
+  }catch(err){console.warn("Affiliate click analytics unavailable:",err.message)}
+  finally{navigate();}
+ })();
 },true);
 recordVisit();
 document.getElementById("searchForm").addEventListener("submit",e=>{e.preventDefault();activeFilter="All";render();document.getElementById("products").scrollIntoView({behavior:"smooth"})});document.getElementById("searchInput").addEventListener("input",render);
