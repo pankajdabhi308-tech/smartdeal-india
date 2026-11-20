@@ -6,6 +6,9 @@
 
   const SUPABASE_URL = "https://qqkhbhiacrieqzyhqwyc.supabase.co";
   const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_l_eyFDL52Pc5HpJPaXXpQQ_H2d9aaDS";
+  // Public browser credentials are safe to expose; table access is restricted by RLS.
+  window.SMARTDEAL_SUPABASE_URL = SUPABASE_URL;
+  window.SMARTDEAL_SUPABASE_KEY = SUPABASE_PUBLISHABLE_KEY;
 
   if (!window.supabase || typeof window.supabase.createClient !== "function") {
     console.error("SmartDeal India: Supabase JS library did not load.");
