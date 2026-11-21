@@ -52,7 +52,7 @@ jobs:
           cat > app/src/main/AndroidManifest.xml <<'EOF'
           <manifest xmlns:android="http://schemas.android.com/apk/res/android">
               <uses-permission android:name="android.permission.INTERNET" />
-              <application android:theme="@android:style/Theme.Material.Light.NoActionBar" android:label="SmartDeal India" android:usesCleartextTraffic="false">
+              <application android:theme="@android:style/Theme.Material.Light.NoActionBar" android:label="SmartDeal India" android:icon="@mipmap/ic_launcher" android:usesCleartextTraffic="false">
                   <activity android:name=".MainActivity" android:exported="true">
                       <intent-filter>
                           <action android:name="android.intent.action.MAIN" />
@@ -93,6 +93,27 @@ jobs:
               }
           }
           EOF
+      - name: Create PK app icon
+        run: |
+          python3 -m pip install --quiet pillow
+          mkdir -p app/src/main/res/mipmap-mdpi app/src/main/res/mipmap-hdpi app/src/main/res/mipmap-xhdpi app/src/main/res/mipmap-xxhdpi app/src/main/res/mipmap-xxxhdpi
+          cat > /tmp/make_icon.py <<'PY'
+          from PIL import Image, ImageDraw, ImageFont
+          import os
+          sizes = {'mdpi':48,'hdpi':72,'xhdpi':96,'xxhdpi':144,'xxxhdpi':192}
+          for density, size in sizes.items():
+              im = Image.new('RGBA',(size,size),(10,36,74,255))
+              d = ImageDraw.Draw(im)
+              pad = int(size*.07)
+              d.rounded_rectangle((pad,pad,size-pad,size-pad),radius=int(size*.22),fill=(14,116,144,255),outline=(255,255,255,255),width=max(1,size//32))
+              font = ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf',int(size*.43))
+              box = d.textbbox((0,0),'PK',font=font,stroke_width=0)
+              x=(size-(box[2]-box[0]))/2-box[0]
+              y=(size-(box[3]-box[1]))/2-box[1]
+              d.text((x,y),'PK',font=font,fill='white',stroke_width=max(0,size//100),stroke_fill=(10,36,74,255))
+              im.save(f'app/src/main/res/mipmap-{density}/ic_launcher.png')
+          PY
+          python3 /tmp/make_icon.py
       - name: Build debug APK
         run: gradle --no-daemon :app:assembleDebug
       - uses: actions/upload-artifact@v4
