@@ -16,6 +16,8 @@ jobs:
           distribution: temurin
           java-version: "17"
       - uses: android-actions/setup-android@v3
+        with:
+          packages: platform-tools
       - uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: "8.9"
@@ -69,8 +71,6 @@ jobs:
           import android.webkit.WebViewClient;
           import android.webkit.WebChromeClient;
           import android.webkit.WebSettings;
-          import android.view.View;
-          import android.widget.Toast;
 
           public class MainActivity extends Activity {
               private WebView webView;
