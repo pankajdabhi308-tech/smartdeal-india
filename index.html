@@ -237,30 +237,27 @@ async function recordVisit(){
   if(error) console.warn("Visit analytics not saved:",error.message);
  }catch(e){console.warn("Visit analytics unavailable:",e.message)}
 }
+// Never delay or replace the retailer navigation for analytics.
+// The browser follows the affiliate URL immediately; tracking runs independently.
 document.addEventListener("click",e=>{
  const link=e.target.closest("a[data-track-retailer]");
- if(!link||!window.smartDealSupabase||e.defaultPrevented||e.button!==0||e.metaKey||e.ctrlKey||e.shiftKey||e.altKey) return;
+ if(!link||e.defaultPrevented||e.button!==0||e.metaKey||e.ctrlKey||e.shiftKey||e.altKey) return;
  const retailer=link.dataset.trackRetailer;
- if(!["amazon","flipkart"].includes(retailer)) return;
- e.preventDefault();
- const destination=link.href;
- const openNewTab=link.target==="_blank";
- const popup=openNewTab?window.open("about:blank","_blank"):null;
- if(popup) popup.opener=null;
- const navigate=()=>{
-  if(openNewTab){if(popup)popup.location.href=destination;else window.location.href=destination;}
-  else window.location.href=destination;
- };
- (async()=>{
+ if(!["amazon","flipkart"].includes(retailer)||!window.smartDealSupabase) return;
+ const productId=link.dataset.productId||null;
+ const pageUrl=location.href;
+ void (async()=>{
   try{
-   await window.smartDealSupabaseReady;
+   await Promise.race([
+    window.smartDealSupabaseReady,
+    new Promise((_,reject)=>setTimeout(()=>reject(new Error("Analytics initialization timed out")),1500))
+   ]);
    const {error}=await window.smartDealSupabase.from("affiliate_clicks").insert({
-    product_id:link.dataset.productId||null,retailer,page_url:location.href,
+    product_id:productId,retailer,page_url:pageUrl,
     referrer:document.referrer||null,user_agent:navigator.userAgent
    });
    if(error) console.warn("Affiliate click not saved:",error.message);
   }catch(err){console.warn("Affiliate click analytics unavailable:",err.message)}
-  finally{navigate();}
  })();
 },true);
 recordVisit();
