@@ -1205,6 +1205,14 @@ async function verify(session){
   if(error)throw error;
   if(!data){await window.smartDealSupabase.auth.signOut();signedOut("This account is not authorized as an administrator.");return;}
   login.style.display="none";app.style.display="block";bar.style.display="block";
+  // Load live database records on the initial page session as well as later sign-in events.
+  try {
+    await Promise.all([loadAdminProducts(),loadAffiliateDashboard(),loadTrafficDashboard()]);
+    msg.textContent="";
+  } catch(loadError) {
+    console.error("Admin dashboard data load failed:",loadError);
+    showMessage("Admin login succeeded, but dashboard data could not load: "+(loadError.message||"Please refresh."),"error");
+  }
  }catch(e){console.error("Admin verification failed",e);signedOut("Could not verify administrator access. Please retry.");}
 }
 document.getElementById("adminLoginForm").addEventListener("submit",async e=>{
