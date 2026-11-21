@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="theme-color" content="#101d38">
+  <meta name="theme-color" content="#0b2b66">
   <meta name="description" content="SmartDeal India private launcher">
   <link rel="manifest" href="/app.webmanifest">
   <link rel="icon" href="/smartdeal-app-icon.svg" type="image/svg+xml">
@@ -13,24 +13,49 @@
   <title>SmartDeal India</title>
   <style>
     *{box-sizing:border-box}
-    body{margin:0;min-height:100vh;display:grid;place-items:center;padding:24px;background:linear-gradient(145deg,#101d38,#173d68);font-family:Arial,sans-serif;color:#fff}
-    main{width:min(100%,430px);text-align:center}
-    .logo{width:84px;height:84px;margin:0 auto 18px;border-radius:24px;background:#fff;display:grid;place-items:center;color:#101d38;font-size:32px;font-weight:900;box-shadow:0 12px 30px #0003}
-    h1{font-size:27px;margin:0 0 8px}
-    .sub{margin:0 0 30px;color:#d7e4f5;font-size:15px}
-    .launch{display:flex;align-items:center;gap:16px;width:100%;padding:19px;margin:13px 0;border:1px solid #ffffff35;border-radius:17px;background:#fff;color:#13233d;text-decoration:none;text-align:left;box-shadow:0 8px 22px #0002}
-    .symbol{width:48px;height:48px;flex:0 0 48px;border-radius:13px;background:#eaf1ff;display:grid;place-items:center;font-size:24px}
-    .label{font-size:18px;font-weight:700;display:block}
-    .hint{font-size:13px;color:#64748b;display:block;margin-top:5px}
-    .arrow{margin-left:auto;font-size:24px;color:#2874f0}
-    footer{margin-top:28px;color:#c5d4e7;font-size:12px}
+    body{margin:0;min-height:100vh;min-height:100dvh;padding:16px 18px 24px;background:linear-gradient(160deg,#071d49 0%,#0d4a9b 55%,#f07816 150%);font-family:Arial,sans-serif;color:#fff;display:flex;justify-content:center;align-items:center}
+    main{width:min(100%,440px);margin:auto}
+    .hero{position:relative;overflow:hidden;min-height:330px;border-radius:28px;padding:25px 20px 22px;background:linear-gradient(145deg,#fafdff 0%,#e7f3ff 58%,#fff1df 100%);color:#092d70;box-shadow:0 18px 45px #00143b66}
+    .hero:before,.hero:after{content:"";position:absolute;border-radius:50%;pointer-events:none}
+    .hero:before{width:230px;height:230px;right:-90px;top:-110px;background:#ff8a19;opacity:.18}
+    .hero:after{width:190px;height:190px;left:-105px;bottom:-105px;background:#1768db;opacity:.15}
+    .brand{position:relative;z-index:1;display:flex;align-items:center;justify-content:center;gap:12px}
+    .brand-mark{width:62px;height:62px;flex:0 0 62px;border-radius:19px;background:linear-gradient(145deg,#0750b9,#09285f);color:white;display:grid;place-items:center;font-size:25px;font-weight:900;box-shadow:0 7px 18px #174c9a40}
+    h1{margin:0;font-size:clamp(27px,7vw,35px);line-height:1;font-weight:900;letter-spacing:-1px}
+    h1 span{color:#f07816}
+    .tag{position:relative;z-index:1;text-align:center;margin:13px 0 5px;font-size:13px;font-weight:800;color:#16396e}
+    .slogan{position:relative;z-index:1;text-align:center;margin:8px 0 18px;font-size:21px;font-weight:900;color:#0c4eaa}
+    .slogan span{color:#f07816}
+    .offer{position:relative;z-index:1;display:inline-block;margin:0 auto 15px;left:50%;transform:translateX(-50%);padding:7px 16px;border-radius:30px;background:#ed4c22;color:white;font-weight:900;font-size:14px;box-shadow:0 5px 12px #ed4c2240}
+    .products{position:relative;z-index:1;display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:3px}
+    .product{height:94px;border-radius:17px;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;box-shadow:0 5px 15px #123d7620;border:1px solid #dce8f6}
+    .product b{font-size:34px;line-height:1}
+    .product small{font-size:10px;font-weight:700;color:#365477}
+    .trust{position:relative;z-index:1;margin:15px 0 0;text-align:center;font-size:11px;font-weight:800;color:#24466f}
+    .launch{display:flex;align-items:center;gap:14px;width:100%;padding:17px 16px;margin:13px 0;border:1px solid #ffffff55;border-radius:18px;background:#fff;color:#102c59;text-decoration:none;text-align:left;box-shadow:0 9px 24px #00143b38}
+    .symbol{width:48px;height:48px;flex:0 0 48px;border-radius:14px;background:#eaf2ff;display:grid;place-items:center;font-size:24px}
+    .label{font-size:17px;font-weight:800;display:block}
+    .hint{font-size:12px;color:#64748b;display:block;margin-top:4px}
+    .arrow{margin-left:auto;font-size:26px;color:#2874f0}
+    footer{text-align:center;margin-top:17px;color:#e4efff;font-size:11px}
+    @media(max-height:720px){body{align-items:flex-start}.hero{min-height:285px;padding:19px 16px}.product{height:76px}.product b{font-size:29px}.slogan{margin:6px 0 12px}.trust{margin-top:10px}}
   </style>
 </head>
 <body>
   <main>
-    <div class="logo">SD</div>
-    <h1>SmartDeal India</h1>
-    <p class="sub">તમારી પોતાની વેબસાઇટ માટેનું શોર્ટકટ એપ</p>
+    <section class="hero" aria-label="SmartDeal India shopping banner">
+      <div class="brand"><div class="brand-mark">SD</div><h1>SmartDeal <span>India</span></h1></div>
+      <p class="tag">BEST DEALS  |  BEST PRODUCTS  |  SMART SHOPPING</p>
+      <p class="slogan">Shop Smart... <span>Save More!</span></p>
+      <div class="offer">UP TO 70% OFF · BIG DEALS</div>
+      <div class="products">
+        <div class="product"><b>📱</b><small>Mobiles</small></div>
+        <div class="product"><b>🎧</b><small>Audio</small></div>
+        <div class="product"><b>⌚</b><small>Watches</small></div>
+        <div class="product"><b>👟</b><small>Fashion</small></div>
+      </div>
+      <p class="trust">✓ Smart Shopping &nbsp; · &nbsp; ✓ Better Deals &nbsp; · &nbsp; ✓ Secure Access</p>
+    </section>
     <a class="launch" href="/admin.html">
       <span class="symbol">⚙️</span>
       <span><span class="label">Admin Panel</span><span class="hint">પ્રોડક્ટ ઉમેરો અને મેનેજ કરો</span></span>
