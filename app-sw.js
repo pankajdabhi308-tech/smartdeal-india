@@ -1,4 +1,4 @@
-const CACHE = "smartdeal-launcher-v1";
+const CACHE = "smartdeal-launcher-v2";
 const SHELL = ["/app.html", "/app.webmanifest", "/smartdeal-app-icon.svg"];
 self.addEventListener("install", event => {
   event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(SHELL)));
