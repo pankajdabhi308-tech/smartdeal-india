@@ -182,8 +182,8 @@ async function load(){
    remote=await fetchViaRest();
   }
   remote=remote.map(normalize).filter(isCompleteProduct);
-  const seen=new Set(remote.map(x=>x.name.toLowerCase()));
-  allProducts=remote.concat(local.filter(x=>!seen.has(x.name.toLowerCase())));
+  // A successful live response is authoritative: never re-add stale or deactivated cached products.
+  allProducts=remote;
   render();
   status.textContent="Live catalogue • "+remote.length+" complete products available";
   try{localStorage.setItem(STORAGE_KEY,JSON.stringify(allProducts))}catch(e){console.warn("Could not refresh local catalogue cache",e)}
