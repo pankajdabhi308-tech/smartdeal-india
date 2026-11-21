@@ -1212,10 +1212,36 @@ document.getElementById("adminLoginForm").addEventListener("submit",async e=>{
  try{await window.smartDealSupabaseReady;const {data,error}=await window.smartDealSupabase.auth.signInWithPassword({email:document.getElementById("adminEmail").value.trim(),password:document.getElementById("adminPassword").value});if(error)throw error;await verify(data.session);}
  catch(err){msg.textContent=err.message||"Sign-in failed.";}
 });
-document.getElementById("adminSignOut").addEventListener("click",async()=>{await window.smartDealSupabase.auth.signOut();signedOut("You have been signed out.");});
-window.smartDealSupabaseReady.then(async()=>{const {data}=await window.smartDealSupabase.auth.getSession();await verify(data.session);}).catch(()=>signedOut("Supabase connection is unavailable."));
-const originalVerify=verify;
-window.smartDealSupabase.auth.onAuthStateChange(async(_event,session)=>{if(session){await originalVerify(session);if(app.style.display==="block"){try{await loadAdminProducts();await loadAffiliateDashboard();await loadTrafficDashboard();}catch(e){showMessage("Could not load admin data: "+e.message,"error");}}}});
+document.getElementById("adminSignOut").addEventListener("click",async()=>{
+  // Hide protected content immediately; do not wait for the network request.
+  signedOut("Signing out…");
+  try {
+    const {error}=await window.smartDealSupabase.auth.signOut({scope:"local"});
+    if(error) throw error;
+    signedOut("You have been signed out. Sign in again to access the Admin Panel.");
+  } catch(error) {
+    console.error("Admin sign-out failed:",error);
+    signedOut("Sign-out could not be confirmed. Please retry.");
+  }
+});
+window.smartDealSupabaseReady.then(async()=>{
+  const {data,error}=await window.smartDealSupabase.auth.getSession();
+  if(error) throw error;
+  await verify(data.session);
+}).catch(()=>signedOut("Supabase connection is unavailable."));
+window.smartDealSupabase.auth.onAuthStateChange((event,session)=>{
+  // Keep the Supabase auth callback synchronous; defer async checks.
+  if(event==="SIGNED_OUT" || !session){signedOut("");return;}
+  if(event==="SIGNED_IN" || event==="TOKEN_REFRESHED"){
+    setTimeout(async()=>{
+      await verify(session);
+      if(app.style.display==="block"){
+        try{await loadAdminProducts();await loadAffiliateDashboard();await loadTrafficDashboard();}
+        catch(e){showMessage("Could not load admin data: "+e.message,"error");}
+      }
+    },0);
+  }
+});
 
 })();
 </script>
