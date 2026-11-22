@@ -85,11 +85,28 @@
 const STORAGE_KEY="smartdealIndiaProducts";let allProducts=[],activeFilter="All",detailPhotoUrls=[];
 const fmt=n=>"₹"+Number(n||0).toLocaleString("en-IN",{maximumFractionDigits:0});
 const safeUrl=v=>{try{const u=new URL(v);return ["https:","http:"].includes(u.protocol)?u.href:""}catch{return ""}};
+function safeRetailerUrl(value,retailer){
+ const normalized=safeUrl(value);
+ if(!normalized)return "";
+ try{
+  const url=new URL(normalized);
+  if(url.protocol!=="https:")return "";
+  const host=url.hostname.toLowerCase().replace(/\.$/,"");
+  const allowed=retailer==="amazon"?["amazon.in","amazon.co.in","link.amazon","amzn.in","amzn.to"]:retailer==="flipkart"?["flipkart.com"]:[];
+  return allowed.some(domain=>host===domain||host.endsWith("."+domain))?url.href:"";
+ }catch{return "";}
+}
 const esc=v=>String(v??"").replace(/[&<>"\']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","\'":"&#39;"}[c]));
 function normalize(p){
  const images=Array.isArray(p.image_urls)?p.image_urls:(Array.isArray(p.images)?p.images:[]);
  const primaryImage=p.image||p.product_image_url||p.image_url||images.find(value=>typeof value==="string"&&safeUrl(value))||"";
- return {id:p.id||null,name:p.name||p.product_name||p.title||"Product",price:Number(p.price??p.product_price??0),oldPrice:Number(p.oldPrice??p.old_price??0),image:primaryImage,images,rating:p.rating??p.average_rating??null,review_count:p.review_count??p.reviews_count??null,reviews:p.reviews||[],amazon:p.amazon||p.amazon_affiliate_link||p.amazon_link||p.amazonLink||p.affiliate_link||p.link||"",flipkart:p.flipkart||p.flipkart_affiliate_link||p.flipkart_link||p.flipkartLink||"",category:p.category||p.product_category||"Other",description:p.description||"",featured:p.featured===true||p.is_featured===true};
+ const amazonCandidate=p.amazon||p.amazon_affiliate_link||p.amazon_link||p.amazonLink||"";
+ const flipkartCandidate=p.flipkart||p.flipkart_affiliate_link||p.flipkart_link||p.flipkartLink||"";
+ let amazon=safeRetailerUrl(amazonCandidate,"amazon");
+ let flipkart=safeRetailerUrl(flipkartCandidate,"flipkart");
+ const legacyLink=p.affiliate_link||p.link||"";
+ if(!amazon&&!flipkart&&legacyLink){amazon=safeRetailerUrl(legacyLink,"amazon");if(!amazon)flipkart=safeRetailerUrl(legacyLink,"flipkart");}
+ return {id:p.id||null,name:p.name||p.product_name||p.title||"Product",price:Number(p.price??p.product_price??0),oldPrice:Number(p.oldPrice??p.old_price??0),image:primaryImage,images,rating:p.rating??p.average_rating??null,review_count:p.review_count??p.reviews_count??null,reviews:p.reviews||[],amazon,flipkart,category:p.category||p.product_category||"Other",description:p.description||"",featured:p.featured===true||p.is_featured===true};
 }
 function categoryMatch(cat,f){if(f==="All"||f==="Deals")return true;const c=String(cat||"").toLowerCase(),x=f.toLowerCase();return c.includes(x)||(x==="baby"&&c.includes("baby"))||(x==="home"&&c.includes("home"))||(x==="accessories"&&c.includes("accessor"))}
 function categoryPresentation(raw){
@@ -117,7 +134,7 @@ function renderCategories(){
  host.innerHTML=categories.length?categories.map(item=>'<a class="cat" href="#products" data-filter="'+esc(item.filter)+'"><div class="caticon">'+item.icon+'</div><b>'+esc(item.label)+'</b><small>'+item.count.toLocaleString("en-IN")+' products</small></a>').join(""):'<div class="empty">No product categories are available yet.</div>';
 }
 function card(p){
- const im=safeUrl(p.image),a=safeUrl(p.amazon),f=safeUrl(p.flipkart),hasPrice=Number(p.price)>0;
+ const im=safeUrl(p.image),a=safeRetailerUrl(p.amazon,"amazon"),f=safeRetailerUrl(p.flipkart,"flipkart"),hasPrice=Number(p.price)>0;
  const discount=p.oldPrice>p.price&&p.oldPrice>0?Math.round((p.oldPrice-p.price)*100/p.oldPrice):0;
  const rating=Number(p.rating||0),reviews=Number(p.review_count||0);
  const retailer=a?"amazon":"flipkart",destination=a||f;
@@ -127,7 +144,7 @@ function card(p){
 function render(){renderCategories();const q=document.getElementById("searchInput").value.trim().toLowerCase(),list=allProducts.filter(p=>(activeFilter==="Deals"?(p.featured||p.oldPrice>p.price):categoryMatch(p.category,activeFilter))&&(!q||(p.name+" "+p.category+" "+p.description).toLowerCase().includes(q)));document.getElementById("productHeading").textContent=activeFilter==="All"?(q?"Search Results":"All Products"):activeFilter==="Deals"?"Today’s Deals":activeFilter+" Products";document.getElementById("productSub").textContent=list.length+" products found"+(activeFilter==="Deals"?" • Featured or discounted items":"");document.getElementById("productGrid").innerHTML=list.length?list.map(card).join(''):'<div class="empty"><strong>No products found</strong><br>Try another category or search. New products added in Admin will appear here.</div>'}
 function isCompleteProduct(p){
  const hasImage=safeUrl(p.image)||(Array.isArray(p.images)&&p.images.some(value=>safeUrl(value)));
- const hasRetailerLink=safeUrl(p.amazon)||safeUrl(p.flipkart);
+ const hasRetailerLink=safeRetailerUrl(p.amazon,"amazon")||safeRetailerUrl(p.flipkart,"flipkart");
  return Boolean(String(p.name||"").trim()&&Number.isFinite(Number(p.price))&&Number(p.price)>0&&hasImage&&hasRetailerLink);
 }
 async function load(){
@@ -209,7 +226,7 @@ function openProductDetails(p){
  document.getElementById("detailFacts").textContent='Category: '+(p.category||"Other");
  const reviews=Array.isArray(p.reviews)?p.reviews:[];
  document.getElementById("detailReviews").innerHTML=reviews.length?'<h3>Customer reviews</h3>'+reviews.slice(0,5).map(r=>'<p class="review-item">★ '+esc(r.rating||"")+' '+esc(r.title||"")+'<br>'+esc(r.text||r.body||"")+'</p>').join(""):'<p class="review-item">Verified review text is not stored here. View retailer page for current customer reviews.</p>';
- const a=safeUrl(p.amazon),f=safeUrl(p.flipkart);
+ const a=safeRetailerUrl(p.amazon,"amazon"),f=safeRetailerUrl(p.flipkart,"flipkart");
  document.getElementById("detailBuy").innerHTML=(a?'<a class="amazon" data-track-retailer="amazon" data-product-id="'+esc(p.id||"")+'" target="_blank" rel="noopener noreferrer sponsored" href="'+esc(a)+'">Buy on Amazon ↗</a>':'')+(f?'<a class="flip" data-track-retailer="flipkart" data-product-id="'+esc(p.id||"")+'" target="_blank" rel="noopener noreferrer sponsored" href="'+esc(f)+'">Buy on Flipkart ↗</a>':'');
  document.getElementById("productDetails").classList.add("open");document.body.style.overflow="hidden";
 }
