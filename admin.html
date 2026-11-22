@@ -643,7 +643,7 @@ async function loadAdminProducts() {
   }
   liveProducts=rows.map(p=>({
     id:p.id,name:p.product_name,price:Number(p.product_price),oldPrice:Number(p.old_price||0),image:p.product_image_url||"", images:Array.isArray(p.image_urls)?p.image_urls:[], availability:p.availability||"unknown", priceCheckedAt:p.price_checked_at||null,
-    amazon:p.amazon_affiliate_link||"",flipkart:p.flipkart_affiliate_link||"",
+    amazon:safeRetailerUrl(p.amazon_affiliate_link,"amazon"),flipkart:safeRetailerUrl(p.flipkart_affiliate_link,"flipkart"),
     category:p.category||"Other",description:p.description||"",featured:p.is_featured===true,
     active:p.is_active!==false
   }));
@@ -670,9 +670,14 @@ document.getElementById("imageFile").addEventListener("change",function(){
 function saveProducts(_products) { showMessage("Bulk backup restore is paused to protect live database records. Individual Add, Edit and Delete are connected.","error"); return false; }
 
 async function saveProductToDatabase(product) {
+  const amazon=safeRetailerUrl(product.amazon,"amazon");
+  const flipkart=safeRetailerUrl(product.flipkart,"flipkart");
+  if((product.amazon&&!amazon)||(product.flipkart&&!flipkart)||(!amazon&&!flipkart)) {
+    throw new Error("Use HTTPS affiliate links from Amazon or Flipkart official domains only.");
+  }
   const row={
     product_name:product.name, product_price:product.price, old_price:product.oldPrice||null, product_image_url:product.image, image_urls:product.images||[], availability:product.availability||"unknown",
-    amazon_affiliate_link:product.amazon||null, flipkart_affiliate_link:product.flipkart||null,
+    amazon_affiliate_link:amazon||null, flipkart_affiliate_link:flipkart||null,
     category:product.category, description:product.description||null, is_active:true,
     is_featured:product.featured, source:"manual", updated_at:new Date().toISOString()
   };
@@ -715,6 +720,22 @@ function safeUrl(value) {
 
   return "";
 
+}
+
+function safeRetailerUrl(value,retailer) {
+  const normalized=safeUrl(value);
+  if(!normalized) return "";
+  try {
+    const url=new URL(normalized);
+    if(url.protocol!=="https:") return "";
+    const host=url.hostname.toLowerCase().replace(/\.$/,"");
+    const allowed=retailer==="amazon"
+      ? ["amazon.in","amazon.co.in","link.amazon","amzn.in","amzn.to"]
+      : retailer==="flipkart" ? ["flipkart.com"] : [];
+    return allowed.some(domain=>host===domain||host.endsWith("."+domain)) ? url.href : "";
+  } catch(error) {
+    return "";
+  }
 }
 
 async function loadTrafficDashboard(){
@@ -801,9 +822,9 @@ document.getElementById("productForm").addEventListener("submit",async function(
 
   const flipkartInput = document.getElementById("flipkart").value.trim();
 
-  const amazon = amazonInput ? safeUrl(amazonInput) : "";
+  const amazon = amazonInput ? safeRetailerUrl(amazonInput,"amazon") : "";
 
-  const flipkart = flipkartInput ? safeUrl(flipkartInput) : "";
+  const flipkart = flipkartInput ? safeRetailerUrl(flipkartInput,"flipkart") : "";
 
   const featured = document.getElementById("featured").checked;
   const extraRaw = document.getElementById("extraImages").value.split(/\r?\n/).map(v=>v.trim()).filter(Boolean);
@@ -829,7 +850,7 @@ document.getElementById("productForm").addEventListener("submit",async function(
 
   if(amazonInput && !amazon) {
 
-    showMessage("Please enter a valid Amazon link.","error");
+    showMessage("Amazon link must be HTTPS and use an Amazon domain (amazon.in, link.amazon, amzn.in or amzn.to).","error");
 
     return;
 
@@ -837,7 +858,7 @@ document.getElementById("productForm").addEventListener("submit",async function(
 
   if(flipkartInput && !flipkart) {
 
-    showMessage("Please enter a valid Flipkart link.","error");
+    showMessage("Flipkart link must be HTTPS and use flipkart.com or one of its subdomains.","error");
 
     return;
 
@@ -1119,14 +1140,14 @@ async function importProducts(event) {
       const oldPrice=oldRaw===""?null:Number(oldRaw);
       const amazonRaw=String(importValue(p,["amazon","amazon_affiliate_link","amazon_link"])).trim();
       const flipkartRaw=String(importValue(p,["flipkart","flipkart_affiliate_link","flipkart_link"])).trim();
-      const amazon=amazonRaw?safeUrl(amazonRaw):"";
-      const flipkart=flipkartRaw?safeUrl(flipkartRaw):"";
+      const amazon=amazonRaw?safeRetailerUrl(amazonRaw,"amazon"):"";
+      const flipkart=flipkartRaw?safeRetailerUrl(flipkartRaw,"flipkart"):"";
       const availability=String(importValue(p,["availability","stock_status"])||"unknown").toLowerCase();
       if(!name||!Number.isFinite(price)||price<=0||!category||!image||
          (!amazon&&!flipkart)||
          (oldPrice!==null&&(!Number.isFinite(oldPrice)||oldPrice<0))||
          (amazonRaw&&!amazon)||(flipkartRaw&&!flipkart)){
-        skipped++; if(errors.length<8)errors.push("Row "+(n+2)+": requires a product name, positive price, category, real image URL, and at least one valid Amazon or Flipkart product link."); continue;
+        skipped++; if(errors.length<8)errors.push("Row "+(n+2)+": requires a product name, positive price, category, image URL, and an HTTPS link on the matching Amazon or Flipkart domain."); continue;
       }
       const match=existing.find(x=>String(x.name).toLowerCase()===name.toLowerCase());
       const row={
