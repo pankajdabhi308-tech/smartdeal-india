@@ -71,7 +71,8 @@
   </div>
  </section>
  <div class="trust"><div><span>🔎</span>Easy product discovery</div><div><span>🛒</span>Retailer shopping links</div><div><span>📱</span>Mobile-friendly design</div><div><span>🔐</span>Secure retailer checkout</div></div>
- <section class="section" id="products"><div class="section-head"><div><h2 id="productHeading">All Products</h2><p id="productSub">Browse every available product in our catalogue</p></div><a class="viewall" href="#home" id="clearFilter">Clear filter ↗</a></div><div class="products" id="productGrid"><div class="empty">Loading products…</div></div></section>
+ <section class="section" id="products"><div class="section-head"><div><h2 id="productHeading">All Products</h2><p id="productSub">Browse every available product in our catalogue</p></div><a class="viewall" href="#home" id="clearFilter">Clear filter ↗</a></div><p class="affiliate-disclosure"><strong>Affiliate disclosure:</strong> As an Amazon Associate I earn from qualifying purchases. We may earn a commission when you buy through retailer links, at no extra cost to you. Prices and availability can change on the retailer’s website.</p>
+  <div class="products" id="productGrid"><div class="empty">Loading products…</div></div></section>
  <section class="dealband"><div><h2>One destination. More ways to shop.</h2><p>Choose the retailer link available on each product and complete your purchase there.</p></div><a href="#products">Browse deals →</a></section>
 </main>
 <footer id="footer"><div class="foot"><div><strong>SmartDeal India</strong><p>Helping shoppers discover useful products and retailer offers. Product prices and availability may change on retailer websites.</p><div class="status" id="loadStatus">Storefront preview • Product feed loading</div></div><div class="footlinks"><a href="#home">Home</a><a href="#categories">Categories</a><a href="#products">Products</a><a href="./about.html">About</a><a href="./contact.html">Contact</a><a href="./admin.html">Admin</a></div></div></footer>
@@ -273,6 +274,7 @@ document.addEventListener("click",e=>{const photo=e.target.closest("[data-galler
 document.getElementById("galleryClose").addEventListener("click",galleryClose);document.getElementById("photoGallery").addEventListener("click",e=>{if(e.target.id==="photoGallery")galleryClose()});document.getElementById("galleryPrev").addEventListener("click",()=>{galleryIndex=Math.max(0,galleryIndex-1);galleryShow()});document.getElementById("galleryNext").addEventListener("click",()=>{galleryIndex=Math.min(galleryItems.length-1,galleryIndex+1);galleryShow()});document.addEventListener("keydown",e=>{if(e.key==="Escape")galleryClose();if(document.getElementById("photoGallery").classList.contains("open")&&e.key==="ArrowRight"){galleryIndex=Math.min(galleryItems.length-1,galleryIndex+1);galleryShow()}if(document.getElementById("photoGallery").classList.contains("open")&&e.key==="ArrowLeft"){galleryIndex=Math.max(0,galleryIndex-1);galleryShow()}});
 </script>
 
+<style>.affiliate-disclosure{margin:0 0 14px;padding:11px 13px;background:#fff8e8;border:1px solid #f3dfb7;border-left:4px solid #ff9900;border-radius:5px;color:#4b4437;font-size:12px;line-height:1.55}.affiliate-disclosure strong{color:#171717}</style>
 </body></html>
 <style>
 /* Compact homepage hero */
