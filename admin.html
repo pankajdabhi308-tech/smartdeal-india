@@ -727,7 +727,7 @@ function safeRetailerUrl(value,retailer) {
   if(!normalized) return "";
   try {
     const url=new URL(normalized);
-    if(url.protocol!=="https:") return "";
+    if(url.protocol!=="https:"||url.username||url.password||url.port) return "";
     const host=url.hostname.toLowerCase().replace(/\.$/,"");
     const allowed=retailer==="amazon"
       ? ["amazon.in","amazon.co.in","link.amazon","amzn.in","amzn.to"]
