@@ -275,7 +275,7 @@ document.addEventListener("click",e=>{
  try{
   // A small keepalive request survives the normal unload caused by retailer navigation.
   // The publishable key is browser-safe; RLS limits this endpoint to the insert policy.
-  const request=fetch(base.replace(/\\/+$/,"")+"/rest/v1/affiliate_clicks",{
+  const request=fetch(base.replace(/\/+$/,"")+"/rest/v1/affiliate_clicks",{
    method:"POST",
    headers:{
     apikey:key,
