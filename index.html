@@ -256,28 +256,44 @@ async function recordVisit(){
   if(error) console.warn("Visit analytics not saved:",error.message);
  }catch(e){console.warn("Visit analytics unavailable:",e.message)}
 }
-// Never delay or replace the retailer navigation for analytics.
-// The browser follows the affiliate URL immediately; tracking runs independently.
+// Keep retailer navigation immediate while asking the browser to finish analytics
+// after this page opens the retailer in a new tab.
 document.addEventListener("click",e=>{
  const link=e.target.closest("a[data-track-retailer]");
  if(!link||e.defaultPrevented||e.button!==0||e.metaKey||e.ctrlKey||e.shiftKey||e.altKey) return;
  const retailer=link.dataset.trackRetailer;
- if(!["amazon","flipkart"].includes(retailer)||!window.smartDealSupabase) return;
- const productId=link.dataset.productId||null;
- const pageUrl=location.href;
- void (async()=>{
-  try{
-   await Promise.race([
-    window.smartDealSupabaseReady,
-    new Promise((_,reject)=>setTimeout(()=>reject(new Error("Analytics initialization timed out")),1500))
-   ]);
-   const {error}=await window.smartDealSupabase.from("affiliate_clicks").insert({
-    product_id:productId,retailer,page_url:pageUrl,
-    referrer:document.referrer||null,user_agent:navigator.userAgent
-   });
-   if(error) console.warn("Affiliate click not saved:",error.message);
-  }catch(err){console.warn("Affiliate click analytics unavailable:",err.message)}
- })();
+ if(!["amazon","flipkart"].includes(retailer)) return;
+ const base=window.SMARTDEAL_SUPABASE_URL,key=window.SMARTDEAL_SUPABASE_KEY;
+ if(!base||!key) return;
+ const payload={
+  product_id:link.dataset.productId||null,
+  retailer,
+  page_url:location.href,
+  referrer:document.referrer||null,
+  user_agent:navigator.userAgent
+ };
+ try{
+  // A small keepalive request survives the normal unload caused by retailer navigation.
+  // The publishable key is browser-safe; RLS limits this endpoint to the insert policy.
+  const request=fetch(base.replace(/\\/+$/,"")+"/rest/v1/affiliate_clicks",{
+   method:"POST",
+   headers:{
+    apikey:key,
+    Authorization:"Bearer "+key,
+    "Content-Type":"application/json",
+    Prefer:"return=minimal"
+   },
+   body:JSON.stringify(payload),
+   keepalive:true,
+   credentials:"omit",
+   mode:"cors"
+  });
+  request.then(response=>{
+   if(!response.ok) console.warn("Affiliate click not saved: HTTP "+response.status);
+  }).catch(error=>console.warn("Affiliate click analytics unavailable:",error.message));
+ }catch(error){
+  console.warn("Affiliate click analytics could not be queued:",error.message);
+ }
 },true);
 recordVisit();
 document.getElementById("searchForm").addEventListener("submit",e=>{e.preventDefault();activeFilter="All";render();document.getElementById("products").scrollIntoView({behavior:"smooth"})});document.getElementById("searchInput").addEventListener("input",render);
