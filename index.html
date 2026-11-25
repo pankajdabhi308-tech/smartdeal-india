@@ -143,8 +143,9 @@ function card(p){
 }
 function render(){renderCategories();const q=document.getElementById("searchInput").value.trim().toLowerCase(),list=allProducts.filter(p=>(activeFilter==="Deals"?(p.featured||p.oldPrice>p.price):categoryMatch(p.category,activeFilter))&&(!q||(p.name+" "+p.category+" "+p.description).toLowerCase().includes(q)));document.getElementById("productHeading").textContent=activeFilter==="All"?(q?"Search Results":"All Products"):activeFilter==="Deals"?"Today’s Deals":activeFilter+" Products";document.getElementById("productSub").textContent=list.length+" products found"+(activeFilter==="Deals"?" • Featured or discounted items":"");document.getElementById("productGrid").innerHTML=list.length?list.map(card).join(''):'<div class="empty"><strong>No products found</strong><br>Try another category or search. New products added in Admin will appear here.</div>'}
 function isCompleteProduct(p){
+ const hasImage=safeUrl(p.image)||(Array.isArray(p.images)&&p.images.some(value=>safeUrl(value)));
  const hasRetailerLink=safeRetailerUrl(p.amazon,"amazon")||safeRetailerUrl(p.flipkart,"flipkart");
- return Boolean(String(p.name||"").trim()&&Number.isFinite(Number(p.price))&&Number(p.price)>0&&hasRetailerLink);
+ return Boolean(String(p.name||"").trim()&&Number.isFinite(Number(p.price))&&Number(p.price)>0&&hasImage&&hasRetailerLink);
 }
 async function load(){
  const status=document.getElementById("loadStatus");
@@ -230,7 +231,7 @@ async function load(){
   // A successful live response is authoritative: never re-add stale or deactivated cached products.
   allProducts=remote;
   render();
-  status.textContent="Live catalogue • "+remote.length+" products available";
+  status.textContent="Live catalogue • "+remote.length+" complete products available";
   try{localStorage.setItem(STORAGE_KEY,JSON.stringify(allProducts))}catch(e){console.warn("Could not refresh local catalogue cache",e)}
  }catch(e){
   console.error("Product catalogue could not be loaded:",e);
