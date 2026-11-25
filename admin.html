@@ -1149,7 +1149,16 @@ async function importProducts(event) {
          (amazonRaw&&!amazon)||(flipkartRaw&&!flipkart)){
         skipped++; if(errors.length<8)errors.push("Row "+(n+2)+": requires a product name, positive price, category, image URL, and an HTTPS link on the matching Amazon or Flipkart domain."); continue;
       }
-      const match=existing.find(x=>String(x.name).toLowerCase()===name.toLowerCase());
+      const nameMatches=existing.filter(x=>String(x.name).trim().toLowerCase()===name.toLowerCase());
+      if(nameMatches.length>1){
+        skipped++; if(errors.length<8)errors.push("Row "+(n+2)+": multiple products share this name; use Edit in Admin to choose the exact product.");
+        continue;
+      }
+      const match=nameMatches[0]||null;
+      if(match&&(match.amazon!==amazon||match.flipkart!==flipkart)){
+        skipped++; if(errors.length<8)errors.push("Row "+(n+2)+": retailer link differs from the existing same-name product; skipped to avoid overwriting the wrong listing. Use Edit in Admin for intentional link changes.");
+        continue;
+      }
       const row={
         product_name:name,product_price:price,old_price:oldPrice,product_image_url:image,
         amazon_affiliate_link:amazon||null,flipkart_affiliate_link:flipkart||null,
@@ -1163,7 +1172,7 @@ async function importProducts(event) {
         if(!result.error){updated++;match.price=price;match.image=image;match.category=category;}
       } else {
         result=await window.smartDealSupabase.from("products").insert(row).select("id").single();
-        if(!result.error){inserted++;existing.push({name,id:result.data.id,price,image,category});}
+        if(!result.error){inserted++;existing.push({name,id:result.data.id,price,image,category,amazon,flipkart});}
       }
       if(result.error){skipped++;if(errors.length<8)errors.push("Row "+(n+2)+": "+result.error.message);}
     }
