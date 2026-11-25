@@ -145,7 +145,7 @@ function render(){renderCategories();const q=document.getElementById("searchInpu
 function isCompleteProduct(p){
  const hasImage=safeUrl(p.image)||(Array.isArray(p.images)&&p.images.some(value=>safeUrl(value)));
  const hasRetailerLink=safeRetailerUrl(p.amazon,"amazon")||safeRetailerUrl(p.flipkart,"flipkart");
- return Boolean(String(p.name||"").trim()&&Number.isFinite(Number(p.price))&&Number(p.price)>0&&hasImage&&hasRetailerLink);
+ return Boolean(String(p.name||"").trim()&&Number.isFinite(Number(p.price))&&Number(p.price)>0&&hasRetailerLink);
 }
 async function load(){
  const status=document.getElementById("loadStatus");
