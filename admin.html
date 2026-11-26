@@ -758,7 +758,56 @@ async function loadTrafficDashboard(){
  }catch(e){console.error("Traffic dashboard:",e);msg.textContent="Could not load traffic data: "+(e.message||"Please retry.");}
 }
 document.getElementById("refreshTraffic").addEventListener("click",loadTrafficDashboard);
-let affiliateCommissionRows=[];const rupee=value=>new Intl.NumberFormat("en-IN",{style:"currency",currency:"INR"}).format(Number(value)||0);async function loadAffiliateDashboard(){const message=document.getElementById("affiliateMessage");if(!message||!window.smartDealSupabase)return;message.textContent="Loading commission records…";try{const {data,error}=await window.smartDealSupabase.from("affiliate_commissions").select("id,retailer,order_reference,product_name,commission_amount,currency,commission_status,report_date,created_at").order("report_date",{ascending:false}).order("created_at",{ascending:false}).limit(500);if(error)throw error;affiliateCommissionRows=data||[];const total=affiliateCommissionRows.reduce((s,r)=>s+Number(r.commission_amount||0),0);const approved=affiliateCommissionRows.filter(r=>r.commission_status==="approved").reduce((s,r)=>s+Number(r.commission_amount||0),0);const paid=affiliateCommissionRows.filter(r=>r.commission_status==="paid").reduce((s,r)=>s+Number(r.commission_amount||0),0);document.getElementById("affiliateCount").textContent=affiliateCommissionRows.length;document.getElementById("affiliateTotal").textContent=rupee(total);document.getElementById("affiliateApproved").textContent=rupee(approved);document.getElementById("affiliatePaid").textContent=rupee(paid);renderAffiliateRows();message.textContent=affiliateCommissionRows.length?"Showing latest "+affiliateCommissionRows.length+" commission records.":"No commission records yet. Import a retailer report when available.";}catch(error){console.error("Affiliate dashboard:",error);message.textContent="Could not load affiliate commissions: "+(error.message||"Please retry.");document.getElementById("affiliateRows").innerHTML="<tr><td colspan='5'>Unable to load records.</td></tr>";}}function renderAffiliateRows(){const body=document.getElementById("affiliateRows"),filter=document.getElementById("affiliateStatusFilter").value,rows=affiliateCommissionRows.filter(r=>filter==="All"||r.commission_status===filter);body.replaceChildren();if(!rows.length){const tr=document.createElement("tr"),td=document.createElement("td");td.colSpan=5;td.textContent="No records for this status.";tr.appendChild(td);body.appendChild(tr);return;}rows.forEach(r=>{const tr=document.createElement("tr");[r.report_date||"—",r.retailer||"—",(r.product_name||"—")+(r.order_reference?" / "+r.order_reference:""),rupee(r.commission_amount)+" "+(r.currency||"INR"),r.commission_status||"—"].forEach((v,i)=>{const td=document.createElement("td");td.textContent=v;if(i===4){const badge=document.createElement("span");badge.className="affiliate-status";badge.textContent=v;td.replaceChildren(badge);}tr.appendChild(td);});body.appendChild(tr);});}document.getElementById("affiliateEntryForm").addEventListener("submit",async function(e){e.preventDefault();const out=document.getElementById("commissionEntryMessage");out.textContent="Saving…";const amount=Number(document.getElementById("commissionAmount").value);if(!Number.isFinite(amount)||amount<0){out.textContent="Enter a valid commission amount.";return;}const row={retailer:document.getElementById("commissionRetailer").value,commission_amount:amount,currency:"INR",commission_status:document.getElementById("commissionStatus").value,report_date:document.getElementById("commissionDate").value||null,order_reference:document.getElementById("commissionOrder").value.trim()||null,product_name:document.getElementById("commissionProduct").value.trim()||null,notes:document.getElementById("commissionNotes").value.trim()||null};try{const {error}=await window.smartDealSupabase.from("affiliate_commissions").insert(row);if(error)throw error;this.reset();out.textContent="Commission record saved.";await loadAffiliateDashboard();}catch(err){console.error(err);out.textContent="Save failed: "+(err.message||"Check admin access and retry.");}});
+let affiliateCommissionRows=[];const rupee=value=>new Intl.NumberFormat("en-IN",{style:"currency",currency:"INR"}).format(Number(value)||0);async function loadAffiliateDashboard(){
+ const message=document.getElementById("affiliateMessage");
+ if(!message||!window.smartDealSupabase)return;
+ message.textContent="Loading commission records…";
+ try{
+  const client=window.smartDealSupabase;
+  const pageSize=500;
+  let offset=0;
+  const rows=[];
+  // Load every commission page; id is a deterministic tie-breaker for equal dates.
+  while(true){
+   const controller=new AbortController();
+   const timer=setTimeout(()=>controller.abort(),18000);
+   let result;
+   try{
+    result=await client.from("affiliate_commissions")
+     .select("id,retailer,order_reference,product_name,commission_amount,currency,commission_status,report_date,created_at")
+     .order("report_date",{ascending:false})
+     .order("created_at",{ascending:false})
+     .order("id",{ascending:true})
+     .range(offset,offset+pageSize-1)
+     .abortSignal(controller.signal);
+   }finally{
+    clearTimeout(timer);
+   }
+   if(result.error)throw result.error;
+   const batch=result.data||[];
+   if(!Array.isArray(batch))throw new Error("Commission database returned an invalid response.");
+   rows.push(...batch);
+   if(batch.length<pageSize)break;
+   offset+=pageSize;
+  }
+  affiliateCommissionRows=rows;
+  const total=affiliateCommissionRows.reduce((s,r)=>s+Number(r.commission_amount||0),0);
+  const approved=affiliateCommissionRows.filter(r=>r.commission_status==="approved").reduce((s,r)=>s+Number(r.commission_amount||0),0);
+  const paid=affiliateCommissionRows.filter(r=>r.commission_status==="paid").reduce((s,r)=>s+Number(r.commission_amount||0),0);
+  document.getElementById("affiliateCount").textContent=affiliateCommissionRows.length;
+  document.getElementById("affiliateTotal").textContent=rupee(total);
+  document.getElementById("affiliateApproved").textContent=rupee(approved);
+  document.getElementById("affiliatePaid").textContent=rupee(paid);
+  renderAffiliateRows();
+  message.textContent=affiliateCommissionRows.length
+   ?"Showing all "+affiliateCommissionRows.length+" commission records."
+   :"No commission records yet. Import a retailer report when available.";
+ }catch(error){
+  console.error("Affiliate dashboard:",error);
+  message.textContent="Could not load affiliate commissions: "+(error.message||"Please retry.");
+  document.getElementById("affiliateRows").innerHTML="<tr><td colspan='5'>Unable to load records.</td></tr>";
+ }
+}function renderAffiliateRows(){const body=document.getElementById("affiliateRows"),filter=document.getElementById("affiliateStatusFilter").value,rows=affiliateCommissionRows.filter(r=>filter==="All"||r.commission_status===filter);body.replaceChildren();if(!rows.length){const tr=document.createElement("tr"),td=document.createElement("td");td.colSpan=5;td.textContent="No records for this status.";tr.appendChild(td);body.appendChild(tr);return;}rows.forEach(r=>{const tr=document.createElement("tr");[r.report_date||"—",r.retailer||"—",(r.product_name||"—")+(r.order_reference?" / "+r.order_reference:""),rupee(r.commission_amount)+" "+(r.currency||"INR"),r.commission_status||"—"].forEach((v,i)=>{const td=document.createElement("td");td.textContent=v;if(i===4){const badge=document.createElement("span");badge.className="affiliate-status";badge.textContent=v;td.replaceChildren(badge);}tr.appendChild(td);});body.appendChild(tr);});}document.getElementById("affiliateEntryForm").addEventListener("submit",async function(e){e.preventDefault();const out=document.getElementById("commissionEntryMessage");out.textContent="Saving…";const amount=Number(document.getElementById("commissionAmount").value);if(!Number.isFinite(amount)||amount<0){out.textContent="Enter a valid commission amount.";return;}const row={retailer:document.getElementById("commissionRetailer").value,commission_amount:amount,currency:"INR",commission_status:document.getElementById("commissionStatus").value,report_date:document.getElementById("commissionDate").value||null,order_reference:document.getElementById("commissionOrder").value.trim()||null,product_name:document.getElementById("commissionProduct").value.trim()||null,notes:document.getElementById("commissionNotes").value.trim()||null};try{const {error}=await window.smartDealSupabase.from("affiliate_commissions").insert(row);if(error)throw error;this.reset();out.textContent="Commission record saved.";await loadAffiliateDashboard();}catch(err){console.error(err);out.textContent="Save failed: "+(err.message||"Check admin access and retry.");}});
 document.getElementById("refreshAffiliate").addEventListener("click",loadAffiliateDashboard);document.getElementById("affiliateStatusFilter").addEventListener("change",renderAffiliateRows);
 
 function updateStats() {
