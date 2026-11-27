@@ -55,9 +55,7 @@ module.exports = async (req, res) => {
       "category":String(p.category || "Products"),
       "offers":{
         "@type":"Offer",
-        "url":canonical,
-        "priceCurrency":"INR",
-        "price":price.toFixed(2)
+        "url":canonical
       }
     };
     const buttons = [
@@ -92,7 +90,7 @@ h1{font-size:28px;line-height:1.25}.price{font-size:27px;font-weight:800;color:#
 <main><div class="crumb"><a href="/" style="color:#1769e0">Home</a> › ${esc(p.category || "Products")} › ${esc(name)}</div>
 <article><div><img src="${esc(image)}" alt="${esc(name)}" loading="eager"></div><div>
 <div class="category">${esc(p.category || "Products")}</div><h1>${esc(name)}</h1>
-<div class="price">₹${price.toLocaleString("en-IN",{maximumFractionDigits:2})}</div>
+<div class="price">Check current price on ${amazon ? "Amazon" : "Flipkart"}</div>
 <p class="desc">${esc(description)}</p><div class="actions">${buttons}</div>
 <p class="note">Affiliate disclosure: SmartDeal India may earn a commission from qualifying retailer purchases at no extra cost to you. The displayed price may change. Confirm the latest price, availability, delivery and product details on the retailer's website before buying.</p>
 </div></article></main></body></html>`);
