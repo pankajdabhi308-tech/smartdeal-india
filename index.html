@@ -135,7 +135,7 @@ function renderCategories(){
 }
 function card(p){
  const im=safeUrl(p.image),a=safeRetailerUrl(p.amazon,"amazon"),f=safeRetailerUrl(p.flipkart,"flipkart"),hasPrice=Number(p.price)>0;
- const discount=p.oldPrice>p.price&&p.oldPrice>0?Math.round((p.oldPrice-p.price)*100/p.oldPrice):0;
+ const discount=0;
  const rating=Number(p.rating||0),reviews=Number(p.review_count||0);
  const retailer=a?"amazon":"flipkart",destination=a||f;
  const retailerButtons=(a?'<a class="amazon buy-now" data-track-retailer="amazon" data-product-id="'+esc(p.id||"")+'" target="_blank" rel="noopener noreferrer sponsored" href="'+esc(a)+'">Buy on Amazon ↗</a>':"")+(f?'<a class="flip buy-now" data-track-retailer="flipkart" data-product-id="'+esc(p.id||"")+'" target="_blank" rel="noopener noreferrer sponsored" href="'+esc(f)+'">Buy on Flipkart ↗</a>':"");
