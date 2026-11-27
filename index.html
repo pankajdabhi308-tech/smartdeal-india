@@ -96,16 +96,30 @@ function safeRetailerUrl(value,retailer){
   return allowed.some(domain=>host===domain||host.endsWith("."+domain))?url.href:"";
  }catch{return "";}
 }
+function ensureAmazonAssociateTag(value){
+ if(!value)return "";
+ try{
+  const url=new URL(value);
+  const host=url.hostname.toLowerCase().replace(/\.$/,"");
+  // Amazon-issued short links (link.amazon, amzn.in, amzn.to) carry their
+  // affiliate attribution in Amazon's redirect; never alter their opaque code.
+  if(host==="amazon.in"||host.endsWith(".amazon.in")||host==="amazon.co.in"||host.endsWith(".amazon.co.in")){
+   url.searchParams.set("tag","smartdealin02-21");
+   return url.href;
+  }
+  return value;
+ }catch{return "";}
+}
 const esc=v=>String(v??"").replace(/[&<>"\']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","\'":"&#39;"}[c]));
 function normalize(p){
  const images=Array.isArray(p.image_urls)?p.image_urls:(Array.isArray(p.images)?p.images:[]);
  const primaryImage=p.image||p.product_image_url||p.image_url||images.find(value=>typeof value==="string"&&safeUrl(value))||"";
  const amazonCandidate=p.amazon||p.amazon_affiliate_link||p.amazon_link||p.amazonLink||"";
  const flipkartCandidate=p.flipkart||p.flipkart_affiliate_link||p.flipkart_link||p.flipkartLink||"";
- let amazon=safeRetailerUrl(amazonCandidate,"amazon");
+ let amazon=ensureAmazonAssociateTag(safeRetailerUrl(amazonCandidate,"amazon"));
  let flipkart=safeRetailerUrl(flipkartCandidate,"flipkart");
  const legacyLink=p.affiliate_link||p.link||"";
- if(!amazon&&!flipkart&&legacyLink){amazon=safeRetailerUrl(legacyLink,"amazon");if(!amazon)flipkart=safeRetailerUrl(legacyLink,"flipkart");}
+ if(!amazon&&!flipkart&&legacyLink){amazon=ensureAmazonAssociateTag(safeRetailerUrl(legacyLink,"amazon"));if(!amazon)flipkart=safeRetailerUrl(legacyLink,"flipkart");}
  return {id:p.id||null,name:p.name||p.product_name||p.title||"Product",price:Number(p.price??p.product_price??0),oldPrice:Number(p.oldPrice??p.old_price??0),image:primaryImage,images,rating:p.rating??p.average_rating??null,review_count:p.review_count??p.reviews_count??null,reviews:p.reviews||[],amazon,flipkart,category:p.category||p.product_category||"Other",description:p.description||"",featured:p.featured===true||p.is_featured===true};
 }
 function categoryMatch(cat,f){if(f==="All"||f==="Featured")return true;const c=String(cat||"").toLowerCase(),x=f.toLowerCase();return c.includes(x)||(x==="baby"&&c.includes("baby"))||(x==="home"&&c.includes("home"))||(x==="accessories"&&c.includes("accessor"))}
