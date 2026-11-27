@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   push:
     paths:
-      - ".github/workflows/build-apk.yml"
+      - ".github/workflows/build-apk.yml"\n      - "app.html"\n      - "orders.html"
 
 jobs:
   build:
