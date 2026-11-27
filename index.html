@@ -2,8 +2,8 @@
 <html lang="en-IN">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>SmartDeal India — Shop Mobiles, Electronics, Fashion & Best Deals</title>
-<meta name="description" content="Discover popular products, compare Amazon and Flipkart offers, and shop smarter with SmartDeal India.">
+<title>SmartDeal India — Shop Mobiles, Electronics, Fashion & Featured Products</title>
+<meta name="description" content="Discover popular products, compare Amazon and Flipkart retailer offers, and shop smarter with SmartDeal India. Check the retailer for current price and availability.">
 <meta name="theme-color" content="#10233f">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
@@ -19,7 +19,7 @@
 <meta name="robots" content="index,follow,max-image-preview:large">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="SmartDeal India">
-<meta property="og:title" content="SmartDeal India — Mobiles, Electronics, Fashion & Best Deals">
+<meta property="og:title" content="SmartDeal India — Mobiles, Electronics, Fashion & Featured Products">
 <meta property="og:description" content="Discover products, compare retailer offers and shop smart with SmartDeal India.">
 <meta property="og:url" content="https://smartdeal-india-six.vercel.app/">
 <meta property="og:image" content="https://images.unsplash.com/photo-1511709268805-95f6c4b6f3a7?auto=format&fit=crop&w=1200&q=85">
@@ -56,9 +56,9 @@
  <div class="headrow">
   <a class="logo" href="./">SmartDeal <span>India</span></a>
   <form class="search" id="searchForm"><input id="searchInput" placeholder="Search mobiles, earbuds, fashion and more..." aria-label="Search products"><button>Search</button></form>
-  <div class="head-actions"><a href="#categories">☷ Categories</a><a href="#products">★ Best Deals</a></div>
+  <div class="head-actions"><a href="#categories">☷ Categories</a><a href="#products" data-filter="Featured">★ Featured Picks</a></div>
  </div>
- <nav class="nav"><div class="navinner"><a href="#home">Home</a><a href="#products" data-filter="Mobiles">Mobiles</a><a href="#products" data-filter="Electronics">Electronics</a><a href="#products" data-filter="Fashion">Fashion</a><a href="#products" data-filter="Baby">Baby & Kids</a><a href="#products" data-filter="Deals">Today’s Deals</a><a href="./about.html">About</a></div></nav>
+ <nav class="nav"><div class="navinner"><a href="#home">Home</a><a href="#products" data-filter="Mobiles">Mobiles</a><a href="#products" data-filter="Electronics">Electronics</a><a href="#products" data-filter="Fashion">Fashion</a><a href="#products" data-filter="Baby">Baby & Kids</a><a href="#products" data-filter="Featured">Featured Picks</a><a href="./about.html">About</a></div></nav>
 </header>
 <main class="wrap" id="home">
  <section class="hero">
@@ -108,7 +108,7 @@ function normalize(p){
  if(!amazon&&!flipkart&&legacyLink){amazon=safeRetailerUrl(legacyLink,"amazon");if(!amazon)flipkart=safeRetailerUrl(legacyLink,"flipkart");}
  return {id:p.id||null,name:p.name||p.product_name||p.title||"Product",price:Number(p.price??p.product_price??0),oldPrice:Number(p.oldPrice??p.old_price??0),image:primaryImage,images,rating:p.rating??p.average_rating??null,review_count:p.review_count??p.reviews_count??null,reviews:p.reviews||[],amazon,flipkart,category:p.category||p.product_category||"Other",description:p.description||"",featured:p.featured===true||p.is_featured===true};
 }
-function categoryMatch(cat,f){if(f==="All"||f==="Deals")return true;const c=String(cat||"").toLowerCase(),x=f.toLowerCase();return c.includes(x)||(x==="baby"&&c.includes("baby"))||(x==="home"&&c.includes("home"))||(x==="accessories"&&c.includes("accessor"))}
+function categoryMatch(cat,f){if(f==="All"||f==="Featured")return true;const c=String(cat||"").toLowerCase(),x=f.toLowerCase();return c.includes(x)||(x==="baby"&&c.includes("baby"))||(x==="home"&&c.includes("home"))||(x==="accessories"&&c.includes("accessor"))}
 function categoryPresentation(raw){
  const value=String(raw||"Other").trim()||"Other";
  const lower=value.toLowerCase();
@@ -134,14 +134,13 @@ function renderCategories(){
  host.innerHTML=categories.length?categories.map(item=>'<a class="cat" href="#products" data-filter="'+esc(item.filter)+'"><div class="caticon">'+item.icon+'</div><b>'+esc(item.label)+'</b><small>'+item.count.toLocaleString("en-IN")+' products</small></a>').join(""):'<div class="empty">No product categories are available yet.</div>';
 }
 function card(p){
- const im=safeUrl(p.image),a=safeRetailerUrl(p.amazon,"amazon"),f=safeRetailerUrl(p.flipkart,"flipkart"),hasPrice=Number(p.price)>0;
- const discount=0;
+ const im=safeUrl(p.image),a=safeRetailerUrl(p.amazon,"amazon"),f=safeRetailerUrl(p.flipkart,"flipkart");
  const rating=Number(p.rating||0),reviews=Number(p.review_count||0);
  const retailer=a?"amazon":"flipkart",destination=a||f;
  const retailerButtons=(a?'<a class="amazon buy-now" data-track-retailer="amazon" data-product-id="'+esc(p.id||"")+'" target="_blank" rel="noopener noreferrer sponsored" href="'+esc(a)+'">Buy on Amazon ↗</a>':"")+(f?'<a class="flip buy-now" data-track-retailer="flipkart" data-product-id="'+esc(p.id||"")+'" target="_blank" rel="noopener noreferrer sponsored" href="'+esc(f)+'">Buy on Flipkart ↗</a>':"");
- return '<article class="card"><a class="photo photo-link" data-track-retailer="'+retailer+'" data-product-id="'+esc(p.id||"")+'" target="_blank" rel="noopener noreferrer sponsored" href="'+esc(destination)+'" title="Tap photo to shop at retailer">'+(p.featured?'<span class="badge">★ Featured</span>':"")+(discount?'<span class="discount-badge">'+discount+'% OFF</span>':"")+(im?'<img loading="lazy" src="'+esc(im)+'" alt="'+esc(p.name)+'" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'grid\'"><div class="imgfallback" style="display:none">🛍️<small>Image unavailable</small></div>':'<div class="imgfallback">🛍️<small>Image unavailable</small></div>')+'</a><div class="cardbody"><span class="category">'+esc(p.category)+'</span><h3>'+esc(p.name)+'</h3>'+(rating?'<div class="rating">★ '+rating.toFixed(1)+(reviews?' · '+reviews.toLocaleString('en-IN')+' ratings':'')+'</div>':'')+'<div>'+(a?'<span class="price checkprice">Check live price on Amazon</span>':f?'<span class="price checkprice">Check live price on Flipkart</span>':'<span class="price checkprice">Check retailer price</span>')+'</div><button class="details-btn" data-product-details="'+esc(p.id||"")+'">વિગતો</button><div class="retailers">'+retailerButtons+'</div></div></article>';
+ return '<article class="card"><a class="photo photo-link" data-track-retailer="'+retailer+'" data-product-id="'+esc(p.id||"")+'" target="_blank" rel="noopener noreferrer sponsored" href="'+esc(destination)+'" title="Tap photo to shop at retailer">'+(p.featured?'<span class="badge">★ Featured</span>':"")+(im?'<img loading="lazy" src="'+esc(im)+'" alt="'+esc(p.name)+'" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'grid\'"><div class="imgfallback" style="display:none">🛍️<small>Image unavailable</small></div>':'<div class="imgfallback">🛍️<small>Image unavailable</small></div>')+'</a><div class="cardbody"><span class="category">'+esc(p.category)+'</span><h3>'+esc(p.name)+'</h3>'+(rating?'<div class="rating">★ '+rating.toFixed(1)+(reviews?' · '+reviews.toLocaleString('en-IN')+' ratings':'')+'</div>':'')+'<div>'+(a?'<span class="price checkprice">Check live price on Amazon</span>':f?'<span class="price checkprice">Check live price on Flipkart</span>':'<span class="price checkprice">Check retailer price</span>')+'</div><button class="details-btn" data-product-details="'+esc(p.id||"")+'">વિગતો</button><div class="retailers">'+retailerButtons+'</div></div></article>';
 }
-function render(){renderCategories();const q=document.getElementById("searchInput").value.trim().toLowerCase(),list=allProducts.filter(p=>(activeFilter==="Deals"?(p.featured||p.oldPrice>p.price):categoryMatch(p.category,activeFilter))&&(!q||(p.name+" "+p.category+" "+p.description).toLowerCase().includes(q)));document.getElementById("productHeading").textContent=activeFilter==="All"?(q?"Search Results":"All Products"):activeFilter==="Deals"?"Today’s Deals":activeFilter+" Products";document.getElementById("productSub").textContent=list.length+" products found"+(activeFilter==="Deals"?" • Featured or discounted items":"");document.getElementById("productGrid").innerHTML=list.length?list.map(card).join(''):'<div class="empty"><strong>No products found</strong><br>Try another category or search. New products added in Admin will appear here.</div>'}
+function render(){renderCategories();const q=document.getElementById("searchInput").value.trim().toLowerCase(),list=allProducts.filter(p=>(activeFilter==="Featured"?p.featured:categoryMatch(p.category,activeFilter))&&(!q||(p.name+" "+p.category+" "+p.description).toLowerCase().includes(q)));document.getElementById("productHeading").textContent=activeFilter==="All"?(q?"Search Results":"All Products"):activeFilter==="Featured"?"Featured Picks":activeFilter+" Products";document.getElementById("productSub").textContent=list.length+" products found"+(activeFilter==="Featured"?" • Featured products; check retailer for current price and availability":"");document.getElementById("productGrid").innerHTML=list.length?list.map(card).join(''):'<div class="empty"><strong>No products found</strong><br>Try another category or search. New products added in Admin will appear here.</div>'}
 function isCompleteProduct(p){
  const hasImage=safeUrl(p.image)||(Array.isArray(p.images)&&p.images.some(value=>safeUrl(value)));
  const hasRetailerLink=safeRetailerUrl(p.amazon,"amazon")||safeRetailerUrl(p.flipkart,"flipkart");
@@ -246,7 +245,6 @@ function openProductDetails(p){
  document.getElementById("detailTitle").textContent=p.name;
  document.getElementById("detailImage").src=detailPhotoUrls[0]||"";
  document.getElementById("detailThumbs").innerHTML=detailPhotoUrls.map((u,i)=>'<button class="detail-thumb" data-detail-photo="'+i+'"><img src="'+esc(u)+'" alt="Product photo '+(i+1)+'"></button>').join("");
- const discount=p.oldPrice>p.price&&p.oldPrice?Math.round((p.oldPrice-p.price)*100/p.oldPrice):0;
  document.getElementById("detailPrice").innerHTML='<strong class="detail-current">'+(p.amazon?"Check live price on Amazon":p.flipkart?"Check live price on Flipkart":"Check retailer price")+'</strong>';
  const rating=Number(p.rating||0),count=Number(p.review_count||0);
  document.getElementById("detailRating").textContent=rating?'★ '+rating.toFixed(1)+(count?' · '+count.toLocaleString('en-IN')+' ratings':''):'Rating/review data is not available in this product record.';
