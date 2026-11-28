@@ -717,3 +717,79 @@ footer{background:linear-gradient(105deg,#0b1b32,#173b62 65%,#3b3265)!important}
  #products{margin-top:24px}
 }
 </style>
+
+
+<style id="smartdeal-living-rainbow-theme">
+/* Gentle, continuously shifting premium colour theme */
+@keyframes sdPageFlow{
+  0%{background-position:0% 50%}
+  50%{background-position:100% 50%}
+  100%{background-position:0% 50%}
+}
+@keyframes sdCardFlow{
+  0%{background-position:0% 50%}
+  50%{background-position:100% 50%}
+  100%{background-position:0% 50%}
+}
+body{
+ background:linear-gradient(125deg,#e7f4ff,#f1eaff,#fff0e6,#e6f8f1,#fff1f6,#e9efff)!important;
+ background-size:350% 350%!important;
+ animation:sdPageFlow 32s ease-in-out infinite!important;
+}
+.wrap{
+ background:linear-gradient(125deg,#ffffffb8,#eef5ffcc,#f7efffcc,#fff5ebcc,#eaf8f2cc)!important;
+ background-size:300% 300%!important;
+ animation:sdPageFlow 38s ease-in-out infinite!important;
+}
+#categories{
+ background:linear-gradient(120deg,#e1f3ff,#f0e8ff,#ffeaf2,#e4f8ee,#fff2df)!important;
+ background-size:300% 300%!important;
+ animation:sdPageFlow 34s ease-in-out infinite!important;
+}
+#products{
+ background:linear-gradient(120deg,#e4f1ff,#f0eaff,#ffedf1,#e8f8ef,#fff2e2)!important;
+ background-size:320% 320%!important;
+ animation:sdPageFlow 36s ease-in-out infinite!important;
+}
+#products .card{
+ background:linear-gradient(135deg,#ffffff,#f1f7ff,#f8f0ff,#fff4ec,#edfaf4)!important;
+ background-size:300% 300%!important;
+ animation:sdCardFlow 28s ease-in-out infinite!important;
+ border:1px solid #d9e4f3!important;
+}
+#products .cardbody{
+ background:linear-gradient(135deg,#ffffffd9,#eef5ffb8,#f7efffb8,#fff4eab8)!important;
+ background-size:300% 300%!important;
+ animation:sdCardFlow 30s ease-in-out infinite!important;
+}
+#products .category{color:#536b91!important}
+#products .card h3{color:#203451!important;font-weight:700!important}
+#products .price{color:#9f351f!important}
+#products .old{color:#69778b!important}
+#products .saving{color:#08764f!important}
+#products .photo{
+ background:linear-gradient(135deg,#eaf5ff,#f1edff,#fff0e8,#eaf8f0)!important;
+ background-size:300% 300%!important;
+ animation:sdCardFlow 32s ease-in-out infinite!important;
+}
+#products .amazon{background:#ffe3a6!important;color:#67400a!important}
+#products .flip{background:#dcecff!important;color:#124d91!important}
+#products .details-btn{background:#e8efff!important;color:#294d83!important}
+#products .badge{background:#dff7e9!important;color:#08734e!important}
+#products .discount-badge{background:#ffe0e9!important;color:#a3214a!important}
+#products .section-head h2{color:#172f53!important}
+#products .section-head p{color:#5d6f89!important}
+#products .affiliate-disclosure{
+ background:linear-gradient(110deg,#fff4d9,#ffeaf0,#eaf2ff)!important;
+ border-color:#ecd7a5!important;color:#57472c!important;
+}
+.dealband{
+ background:linear-gradient(120deg,#fff0d6,#ffe9f1,#e8edff,#e5f8ef)!important;
+ background-size:300% 300%!important;
+ animation:sdPageFlow 34s ease-in-out infinite!important;
+}
+@media(prefers-reduced-motion:reduce){
+ body,.wrap,#categories,#products,#products .card,#products .cardbody,
+ #products .photo,.dealband{animation:none!important}
+}
+</style>
